@@ -1,0 +1,84 @@
+// 01. Van egy tömböd nevekkel. Alakítsd őket nagybetűsre!
+const names = ["anna", "béla", "csaba"];
+const upperNames = names.map((name) => name.toUpperCase());
+console.log(upperNames); // ["ANNA", "BÉLA", "CSABA"]
+
+
+
+
+// 02. Szűrd ki azokat a számokat, amelyek párosak!
+const numbers = [1, 2, 3, 4, 5, 6];
+const evenNumbers = numbers.filter((num) => num % 2 === 0);
+console.log(evenNumbers); // [2, 4, 6]
+
+
+
+
+// 03. Számold ki egy számokból álló tömb összegét!
+const values = [10, 20, 30];
+const sumValues = values.reduce((acc, num) => acc + num, 0);
+console.log(sumValues); // 60
+
+
+
+
+// 04. Adott egy vásárlási lista, szűrd ki az 1000 Ft-nál drágább termékeket, majd számold ki ezek összértékét ÁFÁ-val (27%).
+const products = [
+  { name: "Tej", price: 500 },
+  { name: "Kenyér", price: 1200 },
+  { name: "Sajt", price: 2500 },
+];
+const filteredProducts = products.filter((product) => product.price > 1000);
+const totalWithVat = filteredProducts.reduce((sum, product) => sum + product.price * 1.27, 0);
+console.log(totalWithVat); // 4699
+
+
+
+
+// 05. FELADAT
+// A) Csak a felnőttek adatait írasd ki a consolra!
+// B) Csak a neveket írasd ki a consolra!
+const users = [
+  { name: "Anna", age: 25 },
+  { name: "Béla", age: 17 },
+  { name: "Csaba", age: 32 },
+  { name: "Dóra", age: 15 },
+];
+const adults = users.filter((user) => user.age >= 18);
+console.log(adults); // [ { name: 'Anna', age: 25 }, { name: 'Csaba', age: 32 } ]
+const userNames = users.map((user) => user.name);
+console.log(userNames); // [ 'Anna', 'Béla', 'Csaba', 'Dóra' ]
+
+
+
+
+// 06. Csak az 5 karakternél hosszabb szavakat tartsd meg, majd alakítsd őket nagybetűssé!
+const words = ["alma", "banán", "barack", "szilva", "körte"];
+const result = words
+  .filter((word) => word.length > 5)
+  .map((word) => word.toUpperCase());
+console.log(result); // [ 'BARACK', 'SZILVA' ]
+
+
+
+
+// 07. Írasd ki az összes bevétel és az összes kiadás eredménynét a consolra!
+const transactions = [
+  { type: "income", amount: 500 },
+  { type: "expense", amount: 100 },
+  { type: "income", amount: 200 },
+  { type: "expense", amount: 50 },
+];
+
+const res = transactions.reduce((acc, t) => {
+    if (t.type === "income") {
+      acc.income += t.amount;
+    } else if (t.type === "expense") {
+      acc.expense += t.amount;
+    }
+    return acc;
+}, { income: 0, expense: 0 });
+
+console.log(`Összes bevétel: ${res.income}`); // Összes bevétel: 700
+console.log(`Összes kiadás: ${res.expense}`); // Összes kiadás: 150
+console.log(`Összes bevétel - Összes kiadás: ${res.income - res.expense}`); // Összes bevétel - Összes kiadás: 550

@@ -1,0 +1,35 @@
+////////// MAGYAR //////////
+
+CREATE DATABASE IF NOT EXISTS db_name
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+
+////////// ANGOL //////////
+
+CREATE DATABASE IF NOT EXISTS webshop
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+SET SQL_SAFE_UPDATES = 0;
+
+
+
+////////// ADATBÁZIS HASZNÁLATA //////////
+
+USE db_name;
+
+
+
+////////// TÁBLÁK LEKÉRDEZÉSE //////////
+
+SHOW TABLES;
+
+
+
+////////// TÁBLA SZERKEZETÉNEK LEKÉRDEZÉSE //////////
+
+DESCRIBE table_name;

@@ -1,0 +1,141 @@
+Drónok
+
+01. Írasd ki a képernyőre, hogy hány drón adata található meg a fájlban!
+
+02. Határozd meg és írasd ki a drónok átlagos repülési idejét (percben)!
+
+03. Keresd meg a legnagyobb hatótávval (jelátviteli távolsággal) rendelkező drónt, és írasd ki a gyártóját, modelljét és a hatótávját!
+    (Feltételezheted, hogy nincs holtverseny, vagy ha van, elég az egyiket kiírni).
+
+04. Keresd meg a legkisebb hatótávval (jelátviteli távolsággal) rendelkező drónt, és írasd ki a gyártóját, modelljét és a hatótávját!
+    (Feltételezheted, hogy nincs holtverseny, vagy ha van, elég az egyiket kiírni).
+
+05. Kérj be a felhasználótól egy gyártót (pl. DJI), majd íratsd ki az összes ilyen gyártmányú drón minden adatát a képernyőre!
+
+06. Válogasd ki azokat a drónokat, amelyek legalább 30 percet képesek a levegőben tölteni egyhuzamban,
+    és írd ki a gyártó, modell és ár adataikat egy profi_dronok.txt nevű fájlba, soronként!
+
+///////////////////////////////
+////////// DronClass //////////
+///////////////////////////////
+
+namespace ConsoleApp1
+{
+    internal class Dron(string gyarto, string modell, int hatotav, int repulesiIdo, int ar)
+    {
+        public string Gyarto { get; set; } = gyarto;
+        public string Modell { get; set; } = modell;
+        public int Hatotav { get; set; } = hatotav;
+        public int RepulesiIdo { get; set; } = repulesiIdo;
+        public int Ar { get; set; } = ar;
+
+        public override string ToString()
+        {
+            return $"Gyártó: {Gyarto}, Modell: {Modell}, Hatótáv: {Hatotav}, Repülési idő: {RepulesiIdo} perc, Ár: {Ar} Forint.";
+        }
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var dronLista = File.ReadAllLines("dronok.csv")
+                .Skip(1)
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new Dron(
+                    adat[0],
+                    adat[1],
+                    int.Parse(adat[2]),
+                    int.Parse(adat[3]),
+                    int.Parse(adat[4])))
+                .ToList();
+
+            //dronLista.ForEach(sor => Console.WriteLine(sor));
+
+            // 01. Írasd ki a képernyőre, hogy hány drón adata található meg a fájlban!
+            Console.WriteLine($"{dronLista.Count()} darab drón van!");
+
+            // 02. Határozd meg és írasd ki a drónok átlagos repülési idejét (percben)!
+            var atlagRepIdo = dronLista.Average(sor => sor.RepulesiIdo);
+            Console.WriteLine($"Átlag repülési idő: {atlagRepIdo} perc.");
+
+            // 03. Keresd meg a legnagyobb hatótávval (jelátviteli távolsággal) rendelkező drónt, és írasd ki a gyártóját, modelljét és a hatótávját! (Feltételezheted, hogy nincs holtverseny, vagy ha van, elég az egyiket kiírni).
+            var legnagyobbHatotav = dronLista.MaxBy(sor => sor.Hatotav);
+            Console.WriteLine($"Legnagyobb hatótávú drón: {legnagyobbHatotav.Gyarto} - {legnagyobbHatotav.Modell}: {legnagyobbHatotav.Hatotav}");
+
+            // 04. Kérj be a felhasználótól egy gyártót (pl. DJI), majd íratsd ki az összes ilyen gyártmányú drón minden adatát a képernyőre!
+            // Ha nincs ilyen gyártó a listában, írd ki, hogy "Nincs találat!".
+            Console.Write("Adj meg egy gyártót(DJI, Autel, Parrot, Hubsan, Ryze, Yuneec): ");
+            string beker = Console.ReadLine();
+            bool talalat = false;
+
+            foreach (var sor in dronLista)
+            {
+                if (sor.Gyarto.ToLower() == beker)
+                {
+                    talalat = true;
+                    Console.WriteLine(sor);
+                }
+            }
+
+            if (!talalat)
+            {
+                Console.WriteLine("Nincs találat!");
+            }
+
+            // 05. Válogasd ki azokat a drónokat, amelyek legalább 30 percet képesek a levegőben tölteni egyhuzamban, és írd ki a gyártó, modell és ár adataikat egy profi_dronok.txt nevű fájlba, soronként!
+            var profiDronok = new List<Dron>();
+
+            foreach (var sor in dronLista)
+            {
+                if (sor.RepulesiIdo >= 30)
+                {
+                    profiDronok.Add(sor);
+                    //Console.WriteLine(sor);
+                }
+            }
+
+            // Kiíratás
+            using (StreamWriter sw = new StreamWriter("profi_dronok.txt"))
+            {
+                foreach (var sor in profiDronok)
+                {
+                    sw.WriteLine($"{sor.Gyarto};{sor.Modell};{sor.Ar}");
+                }
+            }
+
+            // Min. repülési idő
+            var legkisebbRepIdo = dronLista.MinBy(sor => sor.RepulesiIdo);
+            Console.WriteLine();
+            Console.WriteLine($"Legkisebb repülési idő: {legkisebbRepIdo.Gyarto} - {legkisebbRepIdo.Modell}: {legkisebbRepIdo.RepulesiIdo} perc");
+
+            // Összes repülési idő
+            var osszRepIdo = dronLista.Sum(sor => sor.RepulesiIdo);
+            Console.WriteLine();
+            Console.WriteLine($"Összes repülési idő: {osszRepIdo} perc.");
+        }
+    }
+}
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+gyarto;modell;hatotav;repulesi_ido;ar
+DJI;Mavic 3;15000;46;800000
+DJI;Mini 2;10000;31;180000
+Autel;Evo Lite+;12000;40;650000
+Parrot;Anafi;4000;25;250000
+DJI;Air 2S;12000;31;380000
+Hubsan;Zino Mini Pro;10000;40;220000
+Ryze;Tello;100;13;45000
+Yuneec;Typhoon H Plus;1600;28;550000
+Autel;Evo Nano+;10000;28;320000
+DJI;FPV;10000;20;450000

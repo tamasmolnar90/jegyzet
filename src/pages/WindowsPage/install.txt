@@ -1,0 +1,54 @@
+##########################
+########## BIOS ##########
+##########################
+
+AMD fTPM Switch:          AMD CPU fTPM
+Security Device Support:  Enable
+CSM:                      Disable
+Secure Boot:              Enable
+Secure Boot Mode:         Standard
+
+##########################################
+########## TELEPÍTŐ LÉTREHOZÁSA ##########
+##########################################
+
+1. Rufus-al telepítő Pendrivet létrehozni
+      Particiós séma: GPT
+      Célrendszer: UEFI
+	
+      INDÍTÁS
+      Követelmény eltávolítása: online Microsoft fiók - pipa
+      Adatgyűjtés letiltása - pipa
+      BitLocker automatikus eszköz titkosítás letiltása - pipa	
+
+2. Windows feltelepítése, frissítése, driverek
+
+3. Atlas feltelepítése
+
+4. Brave Cleaner regedit futtatása, kereső motor duckduckgo beállítása
+
+5. Töredezettség mentesítés ütemezés letiltása
+
+6. Egér pontosság beállítása
+
+###############################
+########## TELEPÍTÉS ##########
+###############################
+
+SHIFT + F10
+OOBE\BYPASSNRO (újraindul és lesz offline opció) (már kivették)
+NCPA.CPL (wifit előhívja, ha kell)
+
+Offline bejelentkezés (without Microsoft account)
+start ms-cxh:localonly
+
+#######################################
+########## PROGRAMOK TÖRLÉSE ##########
+#######################################
+
+Revo Uninstall
+
+vagy
+
+win + r
+appwiz.cpl

@@ -1,0 +1,248 @@
+-- 01. Listázd az összes gép nevét és típusát!
+SELECT nev, tipus
+FROM gep;
+
+
+
+
+-- 02. Gépek, amelyeket 2019 után helyeztek üzembe!
+SELECT *
+FROM gep
+WHERE uzembe_helyezes > 2019;
+
+
+
+
+-- 03. Tatabányán dolgozó operátorok!
+SELECT *
+FROM operator
+WHERE telephely = 'Tatabánya';
+
+
+
+
+-- 04. Karbantartások, ahol a költség 100000 Ft fölött volt!
+SELECT
+  gep.nev,
+  gep.tipus,
+  karbantartas.datum AS karbantartas_datum,
+  karbantartas.koltseg,
+  karbantartas.megjegyzes
+FROM karbantartas
+JOIN gep ON karbantartas.gep_id = gep.id
+WHERE karbantartas.koltseg > 100000;
+
+
+
+
+-- 05. NINCS ILYEN FELADAT A BEADANDÓK KÖZÖTT!!!
+
+
+
+
+-- 06. Gépek ár szerint csökkenő sorrendben!
+SELECT *
+FROM gep
+ORDER BY ar DESC;
+
+
+
+
+-- 07. A három legdrágább gép!
+SELECT *
+FROM gep
+ORDER BY ar DESC
+LIMIT 3;
+
+
+
+
+-- 08. Operátorok név szerint növekvő sorrendben!
+SELECT *
+FROM operator
+ORDER BY nev ASC;
+
+
+
+
+-- 09. Telephelyenkénti átlagbérek!
+SELECT telephely, AVG(ber) AS atlagber
+FROM operator
+GROUP BY telephely;
+
+
+
+
+-- 10. A 2020 előtt üzembe helyezett gépek száma!
+SELECT COUNT(*) AS gepek_szama
+FROM gep
+WHERE uzembe_helyezes < 2020;
+
+
+
+
+-- 11. Gépek átlagára!
+SELECT AVG(ar) AS gepek_atlagara
+FROM gep;
+
+
+
+
+-- 12. Operátorok neve és névhossz!
+SELECT nev, CHAR_LENGTH(nev) AS nevhossz
+FROM operator;
+
+
+
+
+-- 13. Karbantartások összköltsége!
+SELECT SUM(koltseg) AS osszkoltseg
+FROM karbantartas;
+
+
+
+
+-- 14. 2024-ben történt karbantartások!
+SELECT *
+FROM karbantartas
+WHERE datum BETWEEN '2024-01-01' AND '2024-12-31';
+
+
+
+
+-- 15. Karbantartók bérének növelése 10%-kal!
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE operator
+SET ber = ber * 1.10
+WHERE beosztas = 'Karbantartó';
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+
+-- 16. Új gép beszúrása!
+INSERT INTO gep (nev, tipus, uzembe_helyezes, ar) VALUES
+('PlasmaCut-5000', 'Lézervágó', 2025, 9800000);
+
+
+
+
+CREATE DATABASE ipari_informatika;
+
+USE ipari_informatika;
+
+--
+-- Tábla szerkezet ehhez a táblához `gep`
+--
+CREATE TABLE `gep` (
+  `id` int(11) NOT NULL,
+  `nev` varchar(50) NOT NULL,
+  `tipus` varchar(50) NOT NULL,
+  `uzembe_helyezes` year(4) NOT NULL,
+  `ar` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `gep`
+--
+INSERT INTO `gep` (`id`, `nev`, `tipus`, `uzembe_helyezes`, `ar`) VALUES
+(1, 'CNC-Alpha', 'Eszterga', '2018', 5200000),
+(2, 'LaserMax', 'Lézervágó', '2020', 8600000),
+(3, 'HydraPress', 'Présgép', '2016', 4300000),
+(4, 'RoboArm', 'Ipari robotkar', '2022', 12500000),
+(5, 'DrillMaster', 'Fúrógép', '2019', 3100000),
+(6, '3D nyomtató', 'Nyomtató', '2024', 250000);
+
+--
+-- Tábla szerkezet ehhez a táblához `karbantartas`
+--
+CREATE TABLE `karbantartas` (
+  `id` int(11) NOT NULL,
+  `gep_id` int(11) NOT NULL,
+  `operator_id` int(11) NOT NULL,
+  `datum` date NOT NULL,
+  `koltseg` int(11) NOT NULL,
+  `megjegyzes` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `karbantartas`
+--
+INSERT INTO `karbantartas` (`id`, `gep_id`, `operator_id`, `datum`, `koltseg`, `megjegyzes`) VALUES
+(1, 1, 2, '2024-01-15', 120000, 'Olajcsere és szenzorcsere'),
+(2, 3, 2, '2024-03-10', 95000, 'Hidraulika tisztítás'),
+(3, 2, 1, '2024-02-05', 150000, 'Lézervágó fej beállítás'),
+(4, 4, 4, '2024-04-20', 180000, 'Robotkar szoftverfrissítés'),
+(5, 5, 5, '2024-06-30', 80000, 'Fúrószár csere'),
+(6, 1, 2, '2024-07-15', 100000, 'Szenzor beállítás'),
+(7, 3, 5, '2024-09-25', 90000, 'Présgép kenés'),
+(8, 4, 4, '2024-10-10', 210000, 'Motor kalibrálás');
+
+--
+-- Tábla szerkezet ehhez a táblához `operator`
+--
+CREATE TABLE `operator` (
+  `id` int(11) NOT NULL,
+  `nev` varchar(50) NOT NULL,
+  `beosztas` varchar(50) NOT NULL,
+  `ber` int(11) NOT NULL,
+  `telephely` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `operator`
+--
+INSERT INTO `operator` (`id`, `nev`, `beosztas`, `ber`, `telephely`) VALUES
+(1, 'Kiss Péter', 'Kezelő', 420000, 'Győr'),
+(2, 'Nagy Anna', 'Karbantartó', 480000, 'Tatabánya'),
+(3, 'Tóth Gábor', 'Kezelő', 410000, 'Szeged'),
+(4, 'Szabó Mária', 'Mérnök', 610000, 'Győr'),
+(5, 'Horváth László', 'Karbantartó', 500000, 'Szeged');
+
+--
+-- A tábla indexei `gep`
+--
+ALTER TABLE `gep`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- A tábla indexei `karbantartas`
+--
+ALTER TABLE `karbantartas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `gep` (`gep_id`),
+  ADD KEY `operator` (`operator_id`);
+
+--
+-- A tábla indexei `operator`
+--
+ALTER TABLE `operator`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT a táblához `gep`
+--
+ALTER TABLE `gep`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT a táblához `karbantartas`
+--
+ALTER TABLE `karbantartas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT a táblához `operator`
+--
+ALTER TABLE `operator`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Megkötések a táblához `karbantartas`
+--
+ALTER TABLE `karbantartas`
+  ADD CONSTRAINT `karbantartas_ibfk_1` FOREIGN KEY (`gep_id`) REFERENCES `gep` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `karbantartas_ibfk_2` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;

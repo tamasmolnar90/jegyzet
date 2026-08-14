@@ -1,0 +1,185 @@
+Website Personalities - Weboldal Személyiségek:
+
+01. súlyos-elegáns: vékony serif betűtípusok.
+02. minimalista-egyszerű: lényeges szövegtartalomra fókuszál, vékony sans-serif fekete szöveg, vonalak, néhány kép és ikon.
+03. sima-semleges: struktúrált, gyakori a nagyvállalatoknál.
+04. félkövér-magabiztos: hatékony és merész tipográfia, nagy és élénk színű blokkok.
+05. nyugodt-békés: nyugtató pasztell színek, lágy serif, fejlécek és hozzá illő képek, illusztrációk.
+06. induló-derűs: széles körben használt startupoknál, közepes méretű sans-serif betűtípusokkal, világosszürke szöveggel és hátterekkel, lekerekített elemekkel.
+07. játékos-szórakoztató: színes és kerek dizájn, kreatív elemekből dolgozva pl kézzel rajzolt ikonok, animációk és szórakoztató nyelv.
+
+
+
+
+Typography - Tipográfia - Betűtervezés:
+
+01. jó és népszerű betűtípusok hasznűlata.
+02. oldalanként csak egy betűtípus hasznűlata, max kettő.
+03. webhely személyiségének megfelelő betűtípus.
+04. betűméret kiválasztásakor korlátozza a választási lehetőségeket, használjon típusskálát vagy más előre meghatározott tartományt.	
+05. normál szöveg: 16px és 32px közötti font-size.
+06. hosszú szöveg: pl blogbejegyzés esetén 20px vagy annál nagyobb font-size.
+07. címsorok esetében lehet igazán nagy 50px vagy nagyobb font-size és félkövér 600px vagy nagyobb font-weight.
+08. semmilyen szöveghez ne használjon 400(regular) alatti font-weightet.
+09. soronként kevesebb mint 75 karaktert használjon.
+10. normáls méretű szövegnél használjon 1.5 - 2 line-heightet, nagy méretű szövegnél 1.5 vagy alatta.
+11. csökkentse a betűközt (letter-spacing) a címsorokban(headlines), ha természetellenesnek tűnik
+12. kísérletezzen csupa nagybetűvel a rövid címeknél, legyen kicsi és merész.
+13. ne helyezze középre a hosszú szövegblokkokat.
+
+
+
+
+Colors - Színek:
+
+red:	felhívja magára a figyelmet, erőt, szenvedélyt és izgalmat közvetít
+orange:	kevésbé aggresszív, boldogságot, vidámságot és kreativitást közvetít
+yellow:	örömet, fényességet és intelligenciát közvetít
+green:	egészséget, harmóniát, természetet és növekedést közvetít
+blue:	professzionalizmust, megbízhatóságot és békét közvetít
+purple:	bölcsességet, gazdagságot közvetít
+pink:	romantikát, törődést és szeretetet közvetít
+brown:	természetet, kényelmet és tartósságot közvetít
+black:	hatalmat, eleganciát, minimalizmust közvetít, de másrészt a bánantot is szimbolizálhatja
+
+kontraszt arányok:
+	4.5:1 18px- szöveghez
+	3:1 18px+ szöveghez
+
+01. állítsa a fő színt weboldala személyiségéhez.
+02. használj jó színtónust, ne válasszon random.
+03. legalább két féle színre van szüksége a színpalettán, egy fő színre és egy szürke(egy szín nagyon sötét árnyalata) színre.
+04. alkoss világosabb és sötétebb változatokat (színek és árnyalatai).
+05. fő szín használata a fontosabb elemeken.
+06. megpróbálhatja használni színét képeken és illusztrációkban.
+07. sötét színű hátteren próbálja meg a háttér árnyalatát használni, (világosabb verzió) szöveghez.
+08. a szöveg általában nem lehet teljesen fekete, könnyítsen, ha nehéznek tűnik.
+09. ne legyen túl világos a szöveg, használjon eszközt a szöveg és a háttér közötti kontraszt ellenőrzésére.
+
+
+
+
+Images and Illustration - Képek és illusztrációk:
+
+01. képek típusai: termékfotó, történetmesélő fotó, illusztrációk és minták.
+02. próbáljon valódi embereket megmutatni, hogy kiváltsa a felhasználó érzelmeit.
+03. túl sötét vagy világos képeknél használja a gradientet.
+04. szöveg elhelyezése semleges képterületen.
+05. helyezze a szöveget és képet egy dobozba.
+06. a nagy felbontású képernyőket figyelembevéve állítsa a kép méretét 2x akkorára mint a megjelenített méretük.
+07. tömörítse a képeket alacsonyabb fileméret és jobb teljesítmény érdekében.
+08. ha több képet használ egymás mellett győződjön meg arról, hogy azonos méretűek.
+
+
+
+
+Icons - Ikonok:
+
+01. használjon jó okoncsomagot, rengeteg ingyenes és fizetős ikoncsomag létezik.
+02. csak egy ikoncsomagot használjon.
+03. használjon svg ikonokat, ne használjon bittérképes képformátumokat (jpg, png).
+04. alkalmazkodj a weboldal személyiségéhez.
+05. használjon ikonokat, hogy vizuálisan segítséget nyújtson a szöveghez.
+06. használjon ikonokat a termék funkcióblokkjainak.
+07. műveletekhez társítson ikonokat.
+08. használjon ikonokat felsorlás jelként.
+09. az ikonok semlegességének megőrzéséhez használja a szöveg színével megegyező színt. Hogy jobban felhívja a figyelmet, használjon mást színt.
+
+
+
+
+Shadows - Árnyékok:
+
+01. csak akkor, használja, ha van értelme.
+02. használjon árnyékokat kis adagokban, ne tegyünk minden elemhez.
+03. ne legyen túl sötét az árnyék.
+04. használjon kis árnyékot a kisebb elemekhez, amelyeknek ki kell tűnniük.
+05. használjon közepes árnyékot a nagyobb elemekhez, amelyeknek ki kell tűnniük.
+06. használjon nagy árnyékot azokhoz az elemekhez, amelyeknek valóban ki kell tűnniük a felületen.
+07. kísérletezz változó árnyékokkal az egér interakciója során, rámutatás és kattintás.
+08. bónusz: kísérletezz fényekkel, színes árnyékokkal.
+
+
+
+
+border-radius:
+
+01. a betűtípusoknak van egy bizonyos kereksége, ügyeljen arra, hogy a border-radius illeszkedjen hozzá.
+02. használa gombokon, képeken, ikonok körül és egyéb elemeken.
+
+
+
+
+Whitespace - Térköz:
+
+01. használjon rengeteg térközt a sectionok között.
+02. használjon sok térközt az elemcsoportok között.
+03. használjon térközt az elemek között.
+04. minél inkább több elem tartozik össze, annál inkább közelebb kell lenniük.
+05. próbáljon ki egy kemény szabályt pl: 2 / 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 80 / 96 / 128
+
+
+
+
+Visual Hierarchy - Vizuális Hierarchia:
+
+01. helyezze a fontos elemeket közelebb az oldal tetejéhez.
+02. használja a képeket körültekintően, mert felkeltik a figyelmet.
+03. a térközök elválasztást hoznak létre, ezért stratégiailag használja a térközt elemeket hangsúlyozni.
+04. szöveges elemekhez használjon font-size, font-weight és whitespace, hogy fontosságot közvetítsenek.
+05. milyen szöveg elemeket érdemes kiemelni? címek, alcímek, linkek, gombok, adatok, pontok, ikonok.
+06. hangsúlyozzon ki egy fontos összetevőt (background-color, shadow, border).
+07. milyen összetevőket érdemes kiemelni? beszámolók, cselekvésre ösztönző szakaszok, előnézeti kártyák, űrlapok, ártáblázatok, táblázat sorai és oszlopai.
+
+
+
+
+User Experience UX - User Interface UI - Felhasználói élmény - Felhasználői felület
+
+01. ne tervezzen bonyolult elrendezéseket, használjon mintákat.
+02. tegye a cselekvésre ösztönzést a legszembetűnőbb elemmé és készítsen leíró szöveget hozzá.
+03. csak linkeknél használjon kék és/vagy aláhúzott szöveget.
+04. az animációnak célratörőnek és gyorsnak kell lennie: 200 - 500ms között.
+05. az űrlapokon igazítsa a címeket és mezőket egyetlen függőleges vonalba.
+06. ajánljon a felhasználónak jó visszajelzést minden művelethez.
+
+
+
+
+Elements and Components - Elemek és Alkatrészek:
+
+01. használjon általános elemeket és összetevőket információ közvetítésére.
+02. kombinálja az összetevőket elrendezésekké a közös elrendezési minták használatával.
+03. állítsa össze a különböző elrendezési területeket egy teljes, utolsó oldalra.
+
+
+
+
+Betűstílusok és méretek:
+font-weight: regular: 400, medium: 500, bold: 700
+fonst-size: 10px 12px 14px 16px 18px 20px 24px 30px 36px 44px 52px 62px 74px 86px 98px ...
+
+01. serif: vonalak végén van valami díszítés
+	-merriweather
+	-aleo
+	-playfair display
+	-cormorant
+	-cardo
+	-lora
+
+02. sans-serif: letisztult, sima vonalak
+	-inter
+	-open sans
+	-roboto
+	-montserrat
+	-work sans
+	-lato
+
+
+
+
+Webdesign Programok:
+
+01. Sketch
+02. Figma
+03. Photoshop

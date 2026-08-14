@@ -1,0 +1,134 @@
+UBUNTU
+----------------------------------------------------------------------
+VMware Workstation alatt futó Linuxra tools:
+sudo apt install open-vm-tools open-vm-tools-desktop -y
+
+böngészőkben fejlesztői nézet: ctrl + shift + i
+----------------------------------------------------------------------
+sudo su //root felhasználóra váltás
+exit //ezzel kilépünk a root jogosultságból
+sudo //legmagasabb adminisztrátori jogosultsággal futtatni valamit
+
+sudo apt update (megnézi mi frissíthető)
+sudo apt upgrade (le is frissíti)
+sudo apt full-upgrade (teljes rendszerfrissítés)
+
+sudo apt remove program_neve - normál törlés
+sudo apt purge program_neve - teljes törlés
+sudo apt autoremove - felesleges csomagok törlése
+
+kézzel telepített appok
+apt-mark showmanual
+----------------------------------------------------------------------
+szolgáltatás fut-e
+systemctl status mysql
+
+Service-ek listája
+systemctl list-units --type=service --state=running //futó
+systemctl list-units --type=service //összes
+
+Minden aktív unit (nem csak service)
+systemctl list-units --state=active
+----------------------------------------------------------------------
+sudo apt install curl
+
+curl -fsS https://dl.brave.com/install.sh | sh
+
+vscode: eredeti oldalról
+
+node: eredeti oldalról
+node --version
+
+pthon: eredeti oldalról
+python3 --version
+
+sudo apt install git
+
+hasznos programok:
+apt install doublecmd-gtk
+snap install code --classic
+snap install discord
+----------------------------------------------------------------------
+sudo apt install openssh-server
+
+sudo systemctl status ssh
+sudo systemctl start ssh
+sudo systemctl enable ssh
+sudo systemctl stop ssh
+sudo systemctl disable ssh
+sudo systemctl restart ssh
+sudo ss -tlnp | grep ssh //fut-e SSH szolgáltatás és ha igen melyik porton
+whoami
+ip a
+
+Beépített tűzfal
+sudo ufw status
+sudo ufw enable
+sudo ufw disable
+
+sudo ufw allow ssh
+sudo ufw allow 22/tcp
+----------------------------------------------------------------------
+sudo apt install gnome-tweaks
+sudo apt install gnome-shell-extensions
+----------------------------------------------------------------------
+pwd -- print working directory
+kiírja a tartózkodási helyünket, hogy hol vagyunk a rendszerben
+
+cd mappaneve -- change direcroty
+belelép a mappába
+
+cd ..
+kilép a mappából
+
+ls -- list
+kilistázza a mappákat, ahol vagyunk
+ls -a
+rejtett fájlokat is kilistázza
+
+touch filename
+létrehoz egy file-t
+
+echo szöveg > filename
+beleírunk a fileba, ez mindig felülírja az előző szöveget
+
+cat filename
+file kiolvasása
+
+nano filename
+ctrl + o
+enter
+ctrl + x
+
+nano filename.py
+python3 filename.py
+
+mkdir foldername -- make directory
+létrehozunk egy mappát
+
+mv filename foldername -- move
+filenak és mappának egy mappában kell legyen
+
+mv file1 /home/vision/Desktop/
+fájl áthelyezése máshova teljes útvonallal
+
+cp file1 file2 -- copy
+file1 ből csinál egy másolatot file2 néven
+
+cp file1.py /home/vision/Desktop/copyfile.py
+úgy tudunk egy fájlt teljesen máshova másolni, ha megadjuk a teljes útvonalat
+
+rm filename -- remove
+kitöröl egy filet
+
+rm foldername -r
+kitöröl egy mappát
+
+rm * -r
+töröl minden a mappából amiben vagy
+
+sudo
+legmagasabb adminisztrátori jogosultsággal futtatni valamit
+
+Ha sudo paranccsal hozunk létre fileokat,
+akkor csak sudo paranccsal tudjuk olvasni és szerkeszteni is.

@@ -1,0 +1,195 @@
+09. Színház Jegyfoglaló Rendszer
+
+Többdimenziós tömbök (mátrixok) interaktív módosítása, párhuzamos adatkezelés egydimenziós tömbökkel, dinamikus listák (List<T>) használata, és a kivételkezelés (try-catch) gyakorlati alkalmazása.
+
+Feladatok:
+01. Feladat: Adatszerkezetek előkészítése:
+- Hozz létre egy 5x5-ös kétdimenziós tömböt a nézőtér számára. Kezdetben minden hely legyen 'O' (mint Üres/Open).
+- Hozz létre egy 5 elemű egydimenziós tömböt, amelyben előre rögzíted, mennyibe kerül egy jegy az adott sorban (pl. az 1. sor 5000 Ft, a 2. sor 4000 Ft... az 5. sor 1000 Ft).
+- Hozz létre egy megfelelő adatszerkezetet a sikeres vásárlók neveinek tárolására.
+
+02. Feladat: A Nézőtér Megjelenítése:
+- Írj egy logikát (dupla ciklus), amely minden kör elején kirajzolja a nézőteret. Legyenek oszlop és sorszámok is a széleken, hogy a felhasználó lássa a koordinátákat!
+
+03. Feladat: Interaktív Foglalás:
+- Egy végtelenített ciklusban kérd be, hogy melyik sorba és székbe szeretne ülni a vásárló. (Pl. "Kérem a sort (1-5), vagy 0 a kilépéshez:").
+- Hibakezelés (IndexOutOfRangeException): Mivel a tömbök 0-tól indexelődnek, de a felhasználó 1 és 5 között ad meg számot, át kell alakítanod az indexeket (bekért érték - 1).
+Tedd try-catch blokkba az értékadást! Ha a felhasználó véletlenül a 6. sort adja meg, kapd el a hibát, és írd ki: "Nincs ilyen szék a teremben!".
+
+04. Feladat: Logikai ellenőrzés és Lista frissítés:
+- Ha a választott helyen már 'X' (Foglalt) szerepel, írd ki, hogy a hely már elkelt.
+- Ha szabad ('O'), kérd be a vásárló nevét. Változtasd a helyet 'X'-re, add hozzá a nevet a listához, és az egydimenziós tömbből olvasd ki az adott sor árát, majd írd ki, mennyit kell fizetnie.
+
+05. Feladat: Összegzés:
+Ha a felhasználó 0-t üt a sornál, lépj ki a ciklusból.
+
+OUTPUT:
+
+Üdvözlöm a Színház Jegyfoglaló Rendszerében!
+
+--- AKTUÁLIS NÉZŐTÉR ---
+  1 2 3 4 5 (Székek)
+1 0 0 0 0 0 - 5000 Ft
+2 0 0 0 0 0 - 4000 Ft
+3 0 0 0 0 0 - 3000 Ft
+4 0 0 0 0 0 - 2000 Ft
+5 0 0 0 0 0 - 1000 Ft
+
+Melyik sorba kér jegyet? (1-5, vagy 0 a kilépéshez): 1
+Melyik székre? (1-5): 3
+A hely szabad! Kérem a vásárló nevét: Kovács János
+Sikeres foglalás! Kovács János fizetendő összege: 5000 Ft.
+
+--- AKTUÁLIS NÉZŐTÉR ---
+  1 2 3 4 5 (Székek)
+1 0 0 X 0 0 - 5000 Ft
+2 0 0 0 0 0 - 4000 Ft
+3 0 0 0 0 0 - 3000 Ft
+4 0 0 0 0 0 - 2000 Ft
+5 0 0 0 0 0 - 1000 Ft
+
+Melyik sorba kér jegyet? (1-5, vagy 0 a kilépéshez):
+
+
+
+
+namespace _09_szinhaz_jegyfoglalo_rendszer
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Nézőtér
+            char[,] nezoter = new char[5, 5];
+
+            // Fix feltöltés
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    for (int j = 0; j < 5; j++)
+            //    {
+            //        nezoter[i, j] = 'O';
+            //    }
+            //}
+
+            // Dinamikus feltöltés, ha később változik a sorok vagy oszlopok száma
+            // GetLength(0) -> sorok = első dimenzió (index 0)
+            // GetLength(1) -> oszlopok = második dimenzió (index 1)            
+            for (int i = 0; i < nezoter.GetLength(0); i++)
+            {
+                for (int j = 0; j < nezoter.GetLength(1); j++)
+                {
+                    nezoter[i, j] = 'O'; // nezoter[sor, oszlop]
+                }
+            }
+
+            // Jegyárak
+            int[] arak = { 5000, 4000, 3000, 2000, 1000 };
+
+            // Vásárlók
+            List<string> vasarlok = new List<string>();
+
+            // Eladott jegyek
+            List<int> eladott = new List<int>();
+
+            Console.WriteLine("Üdvözlöm a Színház Jegyfoglaló Rendszerében!");
+
+            while (true)
+            {
+                NezoterKiiratasa(nezoter, "AKTUÁLIS");
+
+                Console.WriteLine();
+                Console.Write("Melyik sorba kér jegyet? (1-5, vagy 0 a kilépéshez): ");
+                int sor = int.Parse(Console.ReadLine());
+
+                // Kilépési feltétel
+                if (sor == 0)
+                {
+                    break;
+                }
+
+                // Szék bekérése
+                Console.Write("Melyik székre? (1-5): ");
+                int szek = int.Parse(Console.ReadLine());
+
+                // Index átalakítás
+                int sorIndex = sor - 1;
+                int szekIndex = szek - 1;
+
+                try
+                {
+                    if (nezoter[sorIndex, szekIndex] == 'X')
+                    {
+                        Console.WriteLine("Ez a hely már foglalt!");
+                    }
+                    else
+                    {
+                        // Név bekérése
+                        Console.Write("A hely szabad! Kérem a vásárló nevét: ");
+                        string nev = Console.ReadLine();
+
+                        // Foglalás
+                        nezoter[sorIndex, szekIndex] = 'X';
+
+                        // Vásárló nevének felvétel
+                        vasarlok.Add(nev);
+
+                        // Ár kiszámítása sor alapján
+                        int ar = arak[sorIndex];
+
+                        // Jegy árának felvétele
+                        eladott.Add(ar);
+
+                        // Visszajelzés
+                        Console.WriteLine($"Sikeres foglalás! {nev} fizetendő összege: {ar} Ft.");
+                    }
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Console.WriteLine("Nincs ilyen szék a teremben!");
+                }
+            }
+
+            NezoterKiiratasa(nezoter, "VÉGSŐ");
+
+            // Egy kis bónusz
+            Console.WriteLine();
+            Console.WriteLine("Vásárlók:");
+            foreach (string nev in vasarlok)
+            {
+                Console.WriteLine($"- {nev}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"Összes foglalás: {vasarlok.Count} darab");
+            Console.WriteLine($"Összes eladott jegy ára: {eladott.Sum()} Ft");
+        }
+
+        // Extract Method
+        static void NezoterKiiratasa(char[,] nezoter, string a)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"--- {a} NÉZŐTÉR ---");
+            Console.Write("  ");
+
+            // Oszlop fejléc kiíratása
+            for (int j = 0; j < nezoter.GetLength(1); j++)
+            {
+                Console.Write(j + 1 + " ");
+            }
+            Console.WriteLine(" (Székek)");
+
+            // Nézőtér kirajzolása (sorok + tartalom)
+            for (int i = 0; i < nezoter.GetLength(0); i++)
+            {
+                Console.Write(i + 1 + " "); // sor száma
+
+                for (int j = 0; j < nezoter.GetLength(1); j++)
+                {
+                    Console.Write(nezoter[i, j] + " ");
+                }
+
+                Console.WriteLine();
+            }
+        }
+    }
+}

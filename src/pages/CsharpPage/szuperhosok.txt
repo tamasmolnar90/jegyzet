@@ -1,0 +1,253 @@
+Szuperhősök
+
+Készítsen konzolos alkalmazást a következő feladatok megoldására, amelynek projektjét "szuperhosok" néven mentse el!
+1. Hozzon létre saját osztályt Szuperhos névvel, mely adattagjaiban egy-egy szuperhős adatait tudja tárolni!
+
+   Adattagok:
+   ● Név
+   ● Képesség
+   ● Erőszint
+   ● Csapat neve
+   ● Küldetések száma
+
+   A Szuperhos osztály konstruktora kapja meg paraméterként a forrásállomány egy sorát, és inicializálja az osztály adattagjait!
+
+2. Olvassa be a hosok.txt nevű állományt (pontosvesszővel elválasztott adatok), és tárolja el az adatokat egy arra megfelelő adatszerkezetben!
+
+3.Határozza meg és írja ki a képernyőre, hány szuperhős rendelkezik ‘Viltrumite erővel’?
+
+4. Hány szuperhős tartozik az egyes csapatokhoz? Az eredményt a csapatok neve (ABC) szerinti csökkenő sorrendben jelenítse meg a képernyőn!
+
+5. Listázza ki azokat a szuperhősöket, akiknek az erőszintje meghaladja a 85-öt!
+   Írassa ki a hős nevét, a csapatát és az erőszintjét, az erőszint szerinti növekvő sorrendben.
+
+6. Átlagosan mekkora az erőszintje az “Mutáns” erővel rendelkezők hősöknek?
+   Az eredményt két tizedesre kerekítve jelenítse meg!
+
+7. Melyik szuperhős teljesítette a legkevesebb küldetést a "Mutáns" képességű hősök közül?
+   Írja ki a nevet és a küldetések számát!
+
+8. Készítsen függvényt ‘Harcol’ néven, amely 3 paramétert vár, ebből két paraméter a két hős neve amiket a felhasználótól kérünk be, a harmadik az eltárolt adatok.
+   Az adatbekérés a Main metódusban történjen. A metódus megmondja, hogy két hős közül melyik nyerne, ha harcolnának egymással.
+   Itt az erőszintet kell figyelembe venni. A függvény Szöveg típusú.
+
+   - Visszatérési értéke a következők lehetnek:
+   - Ha nem található az egyik hős: "Az egyik megadott hős nem található."
+   - Ha azonos a erőszint: "A harc döntetlen lenne."
+   - Ha van nyertes: "{ide jön a hős neve} nyerne a harcban."
+
+////////////////////////////////////
+////////// SzuperhosClass //////////
+////////////////////////////////////
+
+namespace szuperhosok
+{
+    internal class Szuperhos
+    {
+        public string Nev { get; set; }
+        public string Kepesseg { get; set; }
+        public int Eroszint { get; set; }
+        public string CsapatNeve { get; set; }
+        public int KuldetesekSzama { get; set; }
+
+        public Szuperhos(string nev, string kepesseg, int eroszint, string csapatNeve, int kuldetesekSzama)
+        {
+            Nev = nev;
+            Kepesseg = kepesseg;
+            Eroszint = eroszint;
+            CsapatNeve = csapatNeve;
+            KuldetesekSzama = kuldetesekSzama;
+        }
+    }
+
+    //internal class Szuperhos(string nev, string kepesseg, int eroszint, string csapatNeve, int kuldetesekSzama)
+    //{
+    //    public string Nev { get; set; } = nev;
+    //    public string Kepesseg { get; set; } = kepesseg;
+    //    public int Eroszint { get; set; } = eroszint;
+    //    public string CsapatNeve { get; set; } = csapatNeve;
+    //    public int KuldetesekSzama { get; set; } = kuldetesekSzama;
+    //}
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace szuperhosok
+{
+    internal class Program
+    {
+        //08 FELADAT FÜGGVÉNYE
+        public static string Harcol(string hosNev1, string hosNev2, List<Szuperhos> hosok)
+        {
+            //var hos1 = hosok.FirstOrDefault(hos => hos.Nev == hosNev1);
+            //var hos2 = hosok.FirstOrDefault(hos => hos.Nev == hosNev2);
+
+            //kis-nagy betű semleges
+            var hos1 = hosok.FirstOrDefault(hos => hos.Nev.Equals(hosNev1, StringComparison.OrdinalIgnoreCase));
+            var hos2 = hosok.FirstOrDefault(hos => hos.Nev.Equals(hosNev2, StringComparison.OrdinalIgnoreCase));
+
+
+            if (hos1 == null || hos2 == null)
+            {
+                return "Az egyik megadott hős nem található.";
+            }
+
+            if (hos1.Eroszint == hos2.Eroszint)
+            {
+                return "A harc döntetlen lenne.";
+            }
+
+            var nyertes = hos1.Eroszint > hos2.Eroszint ? hos1 : hos2;
+
+            return $"{nyertes.Nev} nyerne a harcban.";
+        }
+
+        static void Main(string[] args)
+        {
+            //02 FELADAT
+            var hosokLista = new List<Szuperhos>();
+            string[] hosAdat = File.ReadAllLines("hosok.txt");
+
+            foreach (var sor in hosAdat)
+            {
+                string[] adat = sor.Split(";");
+                Szuperhos szuperhos = new Szuperhos(adat[0], adat[1], int.Parse(adat[2]), adat[3], int.Parse(adat[4]));
+                hosokLista.Add(szuperhos);
+            }
+
+            //var hosokLista = File.ReadAllLines("hosok.txt").Select(sor => sor.Split(";")).Select(adat => new Szuperhos(adat[0], adat[1], int.Parse(adat[2]), adat[3], int.Parse(adat[4]))).ToList();
+
+            //03 FELADAT
+            var viltrumitevelRendelkezokSzama = 0;
+            foreach (var sor in hosokLista)
+            {
+                if (sor.Kepesseg.Contains("Viltrumite"))
+                {
+                    viltrumitevelRendelkezokSzama++;
+                }
+            }
+            Console.WriteLine($"Viltrumite erővel rendelkező hősök száma: {viltrumitevelRendelkezokSzama}");
+
+            //Console.WriteLine($"Viltrumite erővel rendelkező hősök száma: {hosokLista.Count(sor => sor.Kepesseg.Contains("Viltrumite"))}");
+
+            //04 FELADAT
+            Console.WriteLine("\nHősök száma csapattagonként:");
+
+            var szuperhosPerCsapat = new Dictionary<string, int>();
+
+            foreach (var sor in hosokLista)
+            {
+                if (szuperhosPerCsapat.ContainsKey(sor.CsapatNeve))
+                {
+                    szuperhosPerCsapat[sor.CsapatNeve]++;
+                }
+                else
+                {
+                    szuperhosPerCsapat[sor.CsapatNeve] = 1;
+                }
+            }
+
+            var rendezettSzuperhosPerCsapat = szuperhosPerCsapat.OrderByDescending(sor => sor.Key);
+
+            foreach (var kvp in rendezettSzuperhosPerCsapat)
+            {
+                Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+            }
+
+            //Console.WriteLine("\nHősök száma csapattagonként:");
+            //var szuperhosPerCsapat = hosokLista.GroupBy(h => h.CsapatNeve).OrderByDescending(g => g.Key).ToDictionary(g => g.Key, g => g.Count());
+            //foreach (var kvp in szuperhosPerCsapat) Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+
+            //05 FELADAT
+            int eroszint = 85;
+            Console.WriteLine($"\n{eroszint} feletti erőszintű hősök:");
+
+            var erosHosok = new List<Szuperhos>();
+
+            foreach (var sor in hosokLista)
+            {
+                if (sor.Eroszint > eroszint)
+                {
+                    erosHosok.Add(sor);
+                }
+            }
+
+            var rendezettErosHosok = erosHosok.OrderBy(sor => sor.Eroszint);
+
+            foreach (var sor in rendezettErosHosok)
+            {
+                Console.WriteLine($"{sor.Nev} - {sor.CsapatNeve} - {sor.Eroszint}");
+            }
+
+            //int eroszint = 85;
+            //Console.WriteLine($"\n{eroszint} feletti erőszintű hősök:");
+            //hosokLista.Where(sor => sor.Eroszint > eroszint).OrderBy(sor => sor.Eroszint).ToList().ForEach(sor => Console.WriteLine($"{sor.Nev} - {sor.CsapatNeve} - {sor.Eroszint}"));
+
+            //06 FELADAT
+            var mutansokOsszesSzintje = 0;
+            var mutansokSzama = 0;
+
+            foreach (var sor in hosokLista)
+            {
+                if (sor.Kepesseg.Contains("Mutáns"))
+                {
+                    mutansokOsszesSzintje += sor.Eroszint;
+                    mutansokSzama++;
+                }
+            }
+
+            double mutansokAtlagEroszintje = (double)mutansokOsszesSzintje / (double)mutansokSzama;
+
+            Console.WriteLine($"\nMutáns hősök átlagos erőszintje: {Math.Round(mutansokAtlagEroszintje, 2)}");
+
+            //var mutansokAtlagEroszintje = hosokLista.Where(sor => sor.Kepesseg.Contains("Mutáns")).Average(sor => sor.Eroszint);
+            //Console.WriteLine($"\nMutáns hősök átlagos erőszintje: {Math.Round(mutansokAtlagEroszintje, 2)}");
+
+            //07 FELADAT
+            Szuperhos legkevesebbKuldetesMutans = null;
+
+            foreach (var sor in hosokLista)
+            {
+                if (sor.Kepesseg.Contains("Mutáns"))
+                {
+                    if (legkevesebbKuldetesMutans == null || sor.KuldetesekSzama < legkevesebbKuldetesMutans.KuldetesekSzama)
+                    {
+                        legkevesebbKuldetesMutans = sor;
+                    }
+                }
+            }
+            Console.WriteLine($"\nLegkevesebb küldetést teljesítő Mutáns: {legkevesebbKuldetesMutans.Nev} ({legkevesebbKuldetesMutans.KuldetesekSzama})");
+
+            //var legkevesebbKuldetesMutans = hosokLista.Where(sor => sor.Kepesseg.Contains("Mutáns")).MinBy(sor => sor.KuldetesekSzama);
+            //Console.WriteLine($"\nLegkevesebb küldetést teljesítő Mutáns: {legkevesebbKuldetesMutans.Nev} ({legkevesebbKuldetesMutans.KuldetesekSzama})");
+
+            //08 FELADAT
+            Console.WriteLine("\nAdj meg két hős nevet!");
+
+            Console.Write("Első hős: ");
+            string elsoHos = Console.ReadLine();
+
+            Console.Write("Második hős: ");
+            string masodikHos = Console.ReadLine();
+
+            Console.WriteLine(Harcol(elsoHos, masodikHos, hosokLista));
+        }
+    }
+}
+
+//////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+Iron Man;Technológia;85;Bosszúállók;120
+Thor;Villám;95;Bosszúállók;200
+Hulk;Erő;98;Bosszúállók;150
+Wolverine;Mutáns;88;X-Men;180
+Storm;Mutáns;82;X-Men;160
+Deadpool;Mutáns;75;X-Force;140
+Batman;Technológia;90;Justice League;170
+Superman;Erő;205;Justice League;210
+Omni-Man;Viltrumite erő;210;Viltrum Birodalom;1190
+Legyőzhetetlen;Viltrumite erő;215;Guardians of the Globe;50

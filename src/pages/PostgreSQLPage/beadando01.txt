@@ -1,0 +1,186 @@
+-- 01. Számold meg, hány darab aktív eszköz van minden típusból!
+SELECT type, COUNT(*) AS aktiv_eszkozok_szama
+FROM devices
+WHERE status = 'active'
+GROUP BY type;
+
+-- 02. Módosítsd az összes "inactive" eszközt "active"-ra!
+UPDATE devices
+SET status = 'active'
+WHERE status = 'inactive';
+
+-- 03. Töröld azokat a szenzoradatokat, amelyek egy hónapnál régebbiek!
+DELETE FROM sensor_data
+WHERE recorded_at < NOW() - INTERVAL '1 month';
+
+-- 04. Listázd ki azokat a felhasználókat, akik rendelkeznek "admin" szerepkörrel!
+SELECT username
+FROM users
+WHERE role = 'admin';
+
+-- 05. Módosítsd egy adott eszköz nevét (pl. az id=3 esetén)!
+UPDATE devices
+SET device_name = 'uj eszkoz nev'
+WHERE id = 3;
+
+
+
+
+CREATE DATABASE automated_systems_data;
+
+\c automated_systems_data;
+
+----------------------------------
+---- ENUM típusok létrehozása ----
+----------------------------------
+
+CREATE TYPE device_type AS ENUM ('sensor', 'controller', 'actuator');
+CREATE TYPE device_status AS ENUM ('active', 'inactive', 'maintenance');
+CREATE TYPE user_role AS ENUM ('admin', 'user', 'viewer');
+
+----------------------------
+---- Táblák létrehozása ----
+----------------------------
+
+CREATE TABLE devices (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  device_name VARCHAR(100) NOT NULL,
+  location VARCHAR(100),
+  type device_type NOT NULL,
+  status device_status NOT NULL DEFAULT 'active',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE events (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  device_id INTEGER NOT NULL,
+  event_type VARCHAR(50) NOT NULL,
+  description TEXT,
+  occurred_at TIMESTAMPTZ DEFAULT NOW(),
+
+  CONSTRAINT fk_events_device
+    FOREIGN KEY (device_id)
+    REFERENCES devices(id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE sensor_data (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  device_id INTEGER NOT NULL,
+  data_value NUMERIC(4,1) NOT NULL,
+  unit VARCHAR(20),
+  recorded_at TIMESTAMPTZ DEFAULT NOW(),
+
+  CONSTRAINT fk_sensor_device
+    FOREIGN KEY (device_id)
+    REFERENCES devices(id)
+    ON DELETE CASCADE
+);
+
+CREATE TABLE users (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role user_role NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-----------------
+---- Indexek ----
+-----------------
+-- PostreSQL automatikusan készít indexet: PRIMARY KEY, UNIQUE, de foreign key mezőkre nem mindig optimális, ezért:
+
+CREATE INDEX idx_events_device_id ON events(device_id);
+CREATE INDEX idx_sensor_data_device_id ON sensor_data(device_id);
+
+------------------
+---- Insertek ----
+------------------
+
+INSERT INTO devices (device_name, location, type, status) VALUES
+('Temp Sensor 1', 'Warehouse A', 'sensor', 'active'),
+('Temp Sensor 2', 'Warehouse B', 'sensor', 'inactive'),
+('Humidity Sensor 1', 'Office', 'sensor', 'active'),
+('Motion Detector 1', 'Lobby', 'sensor', 'maintenance'),
+('Door Controller 1', 'Main Entrance', 'controller', 'active'),
+('AC Controller', 'Server Room', 'controller', 'active'),
+('Light Actuator 1', 'Hallway', 'actuator', 'inactive'),
+('Water Pump', 'Garden', 'actuator', 'active'),
+('Fire Alarm', 'Main Hall', 'sensor', 'active'),
+('Security Camera', 'Parking Lot', 'sensor', 'active'),
+('Gas Detector', 'Kitchen', 'sensor', 'maintenance'),
+('Pressure Sensor', 'Boiler Room', 'sensor', 'active'),
+('Light Sensor', 'Hallway', 'sensor', 'inactive'),
+('Temp Sensor 3', 'Cold Storage', 'sensor', 'active'),
+('Motion Sensor 2', 'Garage', 'sensor', 'active'),
+('Fan Controller', 'Meeting Room', 'controller', 'active'),
+('Smoke Detector', 'Office', 'sensor', 'maintenance'),
+('Elevator Controller', 'Building A', 'controller', 'inactive'),
+('Sprinkler Actuator', 'Garden', 'actuator', 'active'),
+('Humidity Sensor 2', 'Warehouse C', 'sensor', 'active');
+
+INSERT INTO sensor_data (device_id, data_value, unit) VALUES
+(1, 22.5, '°C'),
+(1, 23.0, '°C'),
+(2, 18.7, '°C'),
+(3, 45.2, '%'),
+(3, 46.1, '%'),
+(4, 1, 'motion detected'),
+(4, 0, 'no motion'),
+(5, 1, 'door open'),
+(5, 0, 'door closed'),
+(6, 22.1, '°C'),
+(7, 75, '% brightness'),
+(8, 3.5, 'bar'),
+(9, 0, 'no fire'),
+(10, 1, 'motion detected'),
+(11, 0.05, 'ppm'),
+(12, 2.1, 'bar'),
+(13, 180, 'lux'),
+(14, 17.5, '°C'),
+(15, 1, 'motion detected'),
+(16, 24.2, '°C');
+
+INSERT INTO events (device_id, event_type, description) VALUES
+(1, 'Temperature Alert', 'Temperature exceeded safe threshold.'),
+(2, 'Temperature Stable', 'Warehouse temperature within normal range.'),
+(3, 'Humidity Warning', 'Humidity too high in office.'),
+(4, 'Motion Detected', 'Unusual movement detected in lobby.'),
+(5, 'Door Opened', 'Main entrance door opened.'),
+(6, 'AC Turned On', 'Cooling system activated in server room.'),
+(7, 'Light Turned Off', 'Hallway light actuator turned off.'),
+(8, 'Pump Activated', 'Water pump started in garden.'),
+(9, 'Fire Alarm Triggered', 'Smoke detected in main hall.'),
+(10, 'Security Alert', 'Camera detected motion in parking lot.'),
+(11, 'Gas Leak Detected', 'High gas concentration in kitchen.'),
+(12, 'Pressure Drop', 'Unexpected pressure drop in boiler room.'),
+(13, 'Light Sensor Malfunction', 'Sensor not responding.'),
+(14, 'Cold Storage Temp Alert', 'Temperature too high in cold storage.'),
+(15, 'Garage Motion Alert', 'Motion detected in garage after hours.'),
+(16, 'Fan Activated', 'Meeting room ventilation started.'),
+(17, 'Smoke Detector Triggered', 'Smoke detected in office.'),
+(18, 'Elevator Out of Service', 'Elevator system failure reported.'),
+(19, 'Sprinkler Activated', 'Automatic irrigation started.'),
+(20, 'Warehouse Humidity Alert', 'Humidity exceeded safe levels.');
+
+INSERT INTO users (username, password_hash, role) VALUES
+('admin1', 'hashedpassword1', 'admin'),
+('admin2', 'hashedpassword2', 'admin'),
+('user1', 'hashedpassword3', 'user'),
+('user2', 'hashedpassword4', 'user'),
+('user3', 'hashedpassword5', 'user'),
+('user4', 'hashedpassword6', 'user'),
+('user5', 'hashedpassword7', 'user'),
+('viewer1', 'hashedpassword8', 'viewer'),
+('viewer2', 'hashedpassword9', 'viewer'),
+('viewer3', 'hashedpassword10', 'viewer'),
+('admin3', 'hashedpassword11', 'admin'),
+('admin4', 'hashedpassword12', 'admin'),
+('user6', 'hashedpassword13', 'user'),
+('user7', 'hashedpassword14', 'user'),
+('user8', 'hashedpassword15', 'user'),
+('user9', 'hashedpassword16', 'user'),
+('viewer4', 'hashedpassword17', 'viewer'),
+('viewer5', 'hashedpassword18', 'viewer'),
+('admin5', 'hashedpassword19', 'admin'),
+('user10', 'hashedpassword20', 'user');

@@ -1,0 +1,217 @@
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="table">
+      <div class="input-box">
+        <input class="input" type="text" placeholder="TODO" />
+        <button class="btn add-btn">ADD</button>
+      </div>
+
+      <ul class="todo-list">
+        <!-- <li class="todo-list-item">
+          <p class="todo-list-item-text">HELLO</p>
+          <button class="btn del-btn">DEL</button>
+        </li>
+        <li class="todo-list-item">
+          <p class="todo-list-item-text">HELLO</p>
+          <button class="btn del-btn">DEL</button>
+        </li> -->
+      </ul>
+
+      <button class="btn mode-btn">Dark-Mode</button>
+    </div>
+  </body>
+</html>
+
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const inputEl = document.querySelector(".input");
+const todoListEl = document.querySelector(".todo-list");
+const addBtn = document.querySelector(".add-btn");
+const modeBtn = document.querySelector(".mode-btn");
+
+modeBtn.addEventListener("click", modeHandler);
+
+addBtn.addEventListener("click", addTodoHandler);
+
+todoListEl.addEventListener("click", delTodoHandler);
+
+function modeHandler() {
+  const isDark = modeBtn.textContent.trim() === "Dark-Mode";
+  if (isDark) {
+    document.body.style.backgroundColor = "#000";
+    modeBtn.textContent = "White-Mode";
+    modeBtn.style.backgroundColor = "#000";
+    modeBtn.style.color = "#fff";
+  } else {
+    document.body.style.backgroundColor = "#fff";
+    modeBtn.textContent = "Dark-Mode";
+    modeBtn.style.backgroundColor = "#fff";
+    modeBtn.style.color = "#000";
+  }
+}
+
+function addTodoHandler() {
+  const liEl = document.createElement("li");
+  liEl.className = "todo-list-item";
+
+  const pEl = document.createElement("p");
+  pEl.className = "todo-list-item-text";
+  pEl.textContent = inputEl.value;
+
+  const delBtn = document.createElement("button");
+  delBtn.className = "btn del-btn";
+  delBtn.textContent = "DEL";
+
+  //liEl.appendChild(pEl);
+  //liEl.appendChild(delBtn);
+  liEl.append(pEl, delBtn);
+  todoListEl.append(liEl);
+}
+
+function delTodoHandler(e) {
+  if (e.target.classList.contains("del-btn")) {
+    e.target.closest(".todo-list-item").remove();
+  }
+}
+
+// function delTodoHandler(e) {
+//   const target = e.target;
+//   if (!target) return;
+
+//   if (target.classList.contains("del-btn")) {
+//     const li = target.closest(".todo-list-item");
+//     if (li) li.remove();
+//   }
+// }
+
+// let isDark = false;
+// function modeHandler() {
+//   isDark = !isDark;
+//   if (isDark) {
+//     document.body.style.backgroundColor = "#000";
+//     modeBtn.textContent = "White-Mode";
+//     modeBtn.style.backgroundColor = "#000";
+//     modeBtn.style.color = "#fff";
+//   } else {
+//     document.body.style.backgroundColor = "#fff";
+//     modeBtn.textContent = "Dark-Mode";
+//     modeBtn.style.backgroundColor = "#fff";
+//     modeBtn.style.color = "#000";
+//   }
+// }
+
+
+/////////////////////////
+////////// CSS //////////
+/////////////////////////
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  width: 40rem;
+  background-color: antiquewhite;
+  border: 1px solid black;
+  padding: 2rem;
+  margin: 2rem auto;
+}
+
+.input-box {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.input {
+  border: 1px solid black;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
+.btn {
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2px;
+  width: 8rem;
+}
+
+.add-btn {
+  background-color: green;
+}
+
+.del-btn {
+  background-color: red;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.todo-list-item {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.todo-list-item-text {
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+.mode-btn {
+  background-color: white;
+  color: black;
+  width: 100%;
+}

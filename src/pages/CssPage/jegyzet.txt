@@ -1,0 +1,425 @@
+Prioritás, sorrend
+0. declarations marked !important - pl: color: green !important;
+1. inline stílus (html-ben) (style="color: red;")
+2. id selector #id
+3. class selector .class és pseudo classok pl a:hover {}
+4. element selector: div, p ...
+5. univerzális: * {}
+------------------------------------------------------------------------------------------------
+KEZDETEK
+------------------------------------------------------------------------------------------------
+*:focus {
+  outline: none;
+} - minden elemről leveszi a focust, pl: form mezőkbe, amikor belekattolsz
+
+btn:focus {
+  outline: 2px solid red;
+  outline-offset: 8px; ---> kitolja
+}
+
+itt is használhatjuk a box-shadow trükköt
+azért jobb a box-shadow mert egyenletesen megy végbe a transition all és lehet insetre állítani és a box belső részére teszi
+
+btn:focus {
+  box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.2); ---> ha beleírjuk az inset-et akkor belüre helyezi
+}
+
+REM: root element font-size
+böngésző default betűmérete 16px, így 1 rem = 16px, ezt meg szoktuk változtatni a gyökér elemen 10px-re azaz html {font-size: 10px;}
+de ez még mindig nem jó, mert ha a felhasználó a böngészőjében átállítja a betűméretet, akkor problémák lesznek, így %-ban adjuk meg
+html {font-size: 62.5%;}
+10px / 16px = 0.625
+így kapjuk meg a 10px mérete és ha a felhasználó a böngészőjében változtat a betűméreten, akkor is teljesen arányosak lesznek a méreteink és nem csúsznak el.
+
+letter-spacing: px;        ---> nem használunk remet
+word-spacing: px           ---> nem használunk remet
+border-radius: px vagy %;  ---> nem használunk remet
+line-height: 1.6;          ---> csak szám
+------------------------------------------------------------
+html {
+  font-size: 62.5%;
+}
+
+* {
+  box-sizing: border-box; ---> a doboz méretébe beleszámítja a paddinget és margint is
+  padding: 0;
+  margin: 0;  
+}
+
+body {
+  font-family: "rubik", sans-serif;
+  font-weight: 400;
+  color: #555;
+  line-height: 1;
+}
+
+a {
+  display: inline-block; ---> alapból inline elem, olyankor mindig a tartalma méretét veszi fel, nem lehet neki adni width/height-et, padding, margin vertikálisan nem működik
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+}
+
+div {
+  display: inline-block; ---> alapértelmezetten block, és margin összeomlást eredményez
+}
+------------------------------------------------------------------------------------------------
+ELEMEK
+------------------------------------------------------------------------------------------------
+BLOCK:
+display: block;
+<body> | <main> | <header> | <footer> | <nav> | <div> | <section> | <aside> | <article> | <h1-h6> | <p> | <ul> | <ol> | <li>
+- Elfoglalja az egész sort és sortörés van utánuk, azaz nem lehetnek egymás mellett.
+
+INLINE:
+display: inline;
+<a> | <img> | <button> | <strong> | <em>
+- Csak annyi helyet foglal el amennyire szüksége van.
+- Nincs utánuk sortörés.
+- Ezeknél az elemeknél a height, weight nincs hatással.
+- Padding és margin is csak vízszintesen kerülnek alkalmazásra.
+- Padding úgy, hogy átmegy a másik contentbe, ne alkalmazzuk
+
+INLINE-BLOCK:
+display: inline-block;
+- Soron belüli blockok, lehet magasságuk, szélességük, block és inline keveréke.
+- Csak annyi helyet foglalnak el blockként, amennyire szükségük van.
+------------------------------------------------------------------------------------------------
+PSEUDO-K
+------------------------------------------------------------------------------------------------
+* {}
+body {}
+h1, h2, li {} ---> h1 és h2 li elemekre alkalmazódik
+footer p {}   ---> footeren belüli p elemekre csak
+class vs id   ---> ugyan azt az id nevet csak egy elemre rakhatsz, ugyan azt a class nevet pedig több elemre
+
+pseudo class
+li:first-child {}     ---> kiválasztja az összes létező lista első listaelemét
+li:last-child {}      ---> kiválasztja az összes létező lista utolsó listaelemét
+li:nth-child(3) {}    ---> kiválasztja az összes létező lista harmadik listaelemét
+li:nth-child(odd) {}  ---> minden páratlan elem
+li:nth-child(even) {} ---> minden páros elem, ez nagyon hasznos, de főleg csak listáknál alkalmazzuk.
+
+pszeudó elemek:
+h1::first-letter {}      ---> első betűt stílusozni
+p::first-line {}         ---> első sort stílusozni
+h3 + p::first-line {}    ---> azokat a <p> bekezdéseket célozza meg, amelyek közvetlenül egy <h3> címke után jönnek, és csak az első sorukat formázza.
+h3 + p + p:first-line {} ---> h3 címkék utáni második <p> bekezdések első sorát célozza meg.
+
+pszeudó osztályokkal célozzuk meg (linkeket) hiperhivatkozásokat is!
+a:link {}    ---> csak a linkeket célozza meg
+a:visited {} ---> amit már látogattunk azt megváltoztatja
+a:hover {}   ---> amikor ráviszem az egeret
+a:active {}  ---> amikor rákattintok
+Mindig határozzuk meg mind a 4 elemet és mindig ebben a sorrendben!
+
+.grid:not(:last-child) {
+  margin-bottom: 9.6rem;
+} ---> hozzá adok minden grid után 9.6rem-et, kivéve az utolsó elemhez (amikor több grid konténer van egymás után)
+------------------------------------------------------------------------------------------------
+BEFORE - AFTER
+------------------------------------------------------------------------------------------------
+h2::after {
+  content: "TOP";
+  color: #000;
+} ---> h2 után hozzá adok egy elemet, aminek a tartalma TOP és ezt tudjuk formázni tovább
+------------------------------------------------------------------------------------------------
+BETŰFORMÁZÁSOK
+------------------------------------------------------------------------------------------------
+font-family: sans-serif;
+font-size: 16px; vagy 1.6rem;
+font-weight: 400;
+font-style: italic;
+text-transform: uppercase;
+text-transform: capitalize; ---> minden szó első betűje nagybetű lesz
+line-height: 1.6;           ---> sormagasság
+letter-spacing: 1px;        ---> betűköz (alapértelmezetten: 0)
+word-spacing: 1px;          ---> szóköz mérete (alapértelmezetten: 0)
+
+font-weight:
+100 – Thin
+200 – Extra Light (Ultra Light)
+300 – Light
+400 – Normal
+500 – Medium
+600 – Semi Bold (Demi Bold)
+700 – Bold
+800 – Extra Bold (Ultra Bold)
+900 – Black (Heavy)
+
+text-align: center; szöveget középre húzza
+------------------------------------------------------------------------------------------------
+LINKEK - ANCHOR - HORGONY
+------------------------------------------------------------------------------------------------
+<a> tag-ek (linkek): pl átnavigál egy másik oldalra
+
+.link:link,
+.link:visited {
+  display: inline;       ---> (alapértelmezett)
+  display: inline-block; ---> (erre kell állítani, hogy a padding ne csússzon bele az előtte lévő elembe)
+  background-color: var(--color-primary);
+  color: white;
+  text-decoration: none;                 ---> leveszi az aláhúzást, de ha mégis kell, akkor bordert használjunk, így tudjuk a távolságát is növelni pl paddinggal
+  border-bottom: 1px solid currentColor; ---> örökli a színt (color értékét veszi fel)
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.link:hover,
+.link:active {
+  color: black;
+  border-bottom: 1px solid transparent; ---> amikor rávisszük az egeret, így tudjuk eltüntetni a bordert, hogy ne ugráljon a térköz
+}
+
+a {all: unset;} ---> stílusbeállítások törlése
+------------------------------------------------------------------------------------------------
+BUTTONS
+------------------------------------------------------------------------------------------------
+<button>
+- Valamit csinál, pl lenyit egy fület, JAVASCRIPT
+- Itt általában csak hovert alkalmazunk esetenként activet.
+display: inline-block ---> (default) ezt nem kell állítanunk
+border: none;
+cursor: pointer;
+.btn {}
+.btn:hover {}
+.btn:active {}
+------------------------------------------------------------------------------------------------
+BORDER
+------------------------------------------------------------------------------------------------
+border-width: 5px;
+border-style: solid / dotted / dashed;
+border-color: black;
+border: 5px solid black; (shortcut)
+border-radius: 10px vagy 50%;
+------------------------------------------------------------------------------------------------
+SHADOWS
+------------------------------------------------------------------------------------------------
+box-shadow: vízszintes eltolás, függőleges eltolás, árnyék elmosódás, árnyék nagysága, ez nem kötelező, ki lehet hagyni alapból 0, árnyék színe
+box-shadow: 20px 20px 20px 10px rgba(0, 0, 0, 0.1);
+
+BOX-SHADOW TRÜKK BUTTONRA:
+gombokra úgy rakunk bordert, hogy helyette a
+box-shadow: inset 0 0 0 3px #fff; használjuk,
+így nem köré rakja a bordert hanem belülre, amit a sima borderrel nem lehet megcsinálni
+
+text-shadow: 0 0 2px rgba(0,0,0,0.1); ezt szövegeknél használják, ugyan úgy működik, mint a box-shadow
+------------------------------------------------------------------------------------------------
+LISTÁK
+------------------------------------------------------------------------------------------------
+list-style: none;          ---> eltávolítja a felsorolás pontokat
+list-style: square;        ---> négyzet
+list-style-image: url(""); ---> felsorolási pontok helyére képet rak
+
+listákon belül, ha elhelyezek iconokat, akkor a szöveget rakjuk <span> közé
+
+ul { overflow: scroll; }   ---> scroll sávot ad nekik
+------------------------------------------------------------------------------------------------
+SVG IKONOK:
+------------------------------------------------------------------------------------------------
+stroke: #444; ---> SVG ikonok színét manipulálhatjuk
+fill: #888;   ---> kitöltés színe
+------------------------------------------------------------------------------------------------
+KÉPEK - IMG:
+------------------------------------------------------------------------------------------------
+<img>
+- alapértelmezetten inline, ha így helyezzük el egy gridben, akkor kis térközök lesznek köztük, ezért block elemmé kell alakítani
+- képek méretezésénél, ha px-ben vagy rem-ben adjuk meg a méretet az mindig annyi lesz,
+- ha %-ban akkor reszponzív a boxhoz képest, ilyenkor elég csak a height-et vagy width-et megadni
+
+filter: grayscale(1);  ---> teljesen szürkévé teszi a képet, de árnyalatokkal
+
+filter: brightness(0); ---> teljesen fekete lesz a kép, adjuk hozzá az opacityt-t
+opacity: 50%;          ---> így lesz szürke a képe árnyalatok nélkül
+
+TIPP:
+Ha egy színes képből fekete fehéret akarok, akkor állítsuk a brightness-t 0-ra.
+Ha szürkére akarom, akkor írjuk még hozzá:
+opacity: 100%; Ahogy húzod lentebb a %-ot, úgy halványodik és szürkét tudok belőle kihozni.
+
+transform: scale(1.5);         ---> képre rakva megőrzi a helyét csak felscaleli a méretét
+transform: translate(0, -50%); ---> eltolja az elemet vízszintesen 0, függőlegesen az elem méretének 50%-val felfele
+
+filter: grayscale(100%);       ---> képekre lehet tenni szürke filtert
+	      blur(2px);       ---> elmosódás
+	      saturate(10);    ---> telítettség
+	      brightness(0.5); ---> fényerő
+------------------------------------------------------------------------------------------------
+backdrop-filter: blur(10px); ---> minden ami az elem mögött van elmosódik
+------------------------------------------------------------------------------------------------
+BACKGROIND-IMAGE
+------------------------------------------------------------------------------------------------
+.cta-img-box {
+  background-image: url("../img/eating.jpg");
+
+  Meghatározza a kép méretét:
+  background-size: cover;
+
+  Meghatározza, hogy ismétlődjön-e a kép:
+  background-repeat: no-repeat / repeat / repeat-y / repeat-x;
+
+  Beállítja a kép méretét:
+  background-position: top left / top center / top right / center left / center center / center right / bottom left / bottom center / bottom right / x-% y-% / x-pos y-pos;
+
+  Meghatározza, hogy a kép mozogjon-e a tartalommal:
+  background-attachment: scroll / fixed;  
+
+  Meghatároza, hogy honnan számítódik a háttérkép pozíciója:
+  background-origin: border-box / padding-box / content-box;
+
+  Meghatározza, hogy a háttér hol jelenjen meg az elem keretein belül
+  background-clip: length / % / border-box / padding-box / content-box / no-clip;
+}
+
+background-image: linear-gradient(red, #e67e22);                  ---> olyan háttér ahova megadunk két különböző színt és átmenetes lesz, alapértelmezés szerint fentről lefelé megy
+background-image: linear-gradient(90deg, red, #e67e22);           ---> így balról jobbra megy
+background-image: linear-gradient(to right, red, #e67e22);        ---> jobb szélről induljon
+background-image: linear-gradient(to right bottom, red, #e67e22); ---> jobb alsó sarokból induljon
+
+A háttérkép 2 szín átmenete, + hozzáadva egy kép átfedéssel:
+background-image: linear-gradient(to right bottom, rgba(235, 151, 78, 0.25), rgba(230, 125, 34, 0.25)), url("../img/eating.jpg");
+
+<div class="cta-img-box" role="img" aria-label="Woman enjoying food"></div> - képernyő olvasók számára így tudjuk jelezni hogy ez a div elem egy kép és alt helyett aria-labellel írom le a kép tartalmát
+------------------------------------------------------------------------------------------------
+POSITIONING
+------------------------------------------------------------------------------------------------
+position: relative; ---> (default) egyszerű elemek alapértelmezett elhelyezése
+
+position: absolute;
+- Teljesen elveszíti a környező elemekre gyakorolt hatását, át is fedheti őket.
+- Viszont meg kell adnunk mihez képest legyen absolute a poziciója.
+- Ezt úgy tudjuk, hogy amelyik konténeren belül el akarjuk helyezni,
+- arra a konténerre rá kell tennünk egy relative positiont.
+position: relative ---> az absolute elemet mindig abban a konténerbe hozzuk lépre, amiben benne akarom tudni.
+------------------------------------------------------------------------------------------------
+MARGIN COLLAPSE - MARGIN ÖSSZEOMLÁS
+------------------------------------------------------------------------------------------------
+ha van kettő <div> elemünk egymás alatt és a felsőnek adunk egy alsó margint,
+az alsónak adunk egy felső margint, akkor a nagyobb margin lesz aktív, ezt úgy küszöbölhetjük ki, hogy
+display: inline-block; elemmé tesszük a <div> elemeket, mert alapértelmezetten block elemek.
+vagy tehetjük grid elemmé is az is megoldja az összeomlást
+------------------------------------------------------------------------------------------------
+FORM
+------------------------------------------------------------------------------------------------
+form:
+- mindegyik alapértelmezetten inline elem, egymás után pakolgatja őket, tehát:
+- label (display: block;) ha egymás alá akarod helyezni az input sávot
+- a for mindig az id-re mutat
+- required - kötelező kötölteni
+- disabled selected - nem tudod kiválasztani
+
+<select id="cta-where" name="" required>
+  <option value="" disabled selected>Please choose one option:</option>
+  <option value="google">Google search</option>                 
+  <option value="other">Other</option>
+</select>
+
+<div id="other-field" class="hidden">
+  <label for="other-text">Please specify:</label>
+  <input id="other-text" type="text" name="" required />
+</div>
+
+a from elemek alapjáraton nem örökölnek betűtípust és lehet, hogy mást sem így rájuk kell írni:
+font-family: inherit; ---> örökölje a betűstílust
+color: inherit;       ---> színekkel is működik
+------------------------------------------------------------------------------------------------
+FLEXBOX & GRID
+------------------------------------------------------------------------------------------------
+létrehozni úgy 3 oszlopot, hogy a középsőnek max-width-et állítani be és tudjon zsugorodni:
+
+GRIDNÉL:
+display: grid;
+grid-template-columns: 1fr minmax(0, 680px) 1fr;
+
+FLEXNÉL:
+.container {display: flex;}
+.left {flex: 1;}
+.middle {flex: 0 1 680px; width: 100%;}
+.right {flex: 1;}
+------------------------------------------------------------------------------------------------
+ASPECT-RATIO
+------------------------------------------------------------------------------------------------
+aspect-ratio: 2 / 1;
+Az elem szélesség és magasság arányát határozza meg.
+A szélesség 2 egység, a magasság 1 egység lesz.
+Vagyis az elem mindig kétszer szélesebb lesz, mint amilyen magas.
+
+Összegzés:
+Az aspect-ratio segít megtartani az elemek arányát anélkül, hogy minden méretet külön számolni kellene.
+Különösen hasznos képek, videók, kártyák vagy reszponzív elrendezések esetén.
+Az arány mindig automatikusan igazodik a szélességhez.
+------------------------------------------------------------------------------------------------
+height: calc(100% - 9rem); ---> az elem magasságát egy dinamikus számítással adja meg.
+
+100% → Az elem teljes szülőmagasságát veszi alapul.
+- 9rem → Ebből 9 rem-et kivon.
+calc(...) → A CSS calc() függvény lehetővé teszi matematikai műveletek végrehajtását a CSS értékek között.
+
+Mikor hasznos?
+Ha egy elemnek a szülő teljes magasságából ki kell vonni egy meghatározott méretet (pl. egy fix fejléc vagy lábléc méretét).
+Rugalmas, mert ha a szülőmagasság változik, akkor az elem magassága is automatikusan igazodik.
+------------------------------------------------------------------------------------------------
+<span role="button"> asd </span>
+------------------------------------------------------------------------------------------------
+object-fit: contain;
+Jelentés: A kép (vagy videó) arányosan kicsinyítve/nagyítva lesz úgy, hogy teljes egészében beleférjen a tárolóba.
+Ha a tároló téglalap alakú, de a kép négyzet, akkor a kép körül maradhat üres terület (pl. oldalt vagy felül-alul).
+A tartalom nem vágódik le, mindig teljes egészében látszik.
+
+font: inherit;
+------------------------------------------------------------------------------------------------
+ELREJTÉS A KÉPERNYŐ OLVASÓK ELŐL:
+display: none
+vagy htmlben: aria-hidden attribútum
+
+Ha nem akarjuk használni a display: none
+és helyette csak opacity: 0,
+max-height: 0 akarunk pl,
+akkor használjuk a visibility: hidden
+visibility: visible pedig az ellentéte
+------------------------------------------------------------------------------------------------
+overflow: hidden
+Ha a tartalom nagyobb, mint a doboz mérete, akkor NE jelenjen meg a kilógó rész – vágd le.
+
+overflow: scroll
+Mindig jelenjen meg a scroll bar, akkor is, ha a tartalom egyébként beleférne a dobozba.
+
+/* (TOP) (LEFT + RIGHT) (BOTTOM) */
+margin: 4px 0 0;
+
+align-items: center;
+justify-content: center;
+place-items: center; - SHORTHAND a felső kettőnek
+
+p {
+    text-indent: 10px; - első sor behúzása
+    text-align: justufy; - sorkizárt
+}
+
+!important
+------------------------------------------------------
+CSS
+------------------------------------------------------
+:root {
+  --color-primary: #6741d9;
+}
+
+.nav-bar {
+  color: var(--color-primary);
+}
+------------------------------------------------------
+SCSS
+------------------------------------------------------
+$color-primary: #6741d9;
+
+.nav-bar {
+  color: $color-primary;
+}
+------------------------------------------------------

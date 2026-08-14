@@ -1,0 +1,118 @@
+SpaceX
+
+A SpaceX megkér, hogy összesítsd az elmúlt két év küldetéseit egy programban, aminek segítségével, könnyebben hozzáférhetnek az adatokhoz.
+A spacex.csv UTF-8 kódolású forrásállomány soraiban egy-egy küldetés adatait/paramétereit tartalmazza ‘’;’’-vel elválasztva a következő sorrendben:
+- Bázis neve
+- Rakéta neve
+- Küldetés neve
+- Rakéta felszállási súlya
+
+Feladatai a következők:
+
+01. Készítsen alkalmazást a következő feladatok megoldásához, amelynek projektjét a SpaceX néven mentse el!
+
+02. Olvassa be a spacecx.csv állomány sorait és tárolja az adatokat egy olyan összetett adatszerkezetben, amely használatával a további feladatok megoldhatók!
+    A megoldáshoz hozzon létre saját osztályt SpaceXClass néven!
+
+03. Határozza meg és írja ki, hogy hány küldetést hajtott végre a SpaceX!
+
+04. Keresse meg, hogy melyik küldetéskor volt a legnagyobb a rakéta felszállási súlya, írassa ki az adott küldetés adatait a mintának megfelelően.
+
+05. Keresse meg, hogy melyik küldetéskor volt a legkisebb a rakéta felszállási súlya, írassa ki az adott küldetés adatait a mintának megfelelően.
+
+06. Határozza meg és írassa ki, hogy hány Starlink küldetés volt az elmúlt években!
+
+07. Határozza meg az átlagos felszállási súlyt és írassa ki a mintának megfelelően, 2 tizedesjegy pontossággal!
+
+/////////////////////////////////
+////////// SpaceXClass //////////
+/////////////////////////////////
+
+namespace SpaceX
+{
+    internal class SpaceXClass(string bazisNeve, string raketaNeve, string kuldetesNeve, int raketaFelszallasiSulya)
+    {
+        public string BazisNave { get; set; } = bazisNeve;
+        public string RaketaNeve { get; set; } = raketaNeve;
+        public string KuldetesNeve { get; set; } = kuldetesNeve;
+        public int RaketaFelszallasiSulya { get; set; } = raketaFelszallasiSulya;
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace SpaceX
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var adatLista = File.ReadAllLines("spacex.csv")
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new SpaceXClass(
+                    adat[0],
+                    adat[1],
+                    adat[2],
+                    int.Parse(adat[3])))
+                .ToList();
+
+            // 03.
+            Console.WriteLine($"3. feladat: Összesen {adatLista.Count} küldetést hajtott végre a SpaceX az elmúlt években.\n");
+
+            // 04.
+            var legnehezebbSuly = adatLista.MaxBy(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine(
+                "4. feladat: A legnehezebb súllyal rendelkező küldetés adatai:\n" +
+                $"Főbázis neve: {legnehezebbSuly.BazisNave}\n" +
+                $"Rakéta neve: {legnehezebbSuly.RaketaNeve}\n" +
+                $"Küldetés neve: {legnehezebbSuly.KuldetesNeve}\n" +
+                $"Rakéte felszállási súlya: {legnehezebbSuly.RaketaFelszallasiSulya} kg\n"
+            );
+
+            // 05.
+            var legkonyebbSuly = adatLista.MinBy(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine(
+                "5. feladat: A legkisebb súllyal rendelkező küldetés adatai:\n" +
+                $"Főbázis neve: {legkonyebbSuly.BazisNave}\n" +
+                $"Rakéta neve: {legkonyebbSuly.RaketaNeve}\n" +
+                $"Küldetés neve: {legkonyebbSuly.KuldetesNeve}\n" +
+                $"Rakéte felszállási súlya: {legkonyebbSuly.RaketaFelszallasiSulya} kg\n"
+            );
+
+            // 06.
+            int starlinkKuldetesekSzama = adatLista.Count(sor => sor.KuldetesNeve.Contains("Starlink"));
+            Console.WriteLine($"6. feladat: Összesen {starlinkKuldetesekSzama} Starlink küldetést hajtott végre a SpaceX.\n");
+
+            // 07.
+            double atlagFelszallasiSuly = adatLista.Average(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine($"7. feladat: A rakéták átlagos felszállási súlya: {atlagFelszallasiSuly:F2} kg.");
+        }
+    }
+}
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+Cape Canaveral;Falcon 9;Starlink-10;15600
+Kennedy Space Center;Falcon 9;SpaceX CRS-29;12200
+Kennedy Space Center;Falcon Heavy;USSF-52;63900
+Vandenberg Space Force Base;Falcon 9;Sentinel-7;14200
+Kennedy Space Center;Falcon 9;Starlink-11;15600
+Cape Canaveral;Falcon 9;GPS III SV06;4300
+Kennedy Space Center;Falcon Heavy;NASA Psyche;70000
+Kennedy Space Center;Falcon 9;Starlink-12;15600
+Vandenberg Space Force Base;Falcon 9;NASA IXPE;6500
+Kennedy Space Center;Falcon 9;SpaceX CRS-30;12200
+Cape Canaveral;Falcon 9;Turksat 5D;4500
+Kennedy Space Center;Falcon 9;Starlink-13;15600
+Vandenberg Space Force Base;Falcon Heavy;USSF-53;63900
+Kennedy Space Center;Falcon 9;NASA DART-2;5000
+Cape Canaveral;Falcon 9;SpaceX CRS-31;12200
+Kennedy Space Center;Falcon Heavy;NROL-85;63900
+Vandenberg Space Force Base;Falcon 9;Sentinel-8;14200
+Kennedy Space Center;Falcon 9;Starlink-14;15600
+Cape Canaveral;Falcon 9;Turksat 5E;4500
+Kennedy Space Center;Falcon Heavy;NASA Lucy;69600

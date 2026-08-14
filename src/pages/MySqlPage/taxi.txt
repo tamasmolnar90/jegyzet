@@ -1,0 +1,102 @@
+DROP DATABASE IF EXISTS taxi;
+CREATE DATABASE taxi
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_hungarian_ci;
+
+USE taxi;
+
+CREATE TABLE SOFOR (
+  rendszam VARCHAR(8) NOT NULL,
+  nev VARCHAR(30) DEFAULT NULL,
+  szuldatum DATE DEFAULT NULL,
+  PRIMARY KEY (rendszam)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_hungarian_ci;
+
+INSERT INTO SOFOR (rendszam, nev, szuldatum) VALUES
+('ABC-123', 'Kiss Dezső', '1967-06-24'),
+('BCD-231', 'Kocsis Irma', '1982-07-21'),
+('BCD-321', 'Tóth Pál', '1985-01-12'),
+('CDE-123', 'Rozsdás Tibor', '1972-12-13'),
+('CDV-321', 'Kamarás Lajos', '1978-02-23'),
+('EDX-231', 'Tarkó Béla', '1962-06-07');
+
+CREATE TABLE TARIFA (
+  tarifakod INT NOT NULL,
+  megnevezes VARCHAR(30) NOT NULL,
+  dij INT DEFAULT NULL,
+  PRIMARY KEY (tarifakod)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_hungarian_ci;
+
+INSERT INTO TARIFA (tarifakod, megnevezes, dij) VALUES
+(1, 'alap', 300),
+(2, 'törzsutas', 250),
+(3, 'szerződéses', 200),
+(4, 'reptéri', 400);
+
+CREATE TABLE FUVAR (
+  rendszam VARCHAR(8) NOT NULL,
+  indul DATETIME NOT NULL,
+  erkezik DATETIME DEFAULT NULL,
+  km INT DEFAULT NULL,
+  tarifa INT DEFAULT NULL,
+
+  PRIMARY KEY (rendszam, indul),
+
+  KEY idx_fuvar_tarifa (tarifa),
+
+  CONSTRAINT fk_fuvar_tarifa
+    FOREIGN KEY (tarifa)
+    REFERENCES TARIFA (tarifakod)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+
+  CONSTRAINT fk_fuvar_sofor
+    FOREIGN KEY (rendszam)
+    REFERENCES SOFOR (rendszam)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_hungarian_ci;
+
+INSERT INTO FUVAR (rendszam, indul, erkezik, km, tarifa) VALUES
+('ABC-123', '2014-03-20 15:34:23', '2014-03-20 15:45:00', 10, 2),
+('ABC-123', '2014-06-02 09:10:23', '2014-06-02 09:17:00', 3, 1),
+('ABC-123', '2014-06-12 06:34:00', '2014-06-12 06:39:00', 2, 3),
+('ABC-123', '2014-06-12 07:50:23', '2014-06-12 08:12:00', 2, 2),
+('ABC-123', '2014-06-23 12:00:23', '2014-06-23 12:12:00', 4, 1),
+('ABC-123', '2014-07-06 15:15:00', '2014-07-06 15:25:00', 7, 4),
+
+('BCD-231', '2014-02-18 07:34:00', '2014-02-18 07:39:00', 2, 3),
+('BCD-231', '2014-04-12 07:50:23', '2014-04-12 08:12:00', 2, 2),
+('BCD-231', '2014-05-12 14:00:00', '2014-05-12 14:12:00', 5, 2),
+('BCD-231', '2014-06-02 09:10:00', '2014-06-02 09:17:00', 3, 1),
+('BCD-231', '2014-09-01 11:15:00', '2014-09-01 11:25:00', 7, 4),
+
+('BCD-321', '2014-02-18 08:34:00', '2014-02-18 08:39:00', 2, 1),
+('BCD-321', '2014-04-12 05:50:23', '2014-04-12 06:12:00', 4, 2),
+('BCD-321', '2014-05-12 10:00:00', '2014-05-12 10:12:00', 5, 2),
+('BCD-321', '2014-06-02 10:10:00', '2014-06-02 10:17:00', 4, 1),
+('BCD-321', '2014-09-01 12:15:00', '2014-09-01 12:25:00', 5, 4),
+
+('CDE-123', '2014-02-19 08:34:00', '2014-02-19 08:39:00', 2, 3),
+('CDE-123', '2014-04-01 05:50:23', '2014-04-01 06:12:00', 4, 2),
+('CDE-123', '2014-05-26 10:00:00', '2014-05-26 10:16:00', 5, 2),
+('CDE-123', '2014-06-09 10:05:00', '2014-06-09 10:17:00', 13, 4),
+('CDE-123', '2014-08-03 12:15:00', '2014-08-03 12:25:00', 4, 4),
+
+('CDV-321', '2014-01-02 11:10:00', '2014-01-02 11:17:00', 5, 1),
+('CDV-321', '2014-03-12 11:00:00', '2014-03-12 11:12:00', 5, 2),
+('CDV-321', '2014-04-18 07:34:00', '2014-04-18 07:39:00', 2, 2),
+('CDV-321', '2014-06-12 05:50:23', '2014-06-12 06:12:00', 4, 2),
+('CDV-321', '2014-07-01 12:15:00', '2014-07-01 12:25:00', 5, 4),
+
+('EDX-231', '2014-02-01 06:50:23', '2014-02-01 07:12:00', 4, 2),
+('EDX-231', '2014-04-19 07:34:00', '2014-04-19 07:39:00', 3, 2),
+('EDX-231', '2014-05-03 12:15:00', '2014-05-03 12:25:00', 4, 4),
+('EDX-231', '2014-06-26 10:00:00', '2014-06-26 10:16:00', 5, 3),
+('EDX-231', '2014-07-09 10:05:00', '2014-07-09 10:17:00', 13, 4);

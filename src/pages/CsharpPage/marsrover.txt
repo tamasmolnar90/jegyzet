@@ -1,0 +1,95 @@
+MarsRover Küldetések
+
+A NASA megkér, hogy készítsen egy alkalmazást, amely a Mars-járók küldetéseit dolgozza fel az elmúlt évek alapján.
+A mars_rovers.csv UTF-8 kódolású forrásállomány sorai egy-egy rover küldetés adatait tartalmazzák, ;-vel elválasztva a következő sorrendben:
+- Járó neve
+- Küldetés neve
+- Indítás éve
+- Megtett távolság (km)
+
+Feladatok:
+1. Hozzon létre egy projektet MarsRover néven!
+2. Olvassa be a mars_rovers.csv állomány adatait, és tárolja egy összetett adatszerkezetben, amelyet egy RoverMission nevű osztály reprezentál.
+3. Számolja meg, hány különböző küldetést hajtottak végre összesen!
+4. Keresse meg azt a küldetést, amely során a leghosszabb távot tette meg a rover, és írassa ki a küldetés adatait a következő mintának megfelelően.
+5. Keresse meg azt a küldetést, amely során a legrövidebb távot tették meg.
+6. Számolja meg, hány Perseverance nevű járóhoz tartozó küldetés volt!
+7. Számolja ki az átlagos megtett távolságot az összes küldetés alapján, és írassa ki 2 tizedesjegy pontossággal.
+
+///////////////////////////////////////
+////////// RoverMissionClass //////////
+///////////////////////////////////////
+
+namespace MarsRover
+{
+    internal class RoverMission(string jaroNeve, string kuldetesNeve, int inditasEve, double megtettTavolsag)
+    {
+        public string JaroNeve { get; set; } = jaroNeve;
+        public string KuldetesNeve { get; set; } = kuldetesNeve;
+        public int InditasEve { get; set; } = inditasEve;
+        public double MegtettTavolsag { get; set; } = megtettTavolsag;
+
+        public override string ToString()
+        {
+            return
+                $"\tJáró neve: {JaroNeve}\n" +
+                $"\tKüldetés neve: {KuldetesNeve}\n" +
+                $"\tIndítás éve: {InditasEve}\n" +
+                $"\tMegtett táv: {MegtettTavolsag} km";
+        }
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace MarsRover
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            //CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            //CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
+            var adatLista = File.ReadAllLines("mars_rovers.csv")
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new RoverMission(
+                    adat[0],
+                    adat[1],
+                    int.Parse(adat[2]),
+                    double.Parse(adat[3].Replace(".", ","))))
+                .ToList();
+
+            // 03. Számolja meg, hány különböző küldetést hajtottak végre összesen!
+            Console.WriteLine($"3. feladat: {adatLista.Count} küldetés volt.");
+
+            // 04. Keresse meg azt a küldetést, amely során a leghosszabb távot tette meg a rover, és írassa ki a küldetés adatait a következő mintának megfelelően!
+            var leghosszabbKuldetes = adatLista.MaxBy(sor => sor.MegtettTavolsag);
+            Console.WriteLine($"4. feladat: Leghosszabb küldetés:\n" + leghosszabbKuldetes);
+
+            // 05. Keresse meg azt a küldetést, amely során a legrövidebb távot tették meg.
+            var legrovidebbKuldetes = adatLista.MinBy(sor => sor.MegtettTavolsag);
+            Console.WriteLine($"5. feladat: Legrövidebb küldetés:\n" + legrovidebbKuldetes);
+
+            // 06. Számolja meg, hány Perseverance nevű járóhoz tartozó küldetés volt!
+            int parseveranceKuldetesekSzama = adatLista.Count(sor => sor.JaroNeve.Contains("Perseverance"));
+            Console.WriteLine($"6. feladat: {parseveranceKuldetesekSzama} Perseverance küldetés volt.");
+
+            // 07. Számolja ki az átlagos megtett távolságot az összes küldetés alapján, és írassa ki 2 tizedesjegy pontossággal!
+            double atlagMegtettTavolsag = adatLista.Average(sor => sor.MegtettTavolsag);
+            Console.WriteLine($"7. feladat: Átlagos megtett távolság: {atlagMegtettTavolsag:F2} km");
+        }
+    }
+}
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+Perseverance;Jezeró Exploration;2021;12.5
+Curiosity;Mount Sharp Traverse;2014;21.3
+Spirit;Columbia Hills;2005;7.2
+Opportunity;Endurance Crater Mission;2004;14.6
+Perseverance;Delta Campaign;2022;9.1

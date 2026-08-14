@@ -1,0 +1,150 @@
+Projektfeladat: "Konzolos Jelszó-Asszisztens"
+
+A feladat leírása: A csapatnak egy parancssoros jelszókezelő és -generáló alkalmazást kell készítenie.
+A program menüből vezérelhető, képes értékelni a felhasználó által megadott jelszavak erősségét, és képes biztonságos, véletlenszerű jelszavakat generálni bizonyos feltételek alapján.
+
+1. Feladat: Menürendszer és Interakció
+Leírás: A fő ciklust és a menürendszer. Be kell kérnie a felhasználó nevét (és üdvözölnie kell).
+
+Egy switch szerkezettel kell menüpontokat készítenie:
+1. Jelszó ellenőrzése
+2. Jelszó generálása
+3. Kilépés.
+
+Neki kell bekérnie az adatokat a felhasználótól, és egy hármas operátorral kiírni a végén, hogy akar-e újabb műveletet végezni.
+
+Fontos elemek: switch, while ciklus, Console.ReadLine(), hármas operátor.
+GitHubon folyamatosan rakjuk fel a módosításokat
+
+2. Feladat: Jelszó Generátor
+Leírás: Egy olyan metódus (függvény) megírása, amely generál egy megadott hosszúságú véletlen jelszót.
+A korábbi feladathoz hasonlóan, ahol nyereménykódot generáltak, itt is használnia kell a Random osztályt.
+Fontos elemek: Egy do-while ciklus segítségével addig kell generálnia a jelszót, amíg az nem tartalmaz legalább egy speciális karaktert és egy számot (hasonlóan ahhoz, ahogy az 'A' betűt keresték a kitalálós játékban).
+Fontos elemek: Random, do-while / for ciklusok.
+GitHubon folyamatosan rakjuk fel a módosításokat
+
+3. Feladat: Jelszó Ellenőrző
+Leírás: Egy metódus megírása, amely kap egy stringet (a felhasználó jelszavát), és pontozza azt.
+Kikötés: Meg kell vizsgálnia a string hosszát, és keresnie kell benne speciális karaktereket (pl. a @ karakter pozíciójának keresése a korábbi e-mail feladathoz hasonlóan).
+Használhatja a Math.Max vagy Math.Min függvényeket a kapott pontszámok (pl. jelszóerősség 1-től 10-ig) korlátozására.
+Fontos elemek: String beépített függvényei (pl. .Contains(), .IndexOf()), Math osztály.
+GitHubon folyamatosan rakjuk fel a módosításokat
+
+
+
+
+using System.Security.Cryptography;
+using System.Text;
+
+namespace konzolos_jelszo_asszisztens
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Kérem a neved: ");
+            string? name = Console.ReadLine();
+            Console.WriteLine($"\nHello, {name}!");
+
+            string? userPassword = null;
+            int userPasswordLength;
+
+            while (true)
+            {
+                Console.WriteLine("\n1. Jelszó ellenőrzése");
+                Console.WriteLine("2. Jelszó generálása");
+                Console.WriteLine("3. Kilépés\n");
+                Console.Write("Menüpont: ");
+
+                // Menüpont beolvasása hibakezeléssel
+                if (!int.TryParse(Console.ReadLine(), out int menuInput))
+                {
+                    Console.WriteLine("Hiba: Kérlek számot adj meg!");
+                    continue;
+                }
+
+                switch (menuInput)
+                {
+                    case 1:
+                        Console.WriteLine(string.IsNullOrEmpty(userPassword) ? "Nincs beállítva jelszó!" : $"A jelszavad: {userPassword}");
+                        break;
+
+                    case 2:
+                        Console.Write("Add meg hány karakterből álljon a jelszavad: ");
+                        if (!int.TryParse(Console.ReadLine(), out userPasswordLength) || userPasswordLength < 4)
+                        {
+                            Console.WriteLine("Hiba: Kérlek számot adj meg, legalább 4-et!");
+                            break;
+                        }
+
+                        Console.WriteLine("Jelszó generálása folyamatban...");
+                        userPassword = PasswordGenerator(userPasswordLength);
+                        Console.WriteLine("Jelszó generálása kész!");
+                        break;
+
+                    case 3:
+                        Console.WriteLine("\nKilépés...");
+                        return;
+
+                    default:
+                        Console.WriteLine("\nHibás menüpont!");
+                        break;
+                }
+            }
+        }
+
+        static string PasswordGenerator(int length)
+        {
+            const string lower = "abcdefghijklmnopqrstuvwxyz";
+            const string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string numbers = "0123456789";
+            const string special = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+
+            string allChars = lower + upper + numbers + special;
+
+            var password = new StringBuilder();
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                password.Append(GetRandomChar(lower, rng));
+                password.Append(GetRandomChar(upper, rng));
+                password.Append(GetRandomChar(numbers, rng));
+                password.Append(GetRandomChar(special, rng));
+
+                for (int i = 4; i < length; i++)
+                {
+                    password.Append(GetRandomChar(allChars, rng));
+                }
+
+                return Shuffle(password.ToString());
+            }
+        }
+
+        static char GetRandomChar(string chars, RandomNumberGenerator rng)
+        {
+            byte[] data = new byte[4];
+            rng.GetBytes(data);
+            uint value = BitConverter.ToUInt32(data, 0);
+            return chars[(int)(value % (uint)chars.Length)];
+        }
+
+        static string Shuffle(string input)
+        {
+            var array = input.ToCharArray();
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                for (int i = array.Length - 1; i > 0; i--)
+                {
+                    byte[] data = new byte[4];
+                    rng.GetBytes(data);
+                    int j = data[0] % (i + 1);
+
+                    (array[i], array[j]) = (array[j], array[i]);
+                }
+            }
+
+            return new string(array);
+        }
+    }
+}

@@ -1,0 +1,195 @@
+import os
+
+
+class Termek:
+    def __init__(self, termek_id, megnevezes, kategoria, ar, keszlet):
+        self.termek_id = termek_id
+        self.megnevezes = megnevezes
+        self.kategoria = kategoria
+        self.ar = ar
+        self.keszlet = keszlet
+
+
+termek_lista = []
+
+# Használd a file relatív útvonalát a script helyéhez képest!
+# Így biztosan az adott mappa fájlját adja meg, függetlenül a current working directory-től.
+BASE = os.path.dirname(__file__)
+termek_utvonal = os.path.join(BASE, "termekek.csv")
+
+with open(termek_utvonal, "r", encoding = "utf-8") as termekek_adat:
+    header = termekek_adat.readline()
+    
+    for sor in termekek_adat:
+        adat = sor.strip().replace(",", ".").split(";")
+        termek = Termek(int(adat[0]), adat[1], adat[2], float(adat[3]), int(adat[4]))
+        termek_lista.append(termek)
+
+
+# 1. Írja ki a termek_lista összes elemét:
+# for sor in termek_lista:
+    # print(sor.termek_id, sor.megnevezes, sor.kategoria, sor.ar, sor.keszlet)
+    # print(*vars(sor).values())
+
+
+# 2. Írja ki az első 5 elemet:
+for sor in termek_lista[:5]:
+    print(*vars(sor).values())
+# [::2] - minden második
+# [9:20] - 10-től 20-ig
+# [9:20:2] - 10-től 20-ig kettessével
+# [::-1] - visszafele
+# [::-2] - visszafele kettessével
+
+
+# 3. Írja ki hány termék szerepel a listában:
+termek_darab = len(termek_lista)
+print(f"{termek_darab} darab termék szerepel a listában.")
+
+
+# 4. Írja ki az átlagos termékárat:
+szum = 0
+for sor in termek_lista:
+    szum += sor.ar
+atlag = szum / termek_darab
+
+# Kerekítse 2 tizedesjegyig:
+print(f"Termékek átlagos ára: {round(atlag, 2)}$")
+
+# Vágja le 2 tizedesjegy után a többi számot:
+print(f"Termékek átlagos ára: {atlag:.2f}$")
+
+
+# 5. Írja ki a legdrágább termék nevét és árát:
+max_termek = termek_lista[0]
+
+for sor in termek_lista:
+    if sor.ar > max_termek.ar:
+        max_termek = sor
+print(f"A legdrágább termék: {max_termek.megnevezes}, {max_termek.ar}$")
+print(f"A legdrágább termék: {max_termek.megnevezes}, {int(max_termek.ar) if max_termek.ar.is_integer() else f'{max_termek.ar:.2f}'}$")
+
+
+# 6. Írja ki, hogy kategóriánként hány különböző termék található a készletben:
+kategoria = {}
+
+for sor in termek_lista:
+    if sor.kategoria in kategoria:
+        kategoria[sor.kategoria] += 1
+    else:
+        kategoria[sor.kategoria] = 1
+
+# 7. Egymás alá kiíratni kulcs - érték párokat
+for kulcs, ertek in kategoria.items():
+    print(f"\t{kulcs}: {ertek} különböző termék.")
+
+# 8. Írja ki hány különböző kategória található a készletben:
+print(f"{len(kategoria)} darab kategória található a készletben.")
+
+
+# 9. Írja ki az összes termék darabszámát:
+kategoria_keszlet = {}
+
+for sor in termek_lista:
+    if sor.kategoria in kategoria_keszlet:
+        kategoria_keszlet[sor.kategoria] += sor.keszlet
+    else:
+        kategoria_keszlet[sor.kategoria] = sor.keszlet
+
+for kulcs, ertek in kategoria_keszlet.items():
+    print(f"\t{kulcs}: {ertek} db termék.")
+
+
+# 10. Kérje be a felhasználótól egy kategória nevét, majd írja ki, hogy mennyi különböző termék szerepel a kategóriában és összesen hány darab termék van a kategórián belül.
+beker = input("Adja meg a kategória nevét (Élelmiszer, Elektronika, Háztartási gép, Bútor, Számítástechnika, Papír-írószer, Ruházat): ").capitalize()
+
+if beker in kategoria:
+    print(f"A kategória: {beker}, {kategoria[beker]} különböző termék van készleten.")
+    print(f"Kategórián belüli összes termék: {kategoria_keszlet[beker]} darab")
+
+
+# 11. Hozzon létre egy dragatermekek.csv fájlt, amelybe csak az átlag ár feletti termékek kerülnek:
+drage_termekek_utvonal = os.path.join(BASE, "dragatermekek.csv")
+with open(drage_termekek_utvonal, "w", encoding = "utf-8") as draga_termekek_adat:
+    draga_termekek_adat.write(header)
+
+    draga_termek = atlag
+
+    for sor in termek_lista:
+        if sor.ar > draga_termek:
+            # draga_termekek_adat.write(f"{sor.termek_id};{sor.megnevezes};{sor.kategoria};{sor.ar};{sor.keszlet}\n")
+            draga_termekek_adat.write(";".join(map(str, vars(sor).values())) + "\n")
+
+####################################################
+####################################################
+####################################################
+
+# .strip() - minden sor végén, ha van egy új sor \n akkor azt levágja
+
+# ÖSSZEFŰZÉS
+# cars = ["Ford Mustang", "Toyota Supra", "Mitsubishi Lancer", "Nissan GT-R"]
+# joined_text = ";".join(cars) # "Ford Mustang;Toyota Supra;Mitsubishi Lancer;Nissan GT-R"
+
+# ADATTISZTÍTÁS
+# for sor in termekek_adat:
+#     if not sor.strip():
+#         continue
+
+#     dat = [x.strip() for x in sor.replace(",",".").split(";")]
+#     termek = Termek(int(adat[0]), adat[1], adat[2], float(adat[3]), int(adat[4]))
+#     termek_lista.append(termek)
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+termek_id;megnevezes;kategoria;ar;keszlet
+101;Alma;Élelmiszer;1,29;19
+102;Banán;Élelmiszer;1,10;62
+103;Narancs;Élelmiszer;1,49;79
+104;Kávé;Élelmiszer;8,90;57
+105;Tea;Élelmiszer;6,40;23
+106;Sajt;Élelmiszer;5,80;71
+107;Joghur;Élelmiszer;1,20;37
+108;Tojás;Élelmiszer;3,40;54
+109;Csirkemell;Élelmiszer;7,90;72
+110;Hal;Élelmiszer;9,60;70
+111;Okostelefon;Elektronika;699,00;38
+112;Fülhallgató;Elektronika;59,90;74
+113;Tablet;Elektronika;399,00;94
+114;Okosóra;Elektronika;199,00;68
+115;Hordozható hangszóró;Elektronika;89,90;49
+116;Tévékészülék;Elektronika;799,00;33
+117;Játékkonzol;Elektronika;499,00;39
+118;Porszívó;Háztartási gép;159,00;100
+119;Vízforraló;Háztartási gép;49,90;84
+120;Kávéfőző;Háztartási gép;129,00;50
+121;Mikrohullámú sütő;Háztartási gép;179,00;44
+122;Mosogatógép;Háztartási gép;699,00;42
+123;Hajszárító;Háztartási gép;39,90;17
+124;Kanapé;Bútor;899,00;39
+125;Étkezőasztal;Bútor;499,00;12
+126;Szekrény;Bútor;699,00;79
+127;Komód;Bútor;349,00;46
+128;Fotel;Bútor;299,00;82
+129;Polcrendszer;Bútor;199,00;58
+130;Pendrive;Számítástechnika;12,90;46
+131;Videókártya;Számítástechnika;699,00;1
+132;Processzor;Számítástechnika;399,00;60
+133;Alaplap;Számítástechnika;249,00;23
+134;SSD;Számítástechnika;79,90;39
+135;Router;Számítástechnika;129,00;8
+136;Monitor;Számítástechnika;249,00;35
+137;Jegyzetfüzet;Papír-írószer;4,90;80
+138;Színes ceruza;Papír-írószer;9,90;28
+139;Filctoll;Papír-írószer;6,50;14
+140;Naptár;Papír-írószer;7,90;46
+141;Radír;Papír-írószer;1,20;24
+142;Tűzőkapocs;Papír-írószer;2,50;75
+143;Farmer;Ruházat;49,90;38
+144;Kabát;Ruházat;129,00;96
+145;Póló;Ruházat;19,90;78
+146;Cipő;Ruházat;89,00;19
+147;Sapka;Ruházat;14,90;21
+148;Zokni;Ruházat;5,90;19
+149;Pulóver;Ruházat;39,90;6

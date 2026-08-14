@@ -1,0 +1,54 @@
+3. Feladat: Névjegykártya Generátor
+A felhasználó beírja a nevét, választ egy színt, és a program legenerál neki egy kártyát.
+Kattintás esemény a generáló gombon.
+Olvasd ki az input mező értékét (nevInput.value) és a legördülő menü értékét.
+Válaszd ki a kartya-helye div-et, és módosítsd az innerHTML-jét.
+Hozz létre benne egy új div-et, amibe beírod a felhasználó nevét.
+Add meg ennek az új belső div-nek a kiválasztott háttérszínt.
+
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <input type="text" id="nev-input" placeholder="Írd be a neved" />
+
+    <select id="szin-valaszto">
+      <option value="lightblue">Világoskék</option>
+      <option value="lightgreen">Világoszöld</option>
+      <option value="lightcoral">Korall</option>
+    </select>
+
+    <button id="general-gomb">Kártya készítése</button>
+
+    <div id="kartya-helye"></div>    
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const nevInputEl = document.querySelector("#nev-input");
+const szinValasztoEl = document.querySelector("#szin-valaszto");
+const kartyaHelyeEl = document.querySelector("#kartya-helye");
+const generalBtn = document.querySelector("#general-gomb");
+
+generalBtn.addEventListener("click", general);
+
+function general() {
+  const kartya = document.createElement("div");
+  kartya.textContent = nevInputEl.value;
+  kartya.style.backgroundColor = szinValasztoEl.value;
+
+  kartyaHelyeEl.append(kartya);
+}

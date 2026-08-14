@@ -1,0 +1,311 @@
+//////////////////////////////////////
+///////// Windows Forms App //////////
+//////////////////////////////////////
+
+- Label
+- TextBox
+- Button
+- ListBox
+- MenuStrip (MenuItem)
+- StatusStrip (StatusLabel)
+
+
+ ___________
+|_MenuStrip_|
+       _____________   ______________________   ________
+Label |___TextBox___| |ListBox               | |_Button_|
+                      |                      | 
+                      |                      |
+                      |                      |
+                      |______________________|
+ _____________
+|_StatusStrip_|
+
+
+
+/////////////////////////////////
+////////// Hibakezelés //////////
+/////////////////////////////////
+
+MessageBoxButtons.OK - YesNo - OKCancel ...
+MessageBoxIcon.Error - Warning - Information ...
+
+
+
+//////////////////////////////////////////////////
+////////// BEOLVASÁS HIBAKEZELÉS NÉLKÜL //////////
+//////////////////////////////////////////////////
+
+using System.ComponentModel;
+
+namespace WinFormsApp1 {
+    public partial class Form1 : Form {
+        BindingList<string> listBoxItemsList = new BindingList<string>();
+
+        public Form1() {
+            InitializeComponent();
+            listBox.DataSource = listBoxItemsList;
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e) {           
+            using OpenFileDialog ofd = new OpenFileDialog();
+
+            ofd.Filter = "All Files (*.*)|*.*";
+
+            if (ofd.ShowDialog() == DialogResult.OK) {
+                try {
+                    listBoxItemsList.Clear();
+                    string[] sorok = File.ReadAllLines(ofd.FileName);
+
+                    foreach (var sor in sorok) {
+                        listBoxItemsList.Add(sor);
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(
+                        $"Hiba történt: {ex.Message}",
+                        "Hiba!",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }            
+        }        
+    }
+}
+
+
+
+///////////////////////////////////////////////
+////////// BEOLVASÁS HIBAKEZELÉSSEL  //////////
+///////////////////////////////////////////////
+
+using System.ComponentModel;
+
+namespace WinFormsApp1 {
+    public partial class Form1 : Form {
+        BindingList<string> listBoxItemsList = new BindingList<string>();
+
+        public Form1() {
+            InitializeComponent();
+            listBox.DataSource = listBoxItemsList;
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e) {
+            using OpenFileDialog ofd = new OpenFileDialog();
+
+            ofd.Filter =
+                "All Files (*.*)|*.*|" +
+                "Text Files (*.txt)|*.txt|" +
+                "PDF Files (*.pdf)|*.pdf|" +
+                "CSV Files (*.csv)|*.csv";
+
+            if (ofd.ShowDialog() == DialogResult.OK) {
+                try {
+                    string[] sorok = File.ReadAllLines(ofd.FileName);
+
+                    foreach (var sor in sorok) {
+                        if (!sor.Contains(";")) {
+                            MessageBox.Show(
+                                "A fájl hibás, legalább egy sor nem tartalmaz ';' karaktert",
+                                "Hiba!",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+
+                    //Csak akkor törli az előző listát, ha sikerül beolvasni az újat és nem hiányzik ";" karakter
+                    listBoxItemsList.Clear();
+
+                    foreach (var sor in sorok) {
+                        listBoxItemsList.Add(sor);
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(
+                        $"Hiba történt: {ex.Message}",
+                        "Hiba!",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }      
+    }
+}
+
+
+
+//////////////////////////
+////////// SAVE //////////
+//////////////////////////
+
+namespace WinFormsApp1 {
+    public partial class Form1 : Form {
+        string latestFilePath;                 ---> legfelül létrehozni egy üres string változót
+
+    private void openToolStripMenuItem_Click(object sender, EventArgs e) {
+        try {
+            latestFilePath = ofd.FileName;     ---> megnyitáskor, try-on belül elmentjük az útvonalat
+        }
+    }
+
+    private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+        try {
+            File.WriteAllLines(latestFilePath, listBoxItemsList);
+            MessageBox.Show(
+                "Sikeres felülírás!",
+                "Információ",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        } catch (Exception ex) {
+            MessageBox.Show(
+                "Hiba történt",
+                "Hiba!",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+    }
+}
+
+
+
+/////////////////////////////
+////////// SAVE AS //////////
+/////////////////////////////
+
+private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
+    using SaveFileDialog sfd = new SaveFileDialog();
+    sfd.DefaultExt = "csv";
+    sfd.AddExtension = true;
+
+    if (sfd.ShowDialog() == DialogResult.OK) {
+        try {
+            File.WriteAllLines(sfd.FileName, listBoxItemsList);
+            MessageBox.Show(
+                "Sikeres mentés!",
+                "Információ",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        } catch (Exception ex) {
+            MessageBox.Show(
+            "Hiba történt",
+            "Hiba!",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error);
+        }
+    }
+}
+
+
+
+////////////////////////////////
+////////// LINE COUNT //////////
+////////////////////////////////
+
+//Line Counter
+private void UpdateLineCountToolStripStatus() {
+    int lineCount = listBoxItemsList.Count;
+    lineCountToolStripStatus.Text = $"{lineCount} sor";
+}
+
+Ezt a segédfüggvényt meghívni ott, ahol frissíteni akarjuk a státuszt pl:
+- sikeres beolvasás után
+- addButton után
+- deleteButton után
+
+
+
+/////////////////////////////
+////////// ADD BTN //////////
+/////////////////////////////
+
+private void addButton_Click(object sender, EventArgs e) {    
+    bool arCheck = int.TryParse(arTextBox.Text, out int arValue);    
+
+    if (!arCheck) {
+        MessageBox.Show(
+            "Az ár mező nem szám!",
+            "Hiba",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+        return;
+    }
+
+    string data = $"{gyartoTextBox.Text};{modellTextBox.Text};{hatotavTextBox.Text};{repulesIdoTextBox.Text};{arTextBox.Text}";
+    listBoxItemsList.Add(data);
+    UpdateLineCountToolStripStatus();
+}
+
+
+
+/////////////////////////////
+////////// DEL BTN //////////
+/////////////////////////////
+
+private void deleteButton_Click(object sender, EventArgs e) {
+    int selectedRow = listBox.SelectedIndex;
+
+    if (selectedRow == -1) {
+        MessageBox.Show(
+            "Nincs kijelölt elem",
+            "Figyelmeztetés",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+        return;
+    }
+
+    listBoxItemsList.RemoveAt(selectedRow);
+    UpdateLineCountToolStripStatus();
+}
+
+
+
+/////////////////////////////
+////////// UPD BTN //////////
+/////////////////////////////
+
+private void updateButton_Click(object sender, EventArgs e) {
+    int selectedRow = listBox.SelectedIndex;
+
+    if (selectedRow == -1) {
+        MessageBox.Show(
+            "Nincs kijelölt elem",
+            "Figyelmeztetés",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+        return;
+    }
+    
+    bool arCheck = int.TryParse(arTextBox.Text, out int arValue);    
+
+    if (!arCheck) {
+        MessageBox.Show(
+            "Az ár mező nem szám!",
+            "Hiba",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+        return;
+    }
+
+    string newData = $"{gyartoTextBox.Text};{modellTextBox.Text};{hatotavTextBox.Text};{repulesIdoTextBox.Text};{arTextBox.Text}";
+    listBoxItemsList[selectedRow] = newData;
+}
+
+
+
+//////////////////////////////
+////////// SELECTED //////////
+//////////////////////////////
+
+private void listBox_SelectedIndexChanged(object sender, EventArgs e) {
+    int selectedRow = listBox.SelectedIndex;
+
+    if (selectedRow == -1) return;
+
+    string value = listBoxItemsList[selectedRow];
+    string[] values = value.Split(";");
+
+    gyartoTextBox.Text = values[0].Trim();
+    modellTextBox.Text = values[1].Trim();
+    hatotavTextBox.Text = values[2].Trim();
+    repulesIdoTextBox.Text = values[3].Trim();
+    arTextBox.Text = values[4].Trim();
+}

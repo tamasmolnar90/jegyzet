@@ -1,0 +1,180 @@
+Parancsok
+
+git init //local repo létrehozása
+
+git config --global --add safe.directory .
+//jelenlegi mappát jelöli biztonságosnak, speciális esetekben kellhet csak
+
+git remote add origin https://github.com/example/movie-app.git
+//osszekapcsolom a helyi repomat a távoli szerverrel, origin az alias név
+
+
+          remote   branch
+git pull origin master //lehúzom a módosításokat
+git pull origin master –allow-unrelated-histories
+//ha valamiért nem akarja lehúzni
+
+git clone https://github.com/example/movie-app.git //HTTPS
+git clone git@github.com:example/movie-app.git //SSH
+
+
+git add file.txt
+//Hozzáadja csak a file.txt-t a staging area-hoz. Ez azt jelenti, hogy a következő git commit parancs el fogja menteni a file.txt változásait.
+
+git add .
+//Hozzáadja az aktuális könyvtár összes módosított és új fájlját a staging area-hoz. Tehát minden új, módosított fájlt készen áll majd a git commit mentésre.
+
+git reset //össze hozzáadott filet leveszi
+git reset mappa vagy file.txt //csak az adott mappát vagy filet veszi ki
+
+git commit -m "messages" //staging areából beküldöm a helyi repomba
+git push origin master //helyi repot küldöm a központi szerverre
+
+git status
+//Milyen fájlok változtak meg, mely fájlokat adtad hozzá a staging area-hoz (git add után), mely fájlok vannak még kimaradva (módosítva, de nem hozzáadva), van-e bármi commitálható változás.
+
+git log //kilistázza milyen commitok történtek a repoban
+gitk --all
+git diff
+
+
+git remote //kiírja milyen névvel hivatkozunk rá
+git remote -v
+git remote remove origin
+
+git branch -vv
+
+git branch dev //létrehozok egy dev nevű branchet
+git branch --delete dev //kitörli a dev nevű branchet, de csak ha mergelve van
+git branch -D dev //kitörli a faszbah
+git branch //kiírja melyik branchben vagyok
+git checkout dev //dev branchre váltok
+git push origin dev //ezzel létrehozza a szerver repon a dev nevű branchet
+
+git reset --hard
+git reset --hard 0f543fe
+
+git fetch
+git fetch --all
+
+git merge masikbranch
+git rebase masikbranch
+
+git mergetool
+
+git rebase --continue
+
+git cherry-pick 0f543fe
+
+git rebase -i 0f543fe
+
+
+cls - clear
+cd Desktop //belevisz a könyvtárba
+cd .. //feljebb visz eggyel
+dir //kilistázás (linux: ls)
+mkdir mappa //mappa létrehozása
+
+
+create … (új file)
+add … (új funkció)
+remove … (törlés)
+update … (módosítás)
+fix bug in … (hiba javítás)
+refactor … (kód javítás funkció változtatás nélkül)
+rename … (átnevezés)
+
+Prefix: feat
+Jelentés: Új funkció (feature)
+Példa: feat: add search bar
+
+Prefix: fix
+Jelentés: Hibajavítás
+Példa: fix: correct search result count
+
+Prefix: refactor
+Jelentés: Refaktorálás, átszervezés funkcióváltozás nélkül
+Példa: refactor: simplify header logic
+
+Prefix: style
+Jelentés: Kódstílus, formázás, white space, pontosvessző
+Példa: style: fix indentation in Search component
+
+Prefix: docs
+Jelentés: Dokumentációval kapcsolatos változás
+Példa: docs: update README with usage instructions
+
+Prefix: test
+Jelentés: Tesztek hozzáadása vagy módosítása
+Példa: test: add unit test for Search
+
+Prefix: chore
+Jelentés: Apró háttérmunkák (pl. build script frissítés)
+Példa: chore: update dependencies
+
+Prefix: perf
+Jelentés: Teljesítményoptimalizálás
+Példa: perf: improve rendering performance of Search component
+
+Prefix: build
+Jelentés: Build rendszer vagy függőségek változása
+Példa: build: add webpack config for production
+
+Prefix: ci
+Jelentés: ci (Continuous Integration) beállítások
+Példa: ci: add GitHub Actions workflow
+
+Prefix: revert
+Jelentés: Egy korábbi commit visszavonása
+Példa: revert: feat: add search component
+
+
+
+
+##############################
+### LEGFONTOSABB PARANCSOK ###
+##############################
+
+git init 		/ új repository létrehozása az aktuális mappában
+git clone [url] 	/ repository klónozása helyi mappába
+git status 		/ változások állapotának megtekintése
+git add [fájl] 		/ fájl hozzáadása a staging area-hoz
+git add . 		/ minden módosított fájl hozzáadása
+git commit -m "üzenet" 	/ commit készítése üzenettel
+git commit -am "üzenet" / add + commit egy lépésben (csak már követett fájlokra)
+git push 		/ változások feltöltése a távoli repositoryba
+git push -u origin main / alapértelmezett upstream beállítása és push
+git pull 		/ (fetch + merge) – aktualizálja a helyi repót
+git fetch 		/ távoli változások lekérése merge nélkül
+git merge [branch] 	/ megadott ág beolvasztása
+git branch 		/ ágak listázása
+git branch [név] 	/ új ág létrehozása
+git checkout [branch] 	/ váltás másik ágra
+git checkout -b [név] 	/ új ág létrehozása és oda váltás
+git switch [branch] 	/ újabb módszer ágváltásra
+git switch -c [név] 	/ új ág létrehozása
+git log 		/ commitok listája
+git log –oneline 	/ rövidített commit lista
+git diff 		/ különbségek megtekintése
+git restore [fájl] 	/ fájl visszaállítása
+git reset [fájl] 	/ stagingből való eltávolítás
+git reset –hard 	/ minden változás visszaállítása
+git remote -v		/ távoli repók listázása
+git remote add origin [url] / új távoli repo hozzáadása
+
+##########################
+### HASZNOS TUDNIVALÓK ###
+##########################
+
+A git három területtel dolgozik: 
+– Working Directory: ahol szerkeszted a fájlokat 
+– Staging Area (index): ide kerül, amit commitolni fogsz 
+– Repository: ide kerülnek a commitok
+
+- A commit üzenetek legyenek rövidek és érthetőek, projekttől függ a nyelvezetük, de legyen egységes.
+- A git pull két műveletből áll: fetch + merge.
+- A git push csak a commitolt változtatásokat tölti fel.
+- Ágkezelés a gyakorlatban: - main/master mindig stabil - development ág ahol egyesítjük a változtatásokat - fejlesztés külön feature brancheken.
+- A .gitignore fájlban lehet megadni, hogy mi NE kerüljön a repo-ba.
+- Ha valamit véletlenül törölsz, a git log és git checkout segítségével visszaállítható.
+- Merge konfliktus esetén a fájlban jelzések jelennek meg (<<<<<< HEAD stb.), ezeket kézzel kell javítani, gui rendszeren ajánlott.

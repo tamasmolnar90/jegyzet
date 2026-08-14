@@ -1,0 +1,117 @@
+fetch("https://jsonplaceholder.typicode.com/users/1").then((res) => {
+  console.log("A szerver válaszolt.");
+  console.log(res);
+  console.log(res.status);
+});
+
+
+
+
+//Amikor hibát dob a throw, akkor a második then már nem fut le
+//A throw new Error csak egy paramétert vár, ezért template literalba adhatunk meg több adatot
+
+fetch("https://jsonplaceholder.typicode.com/users/1")
+  .then((res) => {
+    if (!res.ok) throw new Error(`HTTP hiba: ${res.status} ${res.statusText}`);
+    return res.json();
+  })
+  .then((data) => {
+    console.log("A felhasználó neve:", data.name);
+    console.log("Email címe:", data.email);
+  })
+  .catch((error) => {
+    console.error("Hiba", error.message);
+  });
+
+
+
+
+async function randomJoke() {
+  try {
+    const res = await fetch("https://official-joke-api.appspott.com/random_joke");
+    if (!res.ok) throw new Error(`HTTP hiba: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+    console.log(data.setup);
+    console.log(data.punchline);
+  } catch (error) {
+    console.error("Hiba:", error.message);
+  }
+}
+randomJoke();
+
+
+
+
+async function usersFetch() {
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/users/");
+    if (!res.ok) throw new Error(`HTTP hiba: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+
+    // Akiknek a neve C betűvel kezdődik, nevét városát kiírni, első kettőnek
+
+    // Összes adattal együtt kimenti
+    const cBetusNevek = data
+      .filter((user) => user.name.toLowerCase().startsWith("c"))
+      .slice(0, 2);
+    console.log(cBetusNevek);
+
+    cBetusNevek.forEach((x) =>
+      console.log(`Név: ${x.name}, Város: ${x.address.city}`),
+    );
+
+    // Egybe, de így nem lehet ráhívni length függvényt
+    const cBetusNevek = data
+      .filter((user) => user.name.toLowerCase().startsWith("c"))
+      .slice(0, 2)
+      .forEach((x) => console.log(`Név: ${x.name}, Város: ${x.address.city}`));
+
+    // Így csak ezeket az adatokat menti ki egy tömbbe
+    const cBetusNevek = data
+      .filter((user) => user.name.toLowerCase().startsWith("c"))
+      .slice(0, 2)
+      .map((x) => `Név: ${x.name}, Város: ${x.address.city}`);
+    console.log(cBetusNevek);
+  } catch (err) {
+    console.error("Hiba:", err.message);
+  }
+}
+usersFetch();
+
+
+
+
+async function usersFetch() {
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+    if (!res.ok) throw new Error(`HTTP hiba: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+
+    // Csak azoknak a posztoknak a cimét irasd ki, amiket az 1-es azonosítójú user írt.
+    const filteredData = data.filter((user) => user.userId === 1);
+    filteredData.forEach((x) => console.log(`id: ${x.id}, title: ${x.title}`));
+  } catch (err) {
+    console.error("Hiba:", err.message);
+  }
+}
+usersFetch();
+
+
+
+
+async function usersFetch() {
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/todos");
+    if (!res.ok) throw new Error(`HTTP hiba: ${res.status} ${res.statusText}`);
+    const data = await res.json();
+
+    // Írasd ki a befejezetlen feladatokat.
+    const filteredData = data.filter((user) => user.completed === false);
+
+    filteredData.forEach((user) => console.log(`id: ${user.id}, title: ${user.title}, completed: ${user.completed}`));
+    console.log(`${filteredData.length} db befejezetlen feladat.`);
+  } catch (err) {
+    console.error("Hiba:", err.message);
+  }
+}
+usersFetch();

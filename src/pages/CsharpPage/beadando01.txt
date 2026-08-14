@@ -1,0 +1,63 @@
+/////////////////////////////////
+////////// SpaceXClass //////////
+/////////////////////////////////
+
+namespace SpaceX
+{
+    internal class SpaceXClass(string bazisNeve, string raketaNeve, string kuldetesNeve, int raketaFelszallasiSulya)
+    {
+        public string BazisNave { get; set; } = bazisNeve;
+        public string RaketaNeve { get; set; } = raketaNeve;
+        public string KuldetesNeve { get; set; } = kuldetesNeve;
+        public int RaketaFelszallasiSulya { get; set; } = raketaFelszallasiSulya;
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace SpaceX
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var adatLista = File.ReadAllLines("spacex.csv")
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new SpaceXClass(
+                    adat[0],
+                    adat[1],
+                    adat[2],
+                    int.Parse(adat[3])))
+                .ToList();
+
+            // 03.
+            Console.WriteLine($"3. feladat: Összesen {adatLista.Count} küldetést hajtott végre a SpaceX az elmúlt években.\n");
+
+            // 04.
+            var legnehezebbSuly = adatLista.MaxBy(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine("4. feladat: A legnehezebb súllyal rendelkező küldetés adatai:\n" +
+                $"Főbázis neve: {legnehezebbSuly.BazisNave}\n" +
+                $"Rakéta neve: {legnehezebbSuly.RaketaNeve}\n" +
+                $"Küldetés neve: {legnehezebbSuly.KuldetesNeve}\n" +
+                $"Rakéte felszállási súlya: {legnehezebbSuly.RaketaFelszallasiSulya} kg\n");
+
+            // 05.
+            var legkonyebbSuly = adatLista.MinBy(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine("5. feladat: A legkisebb súllyal rendelkező küldetés adatai:\n" +
+                $"Főbázis neve: {legkonyebbSuly.BazisNave}\n" +
+                $"Rakéta neve: {legkonyebbSuly.RaketaNeve}\n" +
+                $"Küldetés neve: {legkonyebbSuly.KuldetesNeve}\n" +
+                $"Rakéte felszállási súlya: {legkonyebbSuly.RaketaFelszallasiSulya} kg\n");
+
+            // 06.
+            int starlinkKuldetesekSzama = adatLista.Count(sor => sor.KuldetesNeve.Contains("Starlink"));
+            Console.WriteLine($"6. feladat: Összesen {starlinkKuldetesekSzama} Starlink küldetést hajtott végre a SpaceX.\n");
+
+            // 07.
+            double atlagFelszallasiSuly = adatLista.Average(sor => sor.RaketaFelszallasiSulya);
+            Console.WriteLine($"7. feladat: A rakéták átlagos felszállási súlya: {atlagFelszallasiSuly:F2} kg.");
+        }
+    }
+}

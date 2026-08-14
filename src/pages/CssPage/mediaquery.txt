@@ -1,0 +1,51 @@
+Ne hozz létre túl sok media queryt, próbáld úgy csinálni, hogy 200-300px tartományokban jó legyen.
+
+Media queryben nem használunk rem-et mert egyes böngészők rosszul kezelik így em-et használunk.
+Media queryben a rem (root element font-size) és em (aktuális element font-size) nem függ a html betűméretétől.
+1rem = 1em = 16px
+tehát ha kiválasztunk egy méretet pl 1366px azt elosztjuk 16al, majd kerekítünk és így adjuk meg a méretet:
+1350 / 16 = 84,3 (84em) ezt visszaszorozzuk 16al és a kapott értéket írjuk be infoba
+
+/*******************************/
+/********* BELOW 1344px ********/
+/****** (SMALLER DESKTOP) ******/
+@media (max-width: 84em) {
+  .hero {
+    max-width: 120rem; ---> itt ugyan úgy működik rendesen a rem a html-hez képest
+  }
+}
+
+1200px nél gyakran használnak törést, mert ez a belépő a tabletekhez.
+Itt általában kisebbre vesznek mindent, amit a html{font-size} -al tehetünk meg
+16px - (100%)  ---> def
+10px - (62.5%) ---> 1rem = 10px
+9px - 56.25%   ---> 9 / 16 = 0.5625 = 56.25%
+8px - 50%      ---> ahogy megyünk lentebb úgy elvehetünk 1px-t pl: 900px körül
+7px - 43.75%
+6px - 37.5%
+5px - 31,25%
+4px - 25%
+
+vegyük le 9px (56.25%)
+/*******************************/
+/********* BELOW 1200px ********/
+/********** (TABLETS) **********/
+@media (max-width: 75em) {
+  html {
+    font-size: 56,25%;
+  }
+}
+
+@media (max-width: 600px) {      ---> 0-600px-ig red lesz (kisebb vagy egyenlő, mint 600)
+  .section-hero {
+    background-color: red;
+  }
+}
+
+@media (max-width: 1200px) {     ---> 0-1200px-ig kék lesz (kisebb vagy egyenlő mint 1200)
+  .section-hero {
+    background-color: blue;
+  }
+}
+
+Az 500px-ben mindkettő benne van, az kerül alkalmazásra, amelyik kód később szerepel a kódban mert lineárisan fut le.

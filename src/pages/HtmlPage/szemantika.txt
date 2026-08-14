@@ -1,0 +1,89 @@
+HTML Szemantikai Elemek
+(Jelentéssel rendelkező elemek)
+
+Egy szemantikai elem világosan leírja jelentését a böngésző és a fejlesztő számára egyaránt.
+Néhány szemantikai elem segítségével meghatározhatók egy weboldal különböző részei.
+
+<div>...</div>
+Egy általános célú blokkszintű szakasz. A blokkszintű elemek mindig új sorban kezdődnek és kihasználják a teljes rendelkezésre álló szélességet.
+
+<span>...</span>
+Egy általános célú sorszintű (inline) szakasz. A sorszintű elemek mindig új sorban kezdődnek és kihasználják a teljes rendelkezésre álló szélességet.
+
+<ul>
+<ol>
+
+<header>
+Egy tárolót jelent a bevezető tartalomhoz vagy a navigációs hivatkozások halmazához.
+Egy vagy több címsorelem (heading) <h1> - <h6>.
+Logo vagy ikon.
+Szerzői adatok.
+
+<nav>
+Csak a navigációs hivatkozások főbb blokkjához használható.
+
+<main>
+Meghatározza a dokumentum fő tartalmát.
+
+<section>
+Egy szakaszt határoz meg a dokumentumban.
+A tartalom tematikus csoportosítása, jellemzően egy címsorral.
+Fejezetek, Bevezetés, Hírek, Elérhetőség,
+A weboldal általában szakaszokra bontható: bevezetés, tartalom, kapcsolatfelvétel.
+
+<article>
+Független, önálló tartalmat határoz meg.
+Fórum bejegyzések, blogbejegyzések, felhasználói megjegyzések, termékkártyák, újságcikkek.
+
+<section> & <article>
+Szekción belül is lehetnek cikkek és cikken belül is lehetnek szekciók.
+
+<aside>
+Az oldal tartalmán kívül a tartalmat határozza meg.
+Ennek a tartalomnak közvetlenül kell kapcsolódnia a környező tartalomhoz.
+Például egy oldalsáv.
+
+<footer>
+Egy dokumentumban több <footer> elem is lehet.
+Egy szakasz vagy dokumentum végén van.
+Szerzői adatok, szerzői jogi információk, elérhetőség, oldaltérkép, vissza az elejére linkek, kapcsolódó dokumentumok.
+
+<figure> & <figcaption>
+A <figure> önálló tartalmat határoz meg, például illusztrációkat, diagramokat, fényképeket, kódlistákat, ajánlásokat stb.
+A <figcaption> a <figure> elem első vagy utolsó gyermekeként helyezhető el.
+Az <img> elem határozza meg a tényleges képet/illusztrációt.
+
+<figure>
+  <img src="pic_trulli.jpg" alt="Trulli">
+  <figcaption>Fig1. - Trulli, Puglia, Italy.</figcaption>
+</figure>
+
+<blockquote></blockquote> - hosszabb idézet
+
+<q></q> - rövid idézet például egy <p> elemen belül
+
+
+
+<header>	Megadja a fejlécet egy dokumentumhoz vagy szakaszhoz.
+<nav>		Meghatározza a navigációs hivatkozásokat.
+<main>		Meghatározza a dokumentum fő tartalmát.
+<section>	Meghatároz egy szakaszt a dokumentumban.
+<article>	Független, önálló tartalmat határoz meg.
+<aside>		Az oldal tartalmán kívül a tartalmat határozza meg.
+<footer>	Láblécet határoz meg egy dokumentumhoz vagy szakaszhoz.
+
+
+<details>	További részleteket határoz meg, amelyeket a felhasználó megtekinthet vagy elrejthet.
+<summary>	Meghatároz egy látható fejlécet a <details> elemhez.
+
+<figure>	Önálló tartalmat határoz meg, például illusztrációkat, diagramokat, fényképeket, kódlistákat stb.
+<figcaption>	Feliratot határoz meg egy <figure> elemhez.
+
+<mark>		Megjelölt/kiemelt szöveget határoz meg.
+
+<time>		Dátumot/időt határoz meg.
+
+body
+  header - (with nav)
+  main - (sections)
+  footer

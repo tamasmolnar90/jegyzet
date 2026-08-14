@@ -1,0 +1,223 @@
+///////////////////////////////////
+////////// TermekekClass //////////
+///////////////////////////////////
+
+namespace _11_termekek_linq
+{
+    internal class Termek(int id, string megnevezes, string kategoria, double ar, int keszlet)
+    {
+        public int Id { get; set; } = id;
+        public string Megnevezes { get; set; } = megnevezes;
+        public string Kategoria { get; set; } = kategoria;
+        public double Ar { get; set; } = ar;
+        public int Keszlet { get; set; } = keszlet;
+
+        public double EuroToHuf(double arfolyam)
+        {
+            double forint = Ar * arfolyam;
+            return Math.Round(forint, 0);
+        }
+
+        public double AkciosForint(double arfolyam, double szazalek)
+        {
+            double forint = EuroToHuf(arfolyam);
+            double akciosAr = forint * (1 - (szazalek / 100));
+            return Math.Round(akciosAr, 0);
+        }
+
+        public double AkciosAr(double szazalek)
+        {
+            double akciosAr = Ar * (1 - (szazalek / 100));
+            return Math.Round(akciosAr, 2);
+        }
+
+        public string Formazott()
+        {
+            return $"id: {Id}, megnevezés: {Megnevezes}, kategória: {Kategoria}, készleten: {Keszlet} darab, termék ára: {Ar:F2} EURO";
+        }
+
+        public override string ToString()
+        {
+            return $"id: {Id}, megnevezés: {Megnevezes}, kategória: {Kategoria}, készleten: {Keszlet} darab, termék ára: {Ar:F2} EURO";
+        }
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+using System.Globalization;
+
+namespace _11_termekek_linq
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
+            //var termekLista = File.ReadAllLines("termekek.csv")
+            //    .Skip(1)
+            //    .Select(sor => sor.Split(";"))
+            //    .Select(adat => new Termek(
+            //        int.Parse(adat[0]),
+            //        adat[1],
+            //        adat[2],
+            //        double.Parse(adat[3].Replace(",", ".")),
+            //        int.Parse(adat[4])))
+            //    .ToList();
+
+            string[] sorok = File.ReadAllLines("termekek.csv");
+            string header = sorok[0];
+
+            var termekLista = sorok
+                .Skip(1)
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new Termek(
+                    int.Parse(adat[0]),
+                    adat[1],
+                    adat[2],
+                    double.Parse(adat[3].Replace(",", ".")),
+                    int.Parse(adat[4])))
+                .ToList();
+
+            ///////////////////////
+            //Összes adat kiíratása
+            //termekLista.ForEach(sor => Console.WriteLine(sor.Formazott()));
+
+            ///////////////////////////////////////////////////////////////////
+            //Összes adat kiíratása + eredeti ár + 30% akciós ár + forintban is
+            //termekLista.ForEach(sor => Console.WriteLine(
+            //    $"{sor.Megnevezes} - eredeti ár: {sor.Ar:F2} EURO / {sor.EuroToHuf(359.54)} Ft\n" +
+            //    $"{sor.Megnevezes} - akciós ár: {sor.AkciosAr(30):F2} EURO / {sor.AkciosForint(359.54, 30)} Ft")
+            //);
+
+            ///////////////////////
+            //Első 5 elem kiíratása
+            //termekLista.Take(5).ToList().ForEach(sor => Console.WriteLine(sor.Formazott()));
+            //termekLista.Take(5).ToList().ForEach(Console.WriteLine);
+
+            /////////////////////////////////
+            //Hány termék szerepel a listában
+            int termekDarab = termekLista.Count();
+            Console.WriteLine($"{termekDarab} darab termék szerepel a listában.");
+
+            //////////////////
+            //Átlagos termékár
+            double atlag = termekLista.Average(sor => sor.Ar);
+            Console.WriteLine($"Átlagos termékár: {Math.Round(atlag, 2)} EURO");
+
+            ///////////////////////////////
+            //Legdrágább termék neve és ára
+            var legdragabbTermek = termekLista.MaxBy(t => t.Ar);
+            Console.WriteLine($"Legdrágább termék: {legdragabbTermek.Megnevezes} - {legdragabbTermek.Ar} EURO");
+
+            /////////////////////////////////////////////////////////////
+            //Kategóriánként hány különböző termék található a készletben
+            termekLista
+                .GroupBy(sor => sor.Kategoria)
+                .ToList()
+                .ForEach(csoport => Console.WriteLine($"{csoport.Key}: {csoport.Count()} különböző termék."));
+
+            //Változóba kimentés
+            var kategoria = termekLista
+                .GroupBy(sor => sor.Kategoria)
+                .ToList();
+            kategoria.ForEach(g => Console.WriteLine($"{g.Key}: {g.Count()} különböző termék."));
+
+            //////////////////////////////
+            //Hány különböző kategória van
+            int kategoriak = termekLista
+                .Select(t => t.Kategoria)
+                .Distinct()
+                .Count();
+            Console.WriteLine($"{kategoriak} darab kategória van.");
+            //vagy
+            Console.WriteLine($"{kategoria.Count()} darab kategória van.");
+
+            ///////////////////////////////////////////////////
+            //Kategóriánként hány termék található a készletben
+            termekLista
+                .GroupBy(sor => sor.Kategoria)
+                .Select(g => (Kategoria: g.Key, Keszlet: g.Sum(sor => sor.Keszlet)))
+                .ToList()
+                .ForEach(x => Console.WriteLine($"{x.Kategoria}: {x.Keszlet} darab termék."));
+
+            //Változóba kimentés
+            var kategoriaKeszlet = termekLista
+                .GroupBy(sor => sor.Kategoria)
+                .Select(g => new
+                {
+                    Kategoria = g.Key,
+                    Keszlet = g.Sum(sor => sor.Keszlet)
+                })
+                .ToList();
+            kategoriaKeszlet.ForEach(x => Console.WriteLine($"{x.Kategoria}: {x.Keszlet} darab termék."));
+
+            //Hozz létre egy dragatermekek.csv fájlt, amelybe csak az átlag ár feletti termékek kerülnek bele
+            var dragaTermekek = termekLista
+                .Where(sor => sor.Ar > atlag)
+                .Select(sor => $"{sor.Id};{sor.Megnevezes};{sor.Kategoria};{sor.Ar};{sor.Keszlet}")
+                .Prepend(header);
+
+            File.WriteAllLines("dragatermekek.csv", dragaTermekek);
+        }
+    }
+}
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+termek_id;megnevezes;kategoria;ar;keszlet
+101;Alma;Élelmiszer;1,29;19
+102;Banán;Élelmiszer;1,10;62
+103;Narancs;Élelmiszer;1,49;79
+104;Kávé;Élelmiszer;8,90;57
+105;Tea;Élelmiszer;6,40;23
+106;Sajt;Élelmiszer;5,80;71
+107;Joghur;Élelmiszer;1,20;37
+108;Tojás;Élelmiszer;3,40;54
+109;Csirkemell;Élelmiszer;7,90;72
+110;Hal;Élelmiszer;9,60;70
+111;Okostelefon;Elektronika;699,00;38
+112;Fülhallgató;Elektronika;59,90;74
+113;Tablet;Elektronika;399,00;94
+114;Okosóra;Elektronika;199,00;68
+115;Hordozható hangszóró;Elektronika;89,90;49
+116;Tévékészülék;Elektronika;799,00;33
+117;Játékkonzol;Elektronika;499,00;39
+118;Porszívó;Háztartási gép;159,00;100
+119;Vízforraló;Háztartási gép;49,90;84
+120;Kávéfőző;Háztartási gép;129,00;50
+121;Mikrohullámú sütő;Háztartási gép;179,00;44
+122;Mosogatógép;Háztartási gép;699,00;42
+123;Hajszárító;Háztartási gép;39,90;17
+124;Kanapé;Bútor;899,00;39
+125;Étkezőasztal;Bútor;499,00;12
+126;Szekrény;Bútor;699,00;79
+127;Komód;Bútor;349,00;46
+128;Fotel;Bútor;299,00;82
+129;Polcrendszer;Bútor;199,00;58
+130;Pendrive;Számítástechnika;12,90;46
+131;Videókártya;Számítástechnika;699,00;1
+132;Processzor;Számítástechnika;399,00;60
+133;Alaplap;Számítástechnika;249,00;23
+134;SSD;Számítástechnika;79,90;39
+135;Router;Számítástechnika;129,00;8
+136;Monitor;Számítástechnika;249,00;35
+137;Jegyzetfüzet;Papír-írószer;4,90;80
+138;Színes ceruza;Papír-írószer;9,90;28
+139;Filctoll;Papír-írószer;6,50;14
+140;Naptár;Papír-írószer;7,90;46
+141;Radír;Papír-írószer;1,20;24
+142;Tűzőkapocs;Papír-írószer;2,50;75
+143;Farmer;Ruházat;49,90;38
+144;Kabát;Ruházat;129,00;96
+145;Póló;Ruházat;19,90;78
+146;Cipő;Ruházat;89,00;19
+147;Sapka;Ruházat;14,90;21
+148;Zokni;Ruházat;5,90;19
+149;Pulóver;Ruházat;39,90;6

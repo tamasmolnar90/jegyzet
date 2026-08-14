@@ -1,0 +1,60 @@
+4. Feladat: Mini To-Do Lista
+Új elemek (lista elemek) hozzáadása a DOM-hoz, és eseménykezelők rendelése a dinamikusan létrehozott elemekhez.
+Gombnyomásra ellenőrizd, hogy az input mező nem üres-e. Ha üres, alert("Írj be valamit!"); és állítsd meg a futást.
+Használd a document.createElement("li") parancsot egy új lista elem létrehozásához.
+Az új li textContent-je legyen az input mező értéke.
+Tegyél egy addEventListener-t magára az új li elemre is! Kattintásra tegye rá a text-decoration: line-through CSS stílust (vagy adjon hozzá egy CSS osztályt), jelezve, hogy kész van.
+Fűzd hozzá a kész li-t az ul-hez a appendChild metódussal.
+Ürítsd ki az input mezőt (ujFeladat.value = "").
+
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <input type="text" id="uj-feladat" placeholder="Mit kell ma csinálni?" />
+    <button id="hozzaad-gomb">Hozzáadás</button>
+    <ul id="feladat-lista"></ul>
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+let ujInputEl = document.querySelector("#uj-feladat");
+const feladatListaEl = document.querySelector("#feladat-lista");
+const hozzaadBtn = document.querySelector("#hozzaad-gomb");
+
+hozzaadBtn.addEventListener("click", hozzaad);
+feladatListaEl.addEventListener("click", kesz);
+
+function hozzaad() {
+  if (!ujInputEl.value) {
+    alert("Írj be valamit");
+    return;
+  }
+
+  const feladatLi = document.createElement("li");
+  feladatLi.textContent = ujInputEl.value;
+  feladatListaEl.append(feladatLi);
+
+  ujInputEl.value = "";
+}
+
+function kesz(e) {
+  const clicked = e.target.closest("li");
+
+  if (!clicked) return;
+
+  clicked.style.textDecoration = "line-through";
+}

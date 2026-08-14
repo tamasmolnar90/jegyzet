@@ -1,0 +1,62 @@
+A docker egy DevOps jellegű tudás (Development and Operations (fejlesztés és üzemeltetés))
+docker install: https://www.docker.com/
+
+docker ps - (process) futó fonténerek lekérdezése
+ha linuxon nem férsz hozzá a dockerhez, add hozzá magad:
+sudo usermod -aG docker $USER
+newgrp docker
+vagy sudoval futtasd: sudo docker ps
+
+teszt:
+docker run -d -p 8080:80 docker/welcome-to-docker
+letölti ezt a konténert, majd futtatja a 8080-as porton
+böngészőven tesztelés:
+http://localhost:8080/
+
+////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+
+docker ps // (process) futó fonténerek lekérdezése
+docker ps -a // összes konténer lekérdezése
+
+docker stop [CONTAINER ID] // futó konténer bezárása (id első pár karaktere elég)
+docker start [CONTAINER ID] // konténer elindítása
+docker rm [CONTAINER ID] // konténer törlése
+
+docker image ls // imagek lekérdezése
+docker image rm [ID] // teljes id-t meg kell adni
+
+docker pull docker/welcome-to-docker:latest // image letöltése
+
+01. Konténer indítása (egyből létrehoz + futtat)
+docker run docker/welcome-to-docker:latest
+
+02. Portok kezelése (gyakori)
+docker run -p 8080:80 docker/welcome-to-docker:latest
+8080 -> a te gépeden
+80 -> a konténeren belül
+böngészőben -> http://localhost:8080
+ITT TERMINÁLBAN FUT, LÁTOD A LOGOKAT, CTRL+C LEÁLLÍTJA
+
+03. Háttérben futtatás
+docker run -d -p 8080:80 docker/welcome-to-docker:latest
+-d -> detached (háttérben fut)
+VISSZAKAPOD A TERMINÁLT, NEM LOGOL, HASZNÁLHATOD TOVÁBB A TERMINÁLT
+
+Dockerfile létrehozása:
+FROM node:24 // docker hubról jön, hivatalos image
+WORKDIR /app // munkakönyvtár definiálása
+COPY package*.json ./ // csak a package.json + package-lock.json fájlokat másolja be a konténerbe
+RUN npm install // konténerben fog futni
+COPY . . // összes fájl bemásolása a konténerbe, teljes appot
+EXPOSE 8080 // melyik portot használja a konténeren belül, amit a server.js-ben írtál
+CMD ["npm", "run", "dev"]
+
+.dockerignore létrehozása:
+node_modules // ignorálja ezt a könyvtárat, ne másolja bele a konténerbe
+
+image legyártása:
+terminál projekt mappában:
+docker build -t vision-app .
+
+docker run -p 5050:8080 vision-app // a mi gépünkön a 3000 porton fog futni, a dockerben pedig a 8080-ason, ezt a Dockerfile-ban megadottra kell állítani ami pedig a server.js fileból kell szedni

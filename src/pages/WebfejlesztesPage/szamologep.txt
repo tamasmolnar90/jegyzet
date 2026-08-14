@@ -1,0 +1,171 @@
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="szamologep">
+      <div class="kijelzo" id="kijelzo">0</div>
+
+      <button class="szam">7</button>
+      <button class="szam">8</button>
+      <button class="szam">9</button>
+      <button class="muvelet">/</button>
+
+      <button class="szam">4</button>
+      <button class="szam">5</button>
+      <button class="szam">6</button>
+      <button class="muvelet">*</button>
+
+      <button class="szam">1</button>
+      <button class="szam">2</button>
+      <button class="szam">3</button>
+      <button class="muvelet">-</button>
+
+      <button id="torles">C</button>
+      <button class="szam">0</button>
+      <button id="egyenlo">=</button>
+      <button class="muvelet">+</button>
+    </div>
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const szamGombok = document.querySelectorAll(".szam");
+const muveletGombok = document.querySelectorAll(".muvelet");
+const egyenloGomb = document.querySelector("#egyenlo");
+const torlesGomb = document.querySelector("#torles");
+const kijelzo = document.querySelector("#kijelzo");
+
+let elsoSzam;
+let masodikSzam;
+let kivalasztottMuvelet;
+
+//Számgombok
+szamGombok.forEach((gomb) => {
+  gomb.addEventListener("click", () => {
+    if (kijelzo.textContent === "0") {
+      kijelzo.textContent = gomb.textContent;
+    } else {
+      kijelzo.textContent += gomb.textContent;
+    }
+  });
+});
+
+//Műveleti gombok
+muveletGombok.forEach((gomb) => {
+  gomb.addEventListener("click", () => {
+    elsoSzam = parseFloat(kijelzo.textContent);
+    kivalasztottMuvelet = gomb.textContent;
+    kijelzo.textContent = "";
+  });
+});
+
+//Egyenlőség
+egyenloGomb.addEventListener("click", () => {
+  masodikSzam = parseFloat(kijelzo.textContent);
+
+  let eredmeny;
+
+  if (kivalasztottMuvelet === "+") eredmeny = elsoSzam + masodikSzam;
+  if (kivalasztottMuvelet === "-") eredmeny = elsoSzam - masodikSzam;
+  if (kivalasztottMuvelet === "*") eredmeny = elsoSzam * masodikSzam;
+  if (kivalasztottMuvelet === "/") eredmeny = elsoSzam / masodikSzam;
+
+  kijelzo.textContent = eredmeny;
+});
+
+// Törlés
+torlesGomb.addEventListener("click", () => {
+  elsoSzam = "";
+  masodikSzam = "";
+  kivalasztottMuvelet = "";
+  kijelzo.textContent = "0";
+});
+
+/////////////////////////////
+////////// JOBB JS //////////
+/////////////////////////////
+
+const szamGombok = document.querySelectorAll(".szam");
+const muveletGombok = document.querySelectorAll(".muvelet");
+const egyenloGomb = document.querySelector("#egyenlo");
+const torlesGomb = document.querySelector("#torles");
+const kijelzo = document.querySelector("#kijelzo");
+
+let szamok;
+let kivalasztottMuvelet;
+
+//Számgombok
+szamGombok.forEach((gomb) => {
+  gomb.addEventListener("click", () => {
+    if (kijelzo.textContent === "0") {
+      kijelzo.textContent = gomb.textContent;
+    } else {
+      kijelzo.textContent += gomb.textContent;
+    }
+  });
+});
+
+//Műveleti gombok
+muveletGombok.forEach((gomb) => {
+  gomb.addEventListener("click", () => {
+    szamok = parseFloat(kijelzo.textContent);
+    kivalasztottMuvelet = gomb.textContent;
+    kijelzo.textContent += " " + kivalasztottMuvelet + " ";
+  });
+});
+
+//Egyenlőség
+egyenloGomb.addEventListener("click", () => {
+  let kijelzoReszek = kijelzo.textContent.split(kivalasztottMuvelet);
+  let a = parseFloat(kijelzoReszek[0].trim());
+  let b = parseFloat(kijelzoReszek[1].trim());
+
+  let eredmeny;
+
+  if (kivalasztottMuvelet === "+") eredmeny = a + b;
+  if (kivalasztottMuvelet === "-") eredmeny = a - b;
+  if (kivalasztottMuvelet === "*") eredmeny = a * b;
+  if (kivalasztottMuvelet === "/") eredmeny = a / b;
+
+  kijelzo.textContent = eredmeny;
+});
+
+// Törlés
+torlesGomb.addEventListener("click", () => {
+  szamok = "";
+  kivalasztottMuvelet = "";
+  kijelzo.textContent = "0";
+});
+
+/////////////////////////
+////////// CSS //////////
+/////////////////////////
+
+.szamologep {
+  width: 200px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+
+.kijelzo {
+  grid-column: span 4;
+  height: 40px;
+  background: #eee;
+  text-align: right;
+  font-size: 24px;
+  padding: 5px;
+}

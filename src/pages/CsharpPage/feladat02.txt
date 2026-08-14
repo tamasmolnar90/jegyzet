@@ -1,0 +1,149 @@
+02. Autókereskedés
+
+Egy autókereskedés a járműveit egy memóriában lévő listában tárolja.
+A feladatod, hogy leprogramozd az autók tárolásáért felelős osztályt, és LINQ lekérdezésekkel válaszolj meg néhány kérdést a kínálattal kapcsolatban!
+
+01. Feladat
+Osztály létrehozása Készíts egy Auto nevű osztályt az alábbi tulajdonságokkal (Properties):
+- Gyarto (szöveg, pl. "Ford")
+- Modell (szöveg, pl. "Focus")
+- Kivitel (szöveg, pl. "Kombi", "Sedan", "SUV")
+- Ar (egész szám, forintban)
+
+02. Feladat
+Az osztályon belül: Írj egy EuroAr(double arfolyam) nevű függvényt az Auto osztályba, ami kiszámolja és visszaadja (double típusban), hogy mennyibe kerül az autó euróban, a paraméterben megadott árfolyammal számolva!
+(Képlet: Ár / árfolyam)
+
+03. Feladat
+A főprogramban: Készíts egy függvényt AutokFeltoltese() néven, ami létrehoz egy listát (List<Auto>), feltölti 5-6 tesztadattal, és visszatér ezzel a listával.
+
+Példa Adatok:
+Ford, Focus, Kombi, 3500000
+Toyota, RAV4, SUV, 12000000
+Volkswagen, Passat, Sedan, 6000000
+Suzuki, Vitara, SUV, 5500000
+Opel, Astra, Kombi, 2800000
+Audi, A4, Sedan, 8500000
+
+04. Feladat: LINQ lekérdezések.
+A főprogramban hívd meg az AutokFeltoltese() függvényt, majd oldd meg az alábbi feladatokat LINQ segítségével:
+04-1: Szűrés: Listázd ki azokat az autókat, amelyek 5 000 000 Ft-nál olcsóbbak!
+04-2: Rendezés: Írasd ki az összes autót ár szerint csökkenő sorrendben (legdrágább legyen elöl)!
+04-3: Kiválasztás: Kérd le és írasd ki csak a modelljeit azoknak az autóknak, amelyek "SUV" kivitelűek!
+04-4: Kombinált szűrés: Keress olyan autókat, amik "Kombi" kivitelűek ÉS kevesebbe kerülnek, mint 4 000 000 Ft!
+04-5: Betűrend: Listázd ki az autókat a Gyarto neve alapján szigorúan ABC sorrendben!
+04-6: Osztályfüggvény használata: Keresd meg a "Sedan" kivitelű autókat, és írasd ki az árukat Euróban, feltételezve, hogy 1 Euró = 390 Ft! (Használd a saját EuroAr függvényedet!)
+
+
+
+
+namespace _02_autokereskedes
+{
+    internal class Program
+    {
+        // 01. Feladat
+        class Auto(string gyarto, string modell, string kivitel, int ar)
+        {
+            public string Gyarto { set; get; } = gyarto;
+            public string Modell { set; get; } = modell;
+            public string Kivitel { set; get; } = kivitel;
+            public int Ar { set; get; } = ar;
+
+            // 02. Feladat
+            public double EuroAr(double arfolyam)
+            {
+                return Ar / arfolyam;
+            }
+        }
+
+        // 03. Feladat
+        static List<Auto> AutokFeltoltese()
+        {
+            Auto tesztadat1 = new("Ford", "Focus", "Kombi", 3500000);
+            Auto tesztadat2 = new("Toyota", "RAV4", "SUV", 12000000);
+            Auto tesztadat3 = new("Volkswagen", "Passat", "Sedan", 6000000);
+            Auto tesztadat4 = new("Suzuki", "Vitara", "SUV", 5500000);
+            Auto tesztadat5 = new("Opel", "Astra", "Kombi", 2800000);
+            Auto tesztadat6 = new("Audi", "A4", "Sedan", 8500000);
+
+            List<Auto> autokLista = new List<Auto>();
+
+            autokLista.Add(tesztadat1);
+            autokLista.Add(tesztadat2);
+            autokLista.Add(tesztadat3);
+            autokLista.Add(tesztadat4);
+            autokLista.Add(tesztadat5);
+            autokLista.Add(tesztadat6);
+
+            return autokLista;
+        }
+
+        static void Main(string[] args)
+        {
+            // 04. Feladat
+            List<Auto> autokLista = AutokFeltoltese();
+
+            // 04-1:
+            Console.WriteLine("5.000.000Ft-nál olcsóbb autók:");
+            var olcsoAutok = autokLista
+                .Where(t => t.Ar < 5000000)
+                .ToList();
+            foreach (var auto in olcsoAutok)
+            {
+                Console.WriteLine($"{auto.Gyarto} {auto.Modell} {auto.Kivitel} {auto.Ar}Ft");
+            }
+
+            // 04-2:
+            Console.WriteLine("\nAutók ár szerint csökkenő sorrendben:");
+            var csokkenoAr = autokLista
+                .OrderByDescending(t => t.Ar)
+                .ToList();
+            foreach (var auto in csokkenoAr)
+            {
+                Console.WriteLine($"{auto.Gyarto} {auto.Modell} {auto.Kivitel} {auto.Ar}Ft");
+            }
+
+            // 04-3:
+            Console.WriteLine("\nSUV kivitelű autó modellek:");
+            var suvKivitel = autokLista
+                .Where(t => t.Kivitel == "SUV")
+                .Select(t => t.Modell)
+                .ToList();
+            foreach (var auto in suvKivitel)
+            {
+                Console.WriteLine(auto);
+            }
+
+            // 04-4:
+            Console.WriteLine("\n4.000.000Ft-nál olcsóbb Kombik:");
+            var olcsoKombik = autokLista
+                .Where(t => t.Kivitel == "Kombi")
+                .Where(t => t.Ar < 4000000)
+                .ToList();
+            foreach (var auto in olcsoKombik)
+            {
+                Console.WriteLine($"{auto.Gyarto} {auto.Modell} {auto.Kivitel} {auto.Ar}Ft");
+            }
+
+            // 04-5:
+            Console.WriteLine("\nGyártók szerinti ABC sorrend:");
+            var gyartoSorrend = autokLista
+                .OrderBy(t => t.Gyarto)
+                .ToList();
+            foreach (var auto in gyartoSorrend)
+            {
+                Console.WriteLine($"{auto.Gyarto} {auto.Modell} {auto.Kivitel} {auto.Ar}Ft");
+            }
+
+            // 04-6:
+            Console.WriteLine("\nSedan kivitelű autók eurós ára:");
+            var sedanEuro = autokLista
+                .Where(t => t.Kivitel == "Sedan")
+                .ToList();
+            foreach (var auto in sedanEuro)
+            {
+                Console.WriteLine($"{auto.Gyarto} {auto.Modell} {auto.Kivitel} {auto.EuroAr(390):F2} EUR");
+            }
+        }
+    }
+}

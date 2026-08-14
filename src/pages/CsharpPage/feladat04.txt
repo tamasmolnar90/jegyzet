@@ -1,0 +1,97 @@
+04. Konzolos Asszisztens
+
+01. Feladat: String műveletek és bekérés:
+01-1: A program induláskor kérje be a felhasználó nevét.
+01-2: Használj konkatenálást, hogy üdvözöld őt a konzolon: "Üdvözöllek, [Név]!".
+01-3: Kérd be a felhasználó e-mail címét.
+01-4: Keresd meg a @ karakter pozícióját egy beépített függvénnyel.
+01-5: Ha nincs benne, írd ki a konzolra, hogy hibás a formátum!
+01-6: Egy függvény segítségével vágd ki és írd ki az e-mail szolgáltató nevét (a @ utáni részt).
+
+02. Feladat: Random és Math osztályok:
+02-1: A program jelezze, hogy most generál két szerencseszámot.
+02-2: A Random osztály segítségével generálj két véletlenszámot, majd írd ki őket a képernyőre.
+02-3: A beépített min és max függvények segítségével döntsd el, hogy melyik a nagyobb és írasd ki őket.
+02-4: Számold ki a két szám összegének négyzetgyökét és jelenítsd meg az eredményt!
+
+Kérem a neved: Test
+Üdvözöllek, Test!
+Kérem az e-mail címed: test@example.com
+Az e-mail szolgáltatód: example.com
+
+Most generálok két szerencseszámot...
+
+A két generált szám: 4 és 44
+A nagyobb szám a(z) 44, a kisebb a(z) 4.
+A két szám összegének négyzetgyöke: 6,93
+
+
+
+
+namespace _04_konzolos_asszisztens
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // 01. Feladat
+            // 01-1:
+            Console.Write("Kérem a neved: ");
+            string? nev = Console.ReadLine();
+
+            // 01-2:
+            Console.WriteLine($"Üdvözöllek, {nev}");
+
+            // 01-3:
+            Console.Write("Kérem az e-mail címed: ");
+            string? email = Console.ReadLine();
+
+            // 01-4:
+            int kukacHelye = email!.IndexOf('@');
+
+            // 01-5:
+            if (kukacHelye == -1)
+            {
+                Console.WriteLine("Hibás a formátum!");
+            }
+            else
+            {
+                // 01-6:
+                string szolgaltato = email.Substring(kukacHelye + 1);
+                Console.WriteLine($"Az e-mail szolgáltatód: {szolgaltato}");
+            }
+
+            // 02. Feladat
+            // 02-1:
+            Console.WriteLine("\nMost generálok két szerencseszámot...");
+
+            // 02-2:
+            Random rnd = new();
+            int randomSzam1 = rnd.Next(1, 101);
+            int randomSzam2 = rnd.Next(1, 101);
+            Console.WriteLine($"\nA két generált szám: {randomSzam1} és {randomSzam2}");
+
+            // 02-3:
+            int kisebb = Math.Min(randomSzam1, randomSzam2);
+            int nagyobb = Math.Max(randomSzam1, randomSzam2);
+            Console.WriteLine($"A nagyobb szám a(z) {nagyobb}, a kisebb a(z) {kisebb}.");
+
+            // 02-4:
+            int osszeg = randomSzam1 + randomSzam2;
+            double negyzetgyok = Math.Sqrt(osszeg);
+            Console.WriteLine($"A két szám összegének négyzetgyöke: {Math.Round(negyzetgyok, 2)}");
+
+            // Bónusz: Név kiíratása szóköz nélkül:
+            var szokozHelye = nev!.IndexOf(' ');
+            if (szokozHelye == -1)
+            {
+                Console.WriteLine("Nincs a névben szóköz!");
+            }
+            else
+            {
+                var valtoztatottNev = nev.Replace(' ', '\0');
+                Console.WriteLine($"\nSzóköz nélküli név: {valtoztatottNev}");
+            }
+        }
+    }
+}

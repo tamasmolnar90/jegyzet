@@ -1,0 +1,201 @@
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    />
+    <script src="./script.js" defer></script>
+  </head>
+  <body class="bg-light">
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-body">
+              <h2 class="card-title text-center mb-4">Teendők Kezelése</h2>
+
+              <!-- Űrlap -->
+              <form id="todoForm" class="mb-4">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="todoInput"
+                    class="form-control"
+                    placeholder="Új teendő..."
+                    required
+                  />
+                  <button class="btn btn-primary" type="submit" id="addBtn">
+                    Hozzáadás
+                  </button>
+                </div>
+              </form>
+
+              <!-- Lista helye -->
+              <ul id="todoList" class="list-group">
+                <!-- Ide kerülnek a createElement-el létrehozott elemek -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const API_URL = "https://jsonplaceholder.typicode.com/todos";
+
+const DOM = {
+  todoForm: document.getElementById("todoForm"),
+  todoInput: document.getElementById("todoInput"),
+  todoList: document.getElementById("todoList"),
+};
+
+if (!DOM.todoForm || !DOM.todoInput || !DOM.todoList) {
+  console.error("Hiányzó DOM elem a script.js-ben");
+  alert("Hiányzó DOM elem — ellenőrizd az index.html-t.");
+  throw new Error("Missing DOM elements");
+}
+function createTodoElement(id, title) {
+  const li = document.createElement("li");
+  li.className =
+    "list-group-item d-flex justify-content-between align-items-center";
+
+  const span = document.createElement("span");
+  span.className = "text-break me-5";
+  span.textContent = title;
+
+  const btnGroup = document.createElement("div");
+  btnGroup.className = "d-inline-block flex-shrink-0 d-flex gap-2";
+
+  const editBtn = document.createElement("button");
+  editBtn.className = "btn btn-warning";
+  editBtn.textContent = "Szerkesztés";
+  editBtn.type = "button";
+  editBtn.addEventListener("click", () => updateTodo(id, span));
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "btn btn-danger";
+  deleteBtn.textContent = "Törlés";
+  deleteBtn.type = "button";
+  deleteBtn.addEventListener("click", () => deleteTodo(id, li));
+
+  btnGroup.appendChild(editBtn);
+  btnGroup.appendChild(deleteBtn);
+  li.appendChild(span);
+  li.appendChild(btnGroup);
+  DOM.todoList.appendChild(li);
+}
+
+DOM.todoForm.addEventListener("submit", createTodo);
+
+async function createTodo(event) {
+  event.preventDefault();
+
+  const title = DOM.todoInput.value.trim();
+
+  if (!title) return;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        title,
+        completed: false,
+        userId: 1,
+      }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP hiba: ${response.status}`);
+
+    const newTodo = await response.json();
+
+    createTodoElement(newTodo.id || Date.now(), newTodo.title ?? title);
+    DOM.todoInput.value = "";
+  } catch (error) {
+    console.error(`Hiba: ${error.message}`);
+    alert(`Hiba történt: ${error.message}`);
+  }
+}
+
+async function updateTodo(id, textEl) {
+  const newTitle = prompt("Módosítsd a feladatot:", textEl.textContent);
+
+  if (newTitle === null) return; // felhasználó megszakította
+  const trimmed = newTitle.trim();
+  if (!trimmed) {
+    alert("A feladat nem lehet üres.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        title: trimmed,
+      }),
+    });
+
+    if (!response.ok) throw new Error(`HTTP hiba: ${response.status}`);
+
+    const updatedTodo = await response.json();
+
+    textEl.textContent = updatedTodo.title ?? trimmed;
+  } catch (error) {
+    console.error(`Hiba: ${error.message}`);
+    alert(`Hiba történt: ${error.message}`);
+  }
+}
+
+async function deleteTodo(id, liEl) {
+  if (!confirm("Biztosan törli?")) return;
+
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) throw new Error(`HTTP hiba: ${response.status}`);
+
+    liEl.remove();
+
+    alert(`A(z) ${id} azonosítójú todo törölve!`);
+  } catch (error) {
+    console.error(`Hiba: ${error.message}`);
+  }
+}
+
+async function fetchInitTodos() {
+  try {
+    const response = await fetch(`${API_URL}?_limit=5`);
+
+    if (!response.ok) throw new Error("Nem sikerült a lekérdezés!");
+
+    const todos = await response.json();
+
+    todos.forEach((todo) => {
+      createTodoElement(todo.id, todo.title);
+    });
+  } catch (error) {
+    console.error(`Hiba a betöltéskor: ${error.message}`);
+  }
+}
+fetchInitTodos();

@@ -1,0 +1,59 @@
+2. Feladat: Éjszakai/Nappali mód kapcsoló
+Egy gomb, amely átállítja az egész oldal stílusát sötét módra, és megváltoztatja a gomb feliratát.
+Válaszd ki a gombot és a document.body elemet.
+Készíts egy CSS osztályt (pl. a style tagek közé), mondjuk .sotet-mod néven, ami sötét hátteret és világos betűszínt állít be.
+A gombra kattintáskor használd a body.classList.toggle("sotet-mod") parancsot.
+Vizsgáld meg (if feltétellel), hogy a body tartalmazza-e a sötét osztályt (használd a body.classList.contains("sotet-mod") metódust).
+Ha igen, írd át a gomb szövegét "Világos mód bekapcsolása"-ra, ha nem, akkor állítsd vissza az eredetire.
+
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>    
+    <button id="tema-valto">Sötét mód bekapcsolása</button>
+    <p>Ez egy példa szöveg az oldalon.</p>    
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const bodyEl = document.body;
+const temaValtoBtn = document.querySelector("#tema-valto");
+
+const eredetiSzoveg = temaValtoBtn.textContent;
+
+temaValtoBtn.addEventListener("click", temaValto);
+
+function temaValto() {
+  bodyEl.classList.toggle("sotet-mod");
+  temaVizsgalo();
+}
+
+function temaVizsgalo() {
+  if (bodyEl.classList.contains("sotet-mod")) {
+    temaValtoBtn.textContent = "Világos mód bekapcsolása";
+  } else {
+    temaValtoBtn.textContent = eredetiSzoveg;
+  }
+}
+
+/////////////////////////
+////////// CSS //////////
+/////////////////////////
+
+.sotet-mod {
+  background-color: black;
+  color: white;
+}

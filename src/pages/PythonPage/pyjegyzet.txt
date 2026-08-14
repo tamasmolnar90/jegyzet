@@ -1,0 +1,516 @@
+import random
+szam = random.randint(1, 50) - mindkét határérték benne van
+
+import math
+math.floor(szam) - lefelé kerekít
+math.ceil(szam) - felfelé kerekít
+
+szam / 10 - osztás
+szam // 10 - maradék nélküli osztás
+szam % 10 - maradék
+int(szam) - csak egész szám, levágja a maradékot
+
+banker's rounding: Statisztikába, pénzügyi számításban, csökkenti a hosszú távú torzítást
+.5 esetén mindig a páros szám felé kerekít
+round(2.5) - 2
+round(2.6) - 3
+round(3.5) - 4
+round(2.5678, 2) - 2.57 - két tizedesre kerekít
+
+lista.sort()            lista.sort(reverse=True)
+print(lista)            print(lista)
+vagy:
+print(sorted(lista))    print(sorted(lista, reverse=True))
+
+lista_list = ["alma", "alma", "körte", "banán"]
+lista_list.remove("banán")
+lista_list.append("banán")
+lista_list.pop(0) # első elem törlése
+print(lista_list)
+
+halmaz = {1, 2, 3, 4}
+halmaz_set = set(lista_list)
+print(halmaz_set)
+halmaz_set.add("barack")
+print(halmaz_set)
+halmaz_set.remove("banán")
+print(halmaz_set)
+
+
+
+
+### 01 | Kérj be egy számot és döntsd el róla, hogy páros vagy páratlan.
+beker = int(input("Adj meg egy számot: "))
+if beker % 2 == 0:
+    print(f"A bekért szám: {beker} páros.")
+else:
+    print(f"A bekért szám: {beker} páratlan.")
+
+vagy:
+beker = int(input("Adj meg egy számot: "))
+print("páros") if beker % 2 == 0 else print("páratlan")
+
+
+
+
+### 02 | Kérj be két számot és írasd ki melyik a nagyobb, ha egyenlő azt is.
+elso_szam = int(input("Adja meg az első számot: "))
+masodik_szam = int(input("Adja meg a második számot: "))
+if elso_szam > masodik_szam:
+    print("Az első szám a nagyobb.")
+elif elso_szam < masodik_szam:
+    print("A második szám a nagyobb.")
+else:
+    print("A két szám egyenlő.")
+
+
+
+
+### 03 | Kérj be egy színt és írasd ki. (piros, sárga, zöld, érvénytelen)
+beker = input("Adj meg egy színt(piros/sárga/zöld): ").lower()
+if (beker == "piros"):
+    print("A bekért szín: piros")
+elif (beker == "sárga"):
+    print("A bekért szín: sárga")
+elif (beker == "zöld"):
+    print("A bekért szín: zöld")
+else:
+    print("A bekért szín érvénytelen!")
+
+
+
+
+### 04 | Kérj be három számot a felhasználótól és írd ki a legnagyobbat, majd írd ki a lista összegét.
+lista = []
+for i in range(3):
+    beker = int(input(f"Adja meg a(z) {i + 1}. számot: "))
+    lista.append(beker)
+maximum = lista[0]
+for i in range(len(lista)):
+    if lista[i] > maximum:
+        maximum = lista[i]
+print(f"A legnagyobb bekért szám: {maximum}")
+osszeg = 0
+for i in range(len(lista)):
+    osszeg += lista[i]
+print(f"A lista összege: {osszeg}")
+
+vagy:
+lista = []
+for i in range(3):
+    beker = int(input(f"Adja meg a(z) {i+1} számot: "))
+    lista.append(beker)
+print(f"A legnagyobb bekért szám: {max(lista)}\nA lista összege: {sum(lista)}")
+
+
+
+
+### 05 | 150-től 50-ig a számok csökkenő sorrendben (for ciklussal)
+for i in range(150, 49, -1):
+    print(i)
+
+
+
+
+### 06 | 150-től 50-ig a számok csökkenő sorrendben (while ciklussal)
+i = 150
+while i > 49:
+    print(i)
+    i -= 1
+
+
+
+
+### 07 | Számok 0-tól 100-ig, amik oszthatók 2-vel, de nem oszthatók 5-el (for ciklussal)
+for i in range(101):
+    if i % 2 == 0 and i % 5 != 0:
+        print(i)
+
+
+
+
+### 08 | Számok 0-tól 100-ig, amik oszthatók 2-vel, de nem oszthatók 5-el (while ciklussal)
+i = 0
+while i < 101:
+    if i % 2 == 0 and i % 5 != 0:
+        print(i)
+    i += 1
+
+
+
+
+### 09 | Kérj be 5 számot és számold ki a szorzatukat. Csak 0 és 50 közé számot adhatsz meg.
+szorzat = 1
+i = 0
+while i < 5:
+    beker = int(input(f"Add meg a(z) {i + 1}. számot 0 és 50 között: "))
+    if 0 < beker < 50:
+        szorzat *= beker
+        i += 1
+    else:
+        print("Rossz érték!")
+print(szorzat)
+
+
+
+
+### 10 | Kérj be addig számokat, amíg 0-át nem adunk meg.
+while True:
+    beker = int(input("Adj meg egy számot, 0-val kilép: "))    
+    if beker < 0:
+        print("Negatív szám nem jó")
+        continue
+    elif beker > 0:
+        print("Pozitív szám nem jó")
+        continue
+    else:
+        break
+print("Lefutott a program!")
+
+
+
+
+### 11 | Kérj be számokat -5-től 50-ig, írasd ki a kettővel osztható számok négyzetgyökét két tizedesjegyig. (Negatív számnak nincs négyzetgyöke)
+for i in range(-5, 51)
+if i > 0 and i % 2 == 0:
+    print(f"{i} négyzetgyöke: {i ** 0.5:.2f}")
+
+
+
+
+### 12 | Faktoriális számítás. pl: 5! = 5 * 4 * 3 * 2 * 1 = 120
+
+ITERÁCIÓ, ITERATÍV (ITERATION, ITERATIVE)
+beker = int(input("Adj meg egy számot: "))
+if beker < 0:
+    print("A faktoriális nem értelmezett negatív számra!")
+else:
+    faktorialis = 1
+    i = beker    
+    while i != 0:
+        faktorialis *= i
+        i -= 1
+    print(f"A(z) {beker} faktoriálisa: {faktorialis}")
+
+vagy:
+faktor = 1
+while True:
+    szam = int(input("Kérek egy számot, ami nem negatív: "))
+    if szam >= 0:
+        for i in range(szam, 0, -1):
+            faktor *= i
+        print(f"A {szam} faktorialisa {faktor}.")
+        break
+    else:
+        print("A szám nem lehet negatív!")
+
+vagy:
+import math
+while True:
+    szam = int(input("Kérek egy számot: "))
+    if szam >= 0:
+        print(f"{szam} faktoriálisa: {math.factorial(szam)}")
+        break
+    else:
+        print("A szám nem lehet negatív!")
+
+REKURZIÓ, REKURZÍV (RECURSION, RECURSIVE)
+beker = int(input("Adj meg egy számot: "))
+def faktorialis(n):
+    if n < 0:
+        return "A faktoriális nem értelmezett negatív számra!"
+    elif n == 0:
+        return 1
+    else:
+        return n * faktorialis(n - 1)
+print(f"A(z) {beker} faktoriálisa: {faktorialis(beker)}")
+
+
+
+
+### 13 | Írasd ki a lista elemeit.
+auto_markak = ["Lexus", "Toyota", "Honda", "Ford", "BMW"]
+print(auto_markak)
+
+
+
+
+### 14 | Írassuk ki a lista elemeit egymás alá.
+auto_markak = ["Lexus", "Toyota", "Honda", "Ford", "BMW"]
+for marka in auto_markak:
+    print(marka)
+
+
+
+
+### 15 | Kérj be 5db gyümölcsöt, mentsd el egy listába és írasd ki.
+gyumolcsok = []
+for i in range(5):
+    beker = input(f"Add meg a(z) {i + 1}. gyümölcsöt: ")
+    gyumolcsok.append(beker)    
+print(f"A bekért gyümölcsök: {gyumolcsok}")
+
+
+
+
+### 16 | Minden bekért gyümölcs után kérdezze meg akarok-e még felvenni újat.
+gyumolcsok = []
+i = 1
+
+while True:
+    beker = input(f"Adja meg a(z) {i} egy gyümölcsöt: ")
+    gyumolcsok.append(beker)
+    i += 1
+
+    while True:
+        folytat = input("Szeretnéd folytatni? (y/n): ").lower()
+        if folytat in ("y", "n"):
+            break        
+        print("Hibás input!")
+
+    if folytat == "n":
+        break
+
+print(f"A bekért gyümölcsök: {gyumolcsok}")
+
+SEGÉD FÜGGVÉNYES MEGOLDÁS, TÍPUSANNOTÁCIÓVAL -> olvashatóbb, egyértelmű mit vár és mit ad vissza:
+def folytat(kerdes: str) -> bool:
+    while True:
+        valasz = input(kerdes).lower()
+
+        if valasz in ("y", "n"):
+            return valasz == "y"              
+        print("Hibás input!")
+
+gyumolcsok = []
+
+i = 1
+while True:
+    gyumolcsok.append(input(f"Adja meg a(z) {i}. gyümölcsöt: "))
+    i += 1
+
+    if not folytat("Szeretnéd folytatni?(y/n): "):
+        break
+
+print(f"A bekért gyümölcsök: {gyumolcsok}")
+
+
+
+
+### 17 | Kérj be 6db számot, mentsd el egy listába, majd válogasd szét páros és páratlan listába, írasd ki a páros számok összegét és átlagát.
+szamok = []
+for i in range(6):
+    beker = int(input(f"Add meg a(z) {i + 1}. egy számot: "))
+    szamok.append(beker)
+
+paros = []
+paratlan = []
+
+for szam in szamok:
+    if szam % 2 == 0:
+        paros.append(szam)
+    else:
+        paratlan.append(szam)
+print(f"Páros számok: {paros}\nPáratlan számok: {paratlan}")
+
+osszeg = 0
+for szam in paros:
+    osszeg += szam
+print(f"Páros számok összege: {osszeg}")
+
+darab = 0
+for _ in paros:
+    darab += 1
+print(f"{darab}db szám van a páros listában.")
+
+atlag = osszeg / darab
+print(f"A páros számok listájának átlaga: {round(atlag, 2)}")
+print(f"A páros számok listájának átlaga: {atlag:.2f}")
+
+
+
+
+### LIST COMPREHENSION
+lista = [1,2,3,4,5,6,7,8,9,10]
+
+paros = [
+    szam
+    for szam in lista
+    if szam % 2 == 0
+]
+
+paratlan = [szam for szam in lista if szam % 2 != 0] -> vagy lehet egy sorban is
+
+print(paros)
+print(paratlan)
+
+
+
+
+### 18 | Kérj be 10db számot, írj függvényt, ami paraméterben várja a listát és adja vissza a legkisebb számot és annak indexét.
+lista = []
+
+for i in range(10):
+    beker = int(input(f"Adja meg a(z) {i+1}. számot: "))
+    lista.append(beker)
+
+def min_number_index(li):
+    min_num = li[0]
+    min_index = 0
+
+    for i in range(len(li)):
+        if li[i] < min_num:
+            min_num = li[i]
+            min_index = i
+
+    return min_num, min_index
+
+min_num, min_index = min_number_index(lista)
+print(f"A legkisebb érték: {min_num}, a(z) {min_index + 1} helyen áll a listában.")
+
+
+
+
+####################################################
+# NÉGYZET: önmagával szorozva
+
+# hatnak a négyzete (második hatványa)
+print(6 * 6)
+
+####################################################
+# HATVÁNYOK:
+
+# hatnak a második hatványa (négyzet) (hat a másodikon)
+print(6 ** 2) # 36 (6 x 6)
+
+# hatnak a negyedik hatványa (hat a negyediken)
+print(6 ** 4) # 1296 (6 x 6 x 6 x 6)
+
+# hatnak a hatodik hatványa (hat a hatodikon)
+print(6 ** 6) # 46656
+
+####################################################
+# GYÖKÖK:
+
+# hatnak a négyzetgyöke
+print(6 ** 0.5) # 2.44
+
+# hatnak a negyedik gyöke:
+print(6 ** (1/4)) # 1.56
+
+# hatnak a hatodik gyöke:
+print(6 ** (1/6)) # 1.34
+
+####################################################
+# TIZEDESJEGY MEGADÁSA:
+
+# hány tizedesjegyig kerekítsen csak formázott string típusoknál működik
+# print(3.141592:.2f) # NEM JÓ!!! kell az f"{}"
+print(f"{3.141592:.2f}") # 3.14
+
+####################################################
+# PARAMÉTER VS ARGUMENTUM:
+
+# PARAMÉTER:
+# A függvény definíciójában szereplő változó
+# def osszead(x, y) # x és y a paraméter
+
+# ARGUMENTUM:
+# A függvény hívásakor átadott érték
+# eredmeny = osszead(3, 5) # 3 és 5 az argumentum
+
+####################################################
+# WITH RETURN VS WITHOUT RETURN
+
+# Függvény return-nal
+# Simán függvénynek hívják
+
+# Függvény return nélkül
+# Eljárásnak vagy procedure-nak hívják
+
+####################################################
+# FÜGGVÉNY VS METÓDUS
+
+# Függvény:
+# Önállóan létező kódrészlet, ami nem tartozik semmilyen objektumhoz.
+# Meghívhatod közvetlenül a nevén.
+# osszead(3, 5)
+
+# Metódus:
+# Függvény, ami egy objektumhoz (példányhoz) tartozik.
+# Mindig valamilyen objektum részeként hívjuk.
+# szamolas.osszead(3, 5)
+
+####################################################
+# JSON: JavaScript Object Notation
+
+# Nyelvfüggetlen, nagyon sok webes applikáció használja a szerver és a kliens közötti adatcseréhez.
+
+####################################################
+# OOP ALAPPILÉREI:
+
+# EGYSÉGBEZÁRÁS - ENCAPSULATION
+# ABSZTRAKCIÓ - ABSTRACTION
+# ÖRÖKLŐDÉS - INHERITANCE
+# TÖBBALAKÚSÁG - POLYMORPHISM
+
+####################################################
+# PÉLDÁNYOSÍTÁS:
+
+# Van egy blueprint mintánk/tervrajz az osztály, ebben van rögzítve, hogy az objektumok milyen tulajdonságokkal és képességekkel rendelkeznek.
+# Önmagában egy osztály semmit sem ér, az osztályból létre kell hoznunk objektumokat és ezt a folyamatot nevezzük példányosításnak.
+
+####################################################
+# ATTRIBÚTUM:
+
+# Objektumhoz, osztályhoz vagy elemhez tartozó tulajdonságot jelez.
+# Más szóval adat, ami egy adott dologhoz kapcsolódik.
+
+# class Auto:
+#     szin = "fekete"
+#     marka = "Lexus"
+
+# Itt a következők az attribútumok: szin, marka, ez mind az auto tulajdonságai.
+
+####################################################
+# DEFINIÁL: LÉTREHOZ
+
+####################################################
+# DEKORÁTOR: 
+
+# A dekorátor (decorator) Pythonban egy olyan függvény, ami egy másik függvény működését módosítja vagy kibővíti, anélkül hogy a kódját át kellene írni.
+# egy függvény
+# ami egy másik függvényt "becsomagol"
+# plusz viselkedést ad hozzá
+
+# Gyakori felhasználás:
+# - logolás
+# - időmérés
+# - jogosultság ellenőrzés
+# - cache-elés
+# - API validálás
+
+####################################################
+# EXPLICIT VS IMPLICIT
+
+# EXPLICIT: egyértelmű, kifejezett, manuális
+
+# IMPLICIT: magától értetődő, automatikus
+
+####################################################
+# TERNARY OPERATOR / TERNARY EXPRESSION
+
+# Ez egy egysoros if-else rövidítés
+
+# python = "pozitiv" if szam > 0 else "nem pozitiv"
+
+# let js = szam > 0 ? "pizitiv" : "nem pozitiv";
+
+####################################################
+# LOGIKAI RÖVIDZÁR (SHORT-CIRCUIT EVALUATION)
+
+# python = szam > 0 and "pozitiv"
+
+# let js = szam > 0 && "pizitiv";
+
+####################################################

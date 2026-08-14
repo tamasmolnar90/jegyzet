@@ -1,0 +1,76 @@
+Google Fonts
+https://fonts.google.com/
+
+
+Open Color
+Ez egy színválasztó.
+https://yeun.github.io/open-color/
+
+
+Paletton
+Komplett színpalettát hoz létre árnyalatokkal együtt.
+https://paletton.com/
+https://coolors.co/
+
+
+Tint & Shade Generator
+Létre hozhatunk világosabb vagy sötétebb árnyalatokat egy színből.
+https://maketintsandshades.com/
+
+
+Contrast Checker
+https://coolors.co/contrast-checker
+
+
+Ingyenes Képek, Illusztrációk, 2D, 3D, Animált, Faces
+https://unsplash.com/
+https://www.pexels.com/
+https://www.drawkit.com/
+https://undraw.co/illustrations
+https://uifaces.co/
+
+
+Ikon Csomagok
+https://heroicons.com/
+https://phosphoricons.com/
+https://ionic.io/ionicons
+https://icons8.com/
+
+
+Képtömörítő
+https://squoosh.app/
+resize (megjelenített méret 2x)
+compress => WebP => Quality: 100 vagy 75
+
+
+Netlify
+https://www.netlify.com/
+
+
+Hover
+Domain vásárlás
+https://www.hover.com/
+
+
+https://caniuse.com/
+Böngészők támogatottsága
+
+
+https://jonas.io/resources/
+
+
+--------------------------------------------------
+Animált snipperek
+https://css-loaders.com/spinner/
+
+Infinity Background generátor
+https://heropatterns.com/
+https://www.fffuel.co/pppixelate/
+
+
+Remixikonok használata:
+importálás html-be:
+https://cdnjs.com/libraries/remixicon
+
+itt lehet keresni ikonokat:
+https://remixicon.com/

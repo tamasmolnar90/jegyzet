@@ -1,0 +1,73 @@
+1. Feladat: Interaktív Számláló
+Egy egyszerű számláló, amivel növelni, csökkenteni, vagy nullázni lehet egy értéket.
+Hozd létre a szükséges változókat: válaszd ki a három gombot és a h1 elemet a document.querySelector segítségével.
+Hozz létre egy szam nevű változót (alapértéke 0), ami a memóriában tárolja az aktuális értéket.
+Tegyél addEventListener-t mind a három gombra.
+A kattintások eseménykezelőiben frissítsd a szam változó értékét, majd írd ki az új értéket a h1 elem textContent tulajdonságába.
+Bónusz: Ha a szám negatív, a h1 szövege legyen piros, ha pozitív, legyen zöld, ha nulla, akkor fekete (használd a style.color parancsot).
+
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>    
+    <div id="szamlalo-tarolo">
+      <h1 id="ertek">0</h1>
+      <button id="csokkent">-1</button>
+      <button id="nullaz">Reset</button>
+      <button id="novel">+1</button>
+    </div>
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+const ertekEl = document.querySelector("#ertek");
+const csokkentBtn = document.querySelector("#csokkent");
+const nullazBtn = document.querySelector("#nullaz");
+const novelBtn = document.querySelector("#novel");
+
+let szam = parseInt(ertekEl.textContent);
+
+csokkentBtn.addEventListener("click", csokkent);
+nullazBtn.addEventListener("click", nullaz);
+novelBtn.addEventListener("click", novel);
+
+function csokkent() {
+  szam--;
+  ertekEl.textContent = szam;
+  szamVizsgalo();
+}
+
+function nullaz() {
+  szam = 0;
+  ertekEl.textContent = szam;
+  szamVizsgalo();
+}
+
+function novel() {
+  szam++;
+  ertekEl.textContent = szam;
+  szamVizsgalo();
+}
+
+function szamVizsgalo() {
+  if (szam < 0) {
+    ertekEl.style.color = "red";
+  } else if (szam > 0) {
+    ertekEl.style.color = "green";
+  } else {
+    ertekEl.style.color = "black";
+  }
+}

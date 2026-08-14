@@ -1,0 +1,39 @@
+Webszerverről jön
+JSON.parse(data)
+
+Webszerverre küld (JSON-ra alakít)
+JSON.stringify(data)
+
+npm init -y
+
+npm install express // https://www.npmjs.com/package/express
+npm install dotenv // https://www.npmjs.com/package/dotenv
+npm install nodemon --save-dev // https://www.npmjs.com/package/nodemon
+npm install sqlite3 // https://www.npmjs.com/package/sqlite
+
+
+"type": "module",
+"scripts": {
+  "dev": "nodemon src/server.js",
+},
+
+///////////////////////////////////
+///////////////////////////////////
+import express from "express";
+import "dotenv/config";
+
+const app = express();
+
+app.get("/", async (req, res) => {
+  res.send(`<div">Hello World</div>`);
+});
+
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => console.log(`server connected on port: ${PORT}`));
+
+
+///////////////////////////////////
+///////////////////////////////////
+JSON.parse(adat); 	str -> obj
+JSON.stringify(adat); 	obj -> str

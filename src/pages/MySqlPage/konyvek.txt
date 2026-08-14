@@ -1,0 +1,207 @@
+-- 01. Vegyél fel egy új szerzőt az adatbázisba! A neve legyen "Stephen King", a születési éve pedig 1947.
+INSERT INTO szerzo (nev, szuletesi_ev) VALUES
+('Stephen King', 1947);
+
+
+
+-- 02. Az előbb felvett Stephen Kinghez (akinek az azonosítója várhatóan a 6-os lett) vegyél fel egy új könyvet! A címe "A ragyogás", az ára 4500 Ft, a kiadás éve 1977.
+INSERT INTO konyv (cim, ar, kiadas_eve, szerzo_id) VALUES
+('A ragyogás', 4500, 1977, 6);
+
+
+
+-- 03. Vegyél fel egy új könyvet úgy, hogy nem tudjuk a kiadás évét (legyen NULL)! A könyv címe "Ismeretlen mesék", ára 1500 Ft, a szerzője pedig Gárdonyi Géza (az ő szerzo_id-ja 1).
+ALTER TABLE Konyv
+MODIFY kiadas_eve INT NULL DEFAULT NULL;
+
+INSERT INTO konyv (cim, ar, szerzo_id) VALUES
+('Ismeretlen mesék', 1500, 1);
+
+
+
+-- 04. Listázd ki az összes olyan könyv címét és árát, amelynek az ára drágább, mint 3000 Ft!
+SELECT cim, ar
+FROM konyv
+WHERE ar > 3000;
+
+
+
+-- 05. Keresd meg azokat a könyveket, amelyek 1930 és 1990 között jelentek meg! A listát rendezze a kiadás éve szerint csökkenő sorrendbe!
+SELECT cim, kiadas_eve
+FROM konyv
+WHERE kiadas_eve BETWEEN 1930 AND 1990
+ORDER BY kiadas_eve ASC;
+
+WHERE kiada_eve > 1930 AND kiada_eve < 1990 --határértékek nélkül
+
+
+
+-- 06. Keresd meg azokat a szerzőket, akiknek a nevében szerepel a "Jenő" szó!
+SELECT nev
+FROM szerzo
+WHERE nev LIKE '%Jenő%';
+
+
+
+-- 07. Írasd ki az összes könyv címét és a hozzájuk tartozó szerző nevét!
+SELECT konyv.cim, szerzo.nev
+FROM szerzo
+INNER JOIN konyv
+ON szerzo.id = konyv.szerzo_id;
+
+
+
+-- 08. Határozd meg, hogy mennyi a könyvesboltban kapható könyvek átlagára, és mennyi a legdrágább könyv ára!
+SELECT AVG(ar) AS atlag_ar, MAX(ar) AS legdragabb_ar
+FROM konyv;
+
+
+
+-- 09. Listázza ki a szerzők azonosítóját (szerzo_id) és azt, hogy hány könyvük szerepel az adatbázisban!
+SELECT szerzo.id, szerzo.nev, CONCAT(COUNT(konyv.szerzo_id), ' db') AS konyvek_szama
+FROM konyv
+INNER JOIN szerzo
+ON konyv.szerzo_id = szerzo.id
+GROUP BY szerzo.id;
+
+
+
+-- 10. Listázza ki azoknak a szerzőknek a nevét, akiknek a könyveik átlagára meghaladja a 3000 Ft-ot!
+SELECT szerzo.nev
+FROM Szerzo
+INNER JOIN Konyv ON szerzo.id = konyv.szerzo_id
+GROUP BY szerzo.id, szerzo.nev
+HAVING AVG(konyv.ar) > 3000;
+
+
+
+-- 11. A vezetőség egy kerekített statisztikát kér. Határozd meg a Konyv táblában szereplő könyvek átlagárát, de az eredményt kerekítsd egész számra! Az oszlop neve legyen Kerekitett_Atlag.
+SELECT ROUND(AVG(konyv.ar), 0) AS kerekitett_atlag
+FROM konyv;
+
+
+
+-- 12. Keresd meg azokat a szerzőket, akiknek a neve pontosan "G" betűvel kezdődik! Csak a nevüket listázd ki!
+SELECT nev
+FROM szerzo
+WHERE nev LIKE "G%";
+
+
+
+-- 13. Melyek azok a könyvek, amelyek drágábbak, mint az adatbázisban szereplő könyvek átlagára? Listázd ki ezeknek a könyveknek a címét és az árát!
+SELECT cim, ar
+FROM konyv
+WHERE ar > (SELECT AVG(ar) FROM konyv)
+
+
+
+-- 14. A statisztikákhoz listázd ki azokat a kiadási éveket, amelyekben több mint egy könyv jelent meg a kínálatból! Csak az évszámokat jelenítsd meg!
+SELECT kiadas_eve
+FROM konyv
+GROUP BY kiadas_eve
+HAVING COUNT(id) > 1;
+
+
+
+-- 15. Melyik a leghosszabb című könyv az adatbázisunkban? Írasd ki a címét és azt, hogy hány karakterből áll! A karakterek számának oszlopát nevezd el Karakterszam-nak!
+SELECT cim, LENGTH(cim)
+FROM konyv
+ORDER BY LENGTH(cim) desc
+LIMIT 1;
+
+-- VAGY:
+SELECT cim, LENGTH(cim) AS Karakterszam
+FROM konyv
+WHERE LENGTH(cim) = (SELECT MAX(LENGTH(cim)) FROM konyv);
+
+
+
+-- 1. A könyvesbolt észrevette, hogy frissíteni kell egy könyv címét. Keresd meg a 'Harry Potter és a Titkok Kamrája' című könyvet, és módosítsd a címet 'Harry Potter és a Titkok Kamrája (Javított kiadás)'-ra!
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE konyv
+SET cim = 'Harry Potter és a Titkok Kamrája (Javítitt kiadás)'
+WHERE cim = 'Harry Potter és a Titkok Kamrája';
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+-- 2. Rejtő Jenő (azonosítója: 4) könyvei bekerültek egy fix áras akcióba. Írj utasítást, amely a szerzőhöz tartozó összes könyv árát pontosan 2500 Ft-ra módosítja!
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE konyv
+SET ar = 2500
+WHERE szerzo_id = 4;
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+-- 3. A nagyon régi kiadású könyvek értéke megnőtt. Növeld meg 1500 Ft-tal minden olyan könyv árát, amely 1910 előtt jelent meg!
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE konyv
+SET ar = ar + 1500
+WHERE kiadas_eve < 1910;
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+-- 4. A gazdasági helyzet miatt minden olyan könyv, amely jelenleg olcsóbb, mint 3000 Ft, dráguljon 10%-kal. Ugyanebben az utasításban oldd meg (ha a választott SQL környezet engedi), hogy ne érintse azokat a könyveket, amelyeknek nincs megadva a kiadási éve!
+SET SQL_SAFE_UPDATES = 0;
+
+UPDATE konyv
+SET ar = ar * 1.10
+WHERE ar < 3000 AND kiadas_eve IS NOT NULL;
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+
+CREATE DATABASE konyvek
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+USE konyvek;
+
+CREATE TABLE szerzo (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nev VARCHAR(100) NOT NULL,
+  szuletesi_ev INT
+);
+
+CREATE TABLE konyv (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cim VARCHAR(100) NOT NULL,
+  ar INT NOT NULL,
+  kiadas_eve INT NOT NULL,
+  szerzo_id INT NOT NULL
+);
+
+ALTER TABLE konyv
+ADD CONSTRAINT fk_konyv_szerzo
+FOREIGN KEY(szerzo_id)
+REFERENCES Szerzo(id)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+INSERT INTO szerzo (nev, szuletesi_ev) VALUES
+('Gárdonyi Géza', 1863),
+('J.K. Rowling', 1965),
+('George R.R. Martin', 1948),
+('Rejtő Jenő', 1905),
+('Agatha Christie', 1890);
+
+INSERT INTO konyv (cim, ar, kiadas_eve, szerzo_id) VALUES
+('Egri csillagok', 2500, 1901, 1),
+('A láthatatlan ember', 2800, 1901, 1),
+('Harry Potter és a bölcsek köve', 3500, 1997, 2),
+('Harry Potter és a Titkok Kamrája', 3600, 1998, 2),
+('Trónok harca', 5500, 1996, 3),
+('Királyok csatája', 5800, 1998, 3),
+('A szőke ciklon', 2100, 1939, 4),
+('Vesztegzár a Grand Hotelben', 2200, 1940, 4),
+('Tíz kicsi néger', 3000, 1939, 5),
+('Gyilkosság az Orient expresszen', 3200, 1934, 5);

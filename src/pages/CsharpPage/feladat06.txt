@@ -1,0 +1,146 @@
+06. Okos Számkitaláló
+
+01. Feladat: Beállítás és Elágazások:
+01-1: A program elején generálj egy titkos számot (pl. 1 és 100 között).
+01-2: Kérd be a nehézségi szintet (1 - Könnyű, 2 - Közepes, 3 - Nehéz).
+01-3: Egy switch szerkezet segítségével állítsd be a maximális próbálkozások számát (Könnyű: 10, Közepes: 5, Nehéz: 3).
+
+02. Feladat: A Játék Ciklusa (while vagy for):
+02-1: Indíts egy ciklust, ami addig tart, amíg van még próbálkozás.
+02-2: Kérj be egy tippet a felhasználótól.
+02-3: Egy logikai változóban tárold el, hogy a tipp helyes-e.
+02-4: Használj „ha” elágazást: ha a tipp kisebb, írd ki, hogy "Nagyobbra gondoltam", ha nagyobb, akkor "Kisebbre".
+02-5: Ha a felhasználó kitalálta a számot, a ciklust azonnal állítsd le megfelelő utasítással!
+02-6: Minden kör végén egy hármas operátor segítségével írd ki, hogy folytatódik-e a játék.
+
+3. Feladat: Súgó és Extra Ciklusok:
+03-1: Ha a felhasználó a tipphez a 0-t írja be, az jelentsen "Súgó kérést".
+Ilyenkor egy for ciklussal írasd ki a konzolra a titkos számhoz legközelebbi 3 páros számot.
+Ha a ciklus negatív számot találna, használj continue-t az átugrására.
+03-2: Do-While ciklus: A játék legvégén (függetlenül az eredménytől) egy elöltesztelő vagy hátultesztelő ciklussal (do-while) generálj egy 5 karakterből álló "Nyereménykódot" véletlenszerű nagybetűkből.
+A ciklus addig fusson, amíg a kód nem tartalmaz legalább egy 'A' betűt! A végleges kódot írd ki a képernyőre.
+
+
+
+
+namespace _06_okos_szamkitalalo
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Random rnd = new Random();
+
+            int secretNumber = rnd.Next(1, 101);
+            int diffLevel;
+            int maxTry = 0;
+            int tipp = 0;
+
+            // input hibakezelés
+            while (true)
+            {
+                // ne intként kérjük be az inputot, mert betűnél breakel a program, utólag konvertáljuk át számmá!
+                Console.Write("Válassz nehézséget! (1: Könnyű, 2: Közepes, 3: Nehéz): ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out diffLevel) && diffLevel >= 1 && diffLevel <= 3)
+                {
+                    break;
+                }
+
+                Console.WriteLine("Hibás adat! Csak 1, 2 vagy 3 lehet.\n");
+            }
+
+            switch (diffLevel)
+            {
+                case 1:
+                    maxTry = 10;
+                    Console.WriteLine("Nehézségi szinted: Könnyű - 10 próbálkozásod van!");
+                    break;
+
+                case 2:
+                    maxTry = 5;
+                    Console.WriteLine("Nehézségi szinted: Közepes - 5 próbálkozásod van!");
+                    break;
+
+                case 3:
+                    maxTry = 3;
+                    Console.WriteLine("Nehézségi szinted: Nehéz - 3 próbálkozásod van!");
+                    break;
+            }
+
+            while (maxTry != 0)
+            {
+                // input hibakezelés
+                while (true)
+                {
+                    Console.Write($"\n(Súgó: 0) Maradt próbálkozásod: {maxTry}. Kérem a tippet: ");
+                    string input = Console.ReadLine();
+
+                    if (int.TryParse(input, out tipp))
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine("Hibás adat! Számot adj meg!");
+                }
+
+                if (tipp == 0)
+                {
+                    Console.WriteLine("\nSúgó (közeli páros számok): ");
+
+                    for (int i = secretNumber - 5; i <= secretNumber + 5; i++)
+                    {
+                        if (i < 1) continue;
+                        if (i % 2 == 0 && secretNumber != i) Console.WriteLine($"{i}");
+                    }
+                    continue;
+                }
+
+                maxTry--;
+
+                if (tipp == secretNumber)
+                {
+                    Console.WriteLine("Gratulálok, kitaláltad a számot!");
+                    break;
+                }
+                else if (tipp < secretNumber)
+                {
+                    Console.WriteLine("Nagyobbra gondoltam!");
+                }
+                else if (tipp > secretNumber)
+                {
+                    Console.WriteLine("Kisebbre gondoltam!");
+                }
+
+                Console.WriteLine(maxTry > 0 ? "Jöhet a következő tipp!" : "\nVége a játéknak!");
+            }
+
+            if (tipp != secretNumber)
+            {
+                Console.WriteLine($"A szám ez volt: {secretNumber}");
+            }
+
+            if (tipp == secretNumber)
+            {
+                string prizeCode;
+
+                do
+                {
+                    prizeCode = "";
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        // alsó határ benne van, felső nincs, ezért kell a + 1
+                        char prizeCodeChar = (char)rnd.Next('A', 'Z' + 1);
+                        prizeCode += prizeCodeChar;
+                    }
+                }
+                while (!prizeCode.Contains('A'));
+
+                Console.WriteLine($"\nNyereménykód: {prizeCode}");
+            }
+            Console.ReadKey();
+        }
+    }
+}

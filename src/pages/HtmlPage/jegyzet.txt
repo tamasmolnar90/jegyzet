@@ -1,0 +1,122 @@
+https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation
+
+Formázási elemek:
+<b>félkövér, fontos szöveg</b>   --->  <strong></strong>   ---> alapértelmezetten: font-weight: 700
+<i>dőlt, kiemelt szöveg</i>      --->  <em></em>
+<u>aláhúzás, beszúrt szöveg</u>  --->  <ins></ins>
+<s>áthúzott, törölt szöveg</s>	 --->  <del></del>
+<mark>  ---> megjelölt szöveg
+<small> ---> kisebb szöveg
+<sub>   ---> index szöveg
+<sup>   ---> felső index szöveg
+
+&copy;	 --->  HTML entity (szimbólumok)
+WIN + .  --->  emoji ablak
+lorem    --->  auto text
+
+Karakterentitasok:
+&nbsp;  --->   ez az entitás képviseli az üres helyet (None Breaking SPace)
+&lt;    --->   <
+&gt;    --->   >
+&amp;   --->   &
+&apos;  --->   '
+&quot;  --->   "
+&copy;  --->   ©
+&#47;   --->   /
+&#95;   --->   _
+
+nested elements ---> beágyazott elemek (amiknek van nyitó és záró tag-e)
+empty elements  ---> üres elemek (amiknek nincs záró tag-e)
+
+<h1></h1> ---> a keresőmotorok a címsorok h1-h6 elemeket használják a weboldalak szerkezetének és tartalmának indexelésére
+<p></p>   ---> <p title="i am a tooltip">this is a paragraph</p> ---> amikor a paragrafus fölé viszem az egeret, akkor kiír egy tooltipet
+<ol></ol> ---> ordered list
+<ul></ul> ---> unordered list
+<li></li> ---> list item
+
+<img src="post-img.jpg" alt="HTML code on a screen" title="HTML code" />
+
+picture.png       ---> ugyan abban a mappában található
+image/picture.png ---> aktuális mappa image mappában található
+../picture.jpg    ---> aktuális mappához képest egy szinttel feljebb található
+../../picture.jpg ---> aktuális mappához képest két szinttel feljebb található
+title             ---> ha rászviszem a képre az egeret akkor ez a felirat jelenik meg a kurzornál
+
+------------------------------------------------------------------------------------------------
+ANCHOR
+------------------------------------------------------------------------------------------------
+<a href="www.google.com" target="_blank">Click here to google</a>
+<a>            ---> anchor - horgony
+href           ---> hypertext reference
+<a href="#"    ---> ha nem akarunk hozzákötni semmit, oldal telejére vezet mindig
+<a href="#cta" ---> id="cta" elemhez navigál az oldalon belül
+
+_self   ---> alapértelmezett, megnyitja a doksit ugyanabban az ablakban
+_blank  ---> új ablakban
+_parent ---> megnyitja a doksit a szülő konténerben
+_top    ---> megnyitja a doksit az ablak teljes szövegében
+------------------------------------------------------------------------------------------------
+<abbr>       ---> rövidítést vagy mozaikszót határoz meg
+<address>    ---> meghatározza a dokumentum szerzőjének/tulajdonosának elérhetőségét
+<bdo>        ---> definies the text direction
+<blockquote> ---> egy másik forrásból idézett szakaszt határoz meg
+<cite>       ---> meghatározza a mű címét
+<q>          ---> egy rövid soron belüli idézetet határoz meg
+
+<hr> ---> horizontális vonalat hoz létre, pl a tartalom elválasztására
+<br> ---> sima sörtörést hoz létre, pl új bekezdés
+------------------------------------------------------------------------------------------------
+<dl>                           (description list - leíró lista, ez a keret)
+  <dt>Coffee</dt>              (description term - fogalom vagy cím)
+  <dd>- black hot drink</dd>   (description definition - magyarázat vagy leírás)
+  <dt>Milk</dt>
+  <dd>- white cold drink</dd>
+</dl>
+------------------------------------------------------------------------------------------------
+<table>                        (table - táblázat)
+  <thead>                      (table head - a táblázat fejléce)
+    <tr>                       (table row - egy sor a táblázatban)
+      <th>Name</th>            (table header cell - egy fejléc cella)
+      <th>Age</th>
+      <th>Country</th>      
+    </tr>
+  </thead>
+
+  <tbody>                       (table body - a táblázat törzse)
+    <tr>
+      <th>John</th>
+      <td>28</td>               (table data cell - egy adatcella a táblázatban)
+      <td>USA</td>      
+    </tr>
+
+    <tr>
+      <td>Thomas</td>
+      <td>25</td>
+      <td>HUN</td>
+    </tr>
+  <tbody>
+</table>
+
+border-collapse: collapse; - eltünteni a tableról a dupla bordereket, sőt ezt mindig kapcsoljuk be, akkor is ha nincs border, mert üres helyet hagy ki
+------------------------------------------------------------------------------------------------
+form:
+------------------------------------------------------------------------------------------------
+- mindegyik alapértelmezetten inline elem, egymás után pakolgatja őket
+- a for mindig az id-re mutat
+- required - kötelező kötölteni
+- disabled selected - nem tudod kiválasztani
+
+<select id="cta-where" name="" required>
+  <option value="" disabled selected>Please choose one option:</option>
+  <option value="google">Google search</option>                 
+  <option value="other">Other</option>
+</select>
+
+<div id="other-field" class="hidden">
+  <label for="other-text">Please specify:</label>
+  <input id="other-text" type="text" name="" required />
+</div>
+
+a form elemek alapjáraton nem örökölnek betűtípust és lehet hogy mást sem így rájuk kell írni:
+font-family: inherit; - örökölje a betűstílust
+color: inherit; - színekkel is működik

@@ -1,0 +1,135 @@
+05. Diáknyilvántartó és Ülésrend
+
+01. Feladat: Listák bekérése: Hozz létre egy megfelelő adatszerkezetet.
+01-1: Egy végtelenített végtelen ciklussal kérd be a diákok neveit a konzolról.
+01-2: Ha a felhasználó egy üres sort üt (csak Entert nyom), a ciklus álljon le.
+01-3: Ha a lista feltöltődött, járj be minden elemet egy megfelelő típusú ciklussal, és írd ki a diákok névsorát a konzolra.
+
+02. Feladat: Egydimenziós tömb és Hibakezelés:
+02-1: Hozz létre egy fix méretű, 5 elemű egydimenziós egész számokat tartalmazó tömböt, amelybe tesztelésként jegyeket mentesz el.
+02-2: Írj egy kódrészletet, ami szándékosan a 6. (nem létező, 5-ös indexű) elemnek akar értéket adni!
+02-3: Tedd ezt a részt try-catch blokkba. Kapd el az IndexOutOfRangeException hibát, és ahelyett, hogy a program összeomlana, írj ki egy barátságos hibaüzenetet a konzolra piros betűkkel.
+
+03. Feladat: Többdimenziós tömb (Mátrix) formázása:
+03-1: Hozz létre egy 2D tömböt az ülésrendnek.
+03-2: Két egymásba ágyazott for ciklus segítségével töltsd fel a mátrixot a szöveg listában lévő nevekkel. Ha kevesebb diák van, mint hely, a maradék helyekre kerüljön az "[Üres]" szó.
+03-3: Egy újabb dupla ciklussal írasd ki az ülésrendet a konzolra úgy, hogy az ténylegesen egy táblázatot (3x3-as rácsot) formázzon. (Használhatsz tabulátorokat \t vagy fix karakterszélességet a Console.Write() metódussal).
+
+KONZOL:
+Kérem a diákok neveit! (Üss Entert egy üres soron a befejezéshez)
+Név: Test1
+Név: Test2
+Név: Test3
+Név: Test4
+Név:
+
+Mentett diákok vévsora:
+- Test1
+- Test2
+- Test3
+- Test4
+
+--- Jegyek tesztelése ---
+Próbálok értéket adni a 6. (5-ös indexű) helyre...
+Hiba: Túlcsordult a tömb! Olyan indexre hivatkoztál, ami nem létezik.
+
+--- Ülésrend Generálása ---
+Test1		Test2		Test3
+Test4		[Üres]		[Üres]
+[Üres]		[Üres]		[Üres]
+
+
+
+
+namespace _05_diaknyilvantarto
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // 01. Feladat
+            Console.WriteLine("Kérem a diákok neveit! (Nyomj Entert egy üres soron a befejezéshez)");
+
+            List<string> diakLista = new List<string>();
+
+            while (true)
+            {
+                Console.Write("Név: ");
+                string? diakNeve = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(diakNeve)) break;
+
+                diakLista.Add(diakNeve);
+            }
+
+            Console.WriteLine("\nMentett diákok névsora:");
+            foreach (var diak in diakLista)
+            {
+                Console.WriteLine($"- {diak}");
+            }
+
+            // 02. Feladat
+            Console.WriteLine("\n--- Jegyek tesztelése ---");
+
+            // tömb létrehozása, tartalmaz 5 elemet, ezek kezdetben 0 értéket kapnak
+            // létrejön egy tömb 5 darab hellyel, ami kezdetben: [0, 0, 0, 0, 0]
+            // nem lehet több elemet hozzáadni
+            // meglévőt felülírni pl:
+            // jegyek[0] = 1;
+            // jegyek[1] = 2;
+            // jegyek[2] = 3;
+            // jegyek[3] = 4;
+            // jegyek[4] = 5;
+            int[] jegyek = new int[5];
+
+            try
+            {
+                Console.WriteLine("Próbálok értéket adni a 6. (5-ös indexű) helyre...");
+                jegyek[5] = 10;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Hiba: Túlcsordult a tömb! Olyan indexre hivatkoztál, ami nem létezik.");
+                Console.ResetColor();
+            }
+
+            // 03. Feladat
+            Console.WriteLine("\n--- Ülésrend Generálása ---");
+
+            //string[] ulesrend = new string[3]; // egydimenziós tömb
+            //string[,] ulesrend = new string[3, 3]; // kétdimenziós tömb
+            //string[,,] ulesrend = new string[3, 3, 3]; // háromdimenziós tömb
+            string[,] ulesrend = new string[3, 3];
+
+            int index = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (index < diakLista.Count)
+                    {
+                        ulesrend[i, j] = diakLista[index];
+                        index++;
+                    }
+                    else
+                    {
+                        ulesrend[i, j] = "[Üres]";
+                    }
+                }
+            }
+
+            // Kiíratás
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    //Console.Write($"{ulesrend[i, j],-15}"); // 15 karakter szélesség, balra igazítva, nem csúszik szét a tab
+                    Console.Write(ulesrend[i, j].PadRight(35)); // 15 karakter szélesség, balra igazítva, nem csúszik szét a tab
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+Beállítások
+
+git config --global user.name //lekérdezés
+git config --global user.name "Teljes Név" //beállítás
+git config --global --unset user.name //töröl
+
+git config --global user.email
+git config --global user.email "example@gmail.com"
+git config --global --unset user.email
+
+git config --global --remove-section user //eltávolítja a nevet, emailt
+git config --global --unset-all safe.directory
+git config --global --remove-section filter.lfs
+
+del %USERPROFILE%\.gitconfig //eltávolít mindent
+
+git config --global –list
+
+SSH Beállítás
+(git bash terminált használni!)
+
+ssh-keygen -t ed25519 -C "example@gmail.com"
+enter üresen //file name default
+enter üresen //jelszó nem kell
+enter üresen //jelszó még1x ha van
+
+clip < ~/.ssh/id_ed25519.pub //ezzel másolom ki, amit be kell illeszteni
+
+GitHub profil → settings → (Access) → SSH and GPG keys → new ssh key →
+→ title (Pl: vision-desktop) → Key type: Authentication Key →
+→ beírni a id_ed25519.pub file tartalmát, amit a felső paranccsal másoltunk ki: 
+pl: ssh-ed25519 AAAAC3NzaC1lZDINTE5AAAIGxG5ky2ULkgWiQGr3+X+y6YpjACgaPIEZxtDUDK2B example@gmail.com

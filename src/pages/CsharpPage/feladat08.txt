@@ -1,0 +1,103 @@
+08. Profil Generátor
+
+Adatbekérés és Tisztítás:
+- Kérd be a felhasználó teljes nevét (vezetéknév és keresztnév szóközzel elválasztva).
+- Kérj be egy titkos jelszót/jelmondatot.
+-Használd a Trim() metódust mindkét bemeneten, hogy eltávolítsd a véletlenül beírt vezető és záró szóközöket.
+
+Kódnév Generálása:
+- Válaszd ketté a teljes nevet egy vezetéknevet és keresztnevet tartalmazó tömbre a Split() metódus segítségével.
+- Generáld le a kódnevet: vedd a vezetéknév első 3 betűjét, és fűzd hozzá a keresztnév első 3 betűjét (használd a Substring() metódust).
+Extra feladat: a Length tulajdonság segítségével vizsgáld meg, hogy elég hosszú-e a név, és ha rövidebb, vegye az egészet!
+- Az így kapott kódnevet alakítsd csupa nagybetűssé a ToUpper() metódussal.
+
+Azonosító Generálása:
+- A Random osztály segítségével generálj egy 4 jegyű véletlen azonosító számot (pl. 1000 és 9999 között). Ezt fűzd a kódnév végére egy kötőjellel (pl. KOV-JAN-4582).
+
+Jelmondat Titkosítása:
+- Vizsgáld meg, hogy a jelmondat tartalmazza-e a "bomba" vagy "fegyver" szavakat (használd a Contains() és ToLower() metódusokat, hogy kis- és nagybetűs formában is felismerje).
+- Ha igen, a Replace() metódussal cseréld le ezeket a szavakat a "***" (három csillag) szövegrészletre.
+
+Formázott Kimenet (Profilkártya):
+- Írd ki az adatokat a konzolra egy formázott "kártya" formájában.
+- Használd a PadRight() és PadLeft() metódusokat a szépen oszlopokba rendezett, balra/jobbra igazított megjelenéshez.
+
+OUTPUT:
+
+Üdvözlöm a Központban! Kérem adja meg a teljes nevét:
+  Kovács János
+Kérem adja meg a jelmondatát:
+A piros bomba éjfélkor robban.
+
+========================================
+|         TITKOS ÜGYNÖK PROFIL         |
+========================================
+| Eredeti név:     Kovács János        |
+| Kódnév:          KOV-JAN-8421        |
+| Titkosított kód: A piros *** éjfélko |
+========================================
+
+
+
+
+namespace _08_profil_generator
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Adatbekérés és tisztítás
+            Console.WriteLine("Üdvözlöm a Központban! Kérem adja meg a teljes nevét:");
+            Console.Write("  ");
+            string fullName = Console.ReadLine().Trim();
+
+            Console.WriteLine("Kérem adja meg a jelmondatát:");
+            string password = Console.ReadLine().Trim();
+
+            // Név feldarabolása
+            string[] nameParts = fullName.Split(' ');
+
+            string lastName = nameParts[0];
+            string firstName = nameParts[1];
+
+            // Kódnév generálása
+            string lastPart = lastName.Length >= 3 ? lastName.Substring(0, 3) : lastName;
+            string firstPart = firstName.Length >= 3 ? firstName.Substring(0, 3) : firstName;
+
+            string codeName = (lastPart + "-" + firstPart).ToUpper();
+
+            // Azonosító generálása
+            Random rnd = new Random();
+            int id = rnd.Next(1000, 10000);
+
+            string finalCodeName = $"{codeName}-{id}";
+
+            // Jelmondat titkosítása
+            string secretPassword = password;
+
+            // StringComparison.OrdinalIgnoreCase
+            // Ordinal: karakterek bináris(Unicode kódpont) alapján hasonlít össze, nem nyelvi szabályok szerint
+            // IgnoreCase: kis és nagybetűket nem veszi figyelembe
+            bool bomba = secretPassword.Contains("bomba", StringComparison.OrdinalIgnoreCase);
+            bool fegyver = secretPassword.Contains("fegyver", StringComparison.OrdinalIgnoreCase);
+
+            if (bomba) secretPassword = secretPassword.Replace("bomba", "***", StringComparison.OrdinalIgnoreCase);
+            if (fegyver) secretPassword = secretPassword.Replace("fegyver", "***", StringComparison.OrdinalIgnoreCase);
+
+            // Formázott kiíratás
+            // 40 karakter hosszú 1 sor
+            // 20. karaktertől kezdődik úgymond a második oszlop, max 18 karakter hosszú lehet, akkor a szöveg, + 1 szőköz + 1 a végére a | jel
+            string fullNameLengthLimit = fullName.Length > 18 ? fullName.Substring(0, 19) : fullName;
+            string secretPasswordLengthLimit = secretPassword.Length > 18 ? secretPassword.Substring(0, 19) : secretPassword;
+
+            Console.WriteLine();
+            Console.WriteLine($"========================================");
+            Console.WriteLine($"|        TITKOS ÜGYNÖK PROFIL          |");
+            Console.WriteLine($"========================================");
+            Console.WriteLine($"| Eredeti név:     {fullNameLengthLimit.PadRight(20)}|");
+            Console.WriteLine($"| Kódnév:          {finalCodeName.PadRight(20)}|");
+            Console.WriteLine($"| Titkosított kód: {secretPasswordLengthLimit.PadRight(20)}|");
+            Console.WriteLine("========================================");
+        }
+    }
+}

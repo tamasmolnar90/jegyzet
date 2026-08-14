@@ -1,0 +1,209 @@
+Mesterséges Intelligencia Modellek
+
+A feladat egy olyan alkalmazás elkészítése, amely különböző AI gyártók modelljeit és azok specifikációit dolgozza fel.
+A gyartok.csv UTF-8 kódolású forrásállomány sorai egy-egy modell adatait tartalmazzák, pontosvesszővel (;) elválasztva.
+
+Adatszerkezet:
+● Gyártó neve (pl. OpenAI)
+● Modell neve (pl. GPT-4o)
+● Ingyenes kérések száma naponta (egész szám vagy "NULL")
+● Havi előfizetési díj USD-ben (egész szám vagy "NULL")
+● Kontextus ablak mérete tokenekben (egész szám)
+
+Feladatok:
+1. Hozzon létre egy projektet AIModellek néven!
+2. Olvassa be a gyartok.csv állomány adatait, és tárolja egy összetett adatszerkezetben, amelyet egy AIModel nevű osztály reprezentál.
+   Ügyeljen a "NULL" értékek kezelésére (használhat 0-t vagy nullable típust)!
+3. Számolja meg és írassa ki, összesen hány modell adatai szerepelnek a fájlban!
+4. Keresse meg azt a modellt, amely a legnagyobb kontextus ablakkal rendelkezik, és írassa ki a modell nevét és a gyártóját!
+5. Keresse meg azt a modellt, amelynek a legolcsóbb a havi előfizetése (a NULL / 0 értékeket hagyja figyelmen kívül, csak a fizetős modelleket nézze)!
+6. Számolja meg, hány olyan modell van a listában, amelynek a gyártója a "Google"!
+7. Számolja ki az összes modell átlagos kontextus ablak méretét, és írassa ki egész számra kerekítve!
+8. Készítsen egy listát a "Mistral AI" gyártó modelljeiről, és írassa ki csak a modellneveket a képernyőre!
+
+/////////////////////////////
+////////// AIModel //////////
+/////////////////////////////
+
+namespace AIModellek
+{
+    internal class AIModel(string gyartoNeve, string modellNeve, int? napiLimit, int? haviElofizetes, int kontextusAblak)
+    {
+        public string GyartoNeve { get; set; } = gyartoNeve;
+        public string ModellNeve { get; set; } = modellNeve;
+        public int? NapiLimit { get; set; } = napiLimit;
+        public int? HaviElofizetes { get; set; } = haviElofizetes;
+        public int KontextusAblak { get; set; } = kontextusAblak;
+    }
+}
+
+/////////////////////////////
+////////// Program //////////
+/////////////////////////////
+
+namespace AIModellek
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] gyartokAdat = File.ReadAllLines("gyartok.csv");
+            string header = gyartokAdat[0];
+
+            List<AIModel> gyartokLista = new List<AIModel>();
+
+            for (int i = 1; i < gyartokAdat.Length; i++) {
+                string[] adat = gyartokAdat[i].Split(";");
+
+                AIModel aiModel = new AIModel(
+                    adat[0],
+                    adat[1],
+                    ParseNullableInt(adat[2]),
+                    ParseNullableInt(adat[3]),
+                    int.Parse(adat[4])
+                    );
+
+                gyartokLista.Add(aiModel);
+            }
+
+            //List<AIModel> gyartokLista = gyartokAdat
+            //    .Skip(1)
+            //    .Select(sor => sor.Split(";"))
+            //    .Select(adat => new AIModel(
+            //        adat[0],
+            //        adat[1],
+            //        ParseNullableInt(adat[2]),
+            //        ParseNullableInt(adat[3]),
+            //        int.Parse(adat[4])))
+            //    .ToList();
+
+            //Összes sor kiíratása
+            //foreach (var sor in gyartokLista) {
+            //    Console.WriteLine($"{sor.GyartoNeve}, {sor.ModellNeve}, {sor.NapiLimit?.ToString() ?? "null"}, {sor.HaviElofizetes?.ToString() ?? "null"}, {sor.KontextusAblak}");
+            //}
+
+            //03. Számolja meg és írassa ki, összesen hány modell adatai szerepelnek a fájlban!
+            int modellekSzama = gyartokLista.Count;
+            Console.WriteLine($"3. feladat: Modellek száma: {modellekSzama} db");
+
+            //04. Keresse meg azt a modellt, amely a legnagyobb kontextus ablakkal rendelkezik, és írassa ki a modell nevét és a gyártóját!
+            AIModel legnagyobbKontextus = null;
+
+            for (int i = 0; i < gyartokLista.Count; i++) {
+                if (legnagyobbKontextus == null || gyartokLista[i].KontextusAblak > legnagyobbKontextus.KontextusAblak) {
+                    legnagyobbKontextus = gyartokLista[i];
+                }
+            }
+
+            Console.WriteLine($"4. feladat: Legnagyobb kontextus: {legnagyobbKontextus.GyartoNeve} - {legnagyobbKontextus.ModellNeve} ({legnagyobbKontextus.KontextusAblak} token)");
+
+            //05. Keresse meg azt a modellt, amelynek a legolcsóbb a havi előfizetése (a NULL / 0 értékeket hagyja figyelmen kívül, csak a fizetős modelleket nézze)!
+            AIModel legolcsobbElofizetes = null;
+
+            for (int i = 0; i < gyartokLista.Count; i++) {
+                if (gyartokLista[i].HaviElofizetes == null) {
+                    continue;
+                }
+
+                if (legolcsobbElofizetes == null || gyartokLista[i].HaviElofizetes < legolcsobbElofizetes.HaviElofizetes) {
+                    legolcsobbElofizetes = gyartokLista[i];
+                }
+            }
+
+            Console.WriteLine($"5. feladat: Legolcsóbb fizetős modell: {legolcsobbElofizetes.ModellNeve} ({legolcsobbElofizetes.HaviElofizetes} USD)");
+
+            //06. Számolja meg, hány olyan modell van a listában, amelynek a gyártója a "Google"!
+            int googleModellekSzama = 0;
+
+            for (int i = 0; i < gyartokLista.Count; i++) {
+                if (gyartokLista[i].GyartoNeve.Contains("Google")) {
+                    googleModellekSzama++;
+                }
+            }
+
+            Console.WriteLine($"6. feladat: Google modellek száma: {googleModellekSzama} db");
+
+            //07. Számolja ki az összes modell átlagos kontextus ablak méretét, és írassa ki egész számra kerekítve!
+            int osszesKontextus = 0;
+            int darabKontextus = 0;
+
+            for (int i = 0; i < gyartokLista.Count; i++) {
+                osszesKontextus += gyartokLista[i].KontextusAblak;
+                darabKontextus++;
+            }
+
+            float atlagKontextus = (float)osszesKontextus / darabKontextus;
+
+            Console.WriteLine($"7. feladat: Átlagos kontextus mérete: {Math.Round(atlagKontextus)} token");
+
+            //08. Készítsen egy listát a "Mistral AI" gyártó modelljeiről, és írassa ki csak a modellneveket a képernyőre!
+            List<AIModel> mistralModellek = new List<AIModel>();
+
+            for (int i = 0; i < gyartokLista.Count; i++) {
+                if (gyartokLista[i].GyartoNeve.Contains("Mistral AI")) {
+                    mistralModellek.Add(gyartokLista[i]);
+                }
+            }
+
+            Console.WriteLine("8. feladat: Mistral AI modellek:");
+
+            for (int i = 0; i < mistralModellek.Count; i++) {
+                Console.WriteLine($"\t- {mistralModellek[i].ModellNeve}");
+            }
+        }
+
+        //HELPER METHODS
+        static int? ParseNullableInt(string value)
+        {
+            if (value == null) return null;
+
+            value = value.Trim();
+
+            if (value.Length == 0 || value.Equals("null", StringComparison.OrdinalIgnoreCase)) return null;
+
+            // V1
+            try {
+                return int.Parse(value);
+            }
+            catch (FormatException) {
+                return null;
+            }
+
+            // V2
+            //return int.TryParse(value, out int result) ? result : null;
+        }
+    }
+}
+
+/////////////////////////
+////////// CSV //////////
+/////////////////////////
+
+gyarto_nev;nev;napi_lekerdezes_limit;havi_elofizetes_dija;kontextus_ablak
+OpenAI;GPT-4o;10000;500;128000
+OpenAI;GPT-4 Turbo;10000;500;128000
+OpenAI;GPT-3.5 Turbo;50000;3500;16385
+OpenAI;o1-preview;1000;50;128000
+OpenAI;o1-mini;5000;100;128000
+Google;Gemini 1.5 Pro;1500;360;2097152
+Google;Gemini 1.5 Flash;10000;1000;1048576
+Google;Gemini 1.0 Pro;30000;600;32768
+Google;Gemma 7B;NULL;NULL;8192
+Anthropic;Claude 3.5 Sonnet;4000;50;200000
+Anthropic;Claude 3 Opus;1000;50;200000
+Anthropic;Claude 3 Haiku;10000;100;200000
+Anthropic;Claude 2.1;2000;50;100000
+Mistral AI;Mistral Large;2000;100;32768
+Mistral AI;Mistral Small;5000;200;32000
+Mistral AI;Mixtral 8x22B;NULL;NULL;65536
+Mistral AI;Mistral Nemo;NULL;NULL;128000
+Meta;Llama 3 (70B);NULL;NULL;8192
+Meta;Llama 3 (8B);NULL;NULL;8192
+Meta;Llama 2 (70B);NULL;NULL;4096
+Cohere;Command R+;10000;1000;128000
+Cohere;Command R;20000;2000;128000
+Cohere;Command Light;50000;5000;4096
+xAI;Grok-1.5;5000;150;128000
+xAI;Grok-1;10000;300;8192
+Alibaba Cloud;Qwen 2 (72B);NULL;NULL;128000
+Alibaba Cloud;Qwen 1.5 (110B);NULL;NULL;32768

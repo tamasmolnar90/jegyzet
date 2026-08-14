@@ -1,0 +1,111 @@
+03. Webshop
+
+Egy webshop az aktuális raktárkészletét egy szöveges fájlban (termekek.csv) tárolja.
+A feladatod, hogy írj egy C# programot, amely beolvassa ezeket az adatokat, objektumokat hoz létre belőlük, majd LINQ lekérdezések segítségével statisztikákat készít a vezető számára.
+A termekek.csv fájl pontosvesszővel (;) elválasztva tartalmazza az adatokat, fejléc nélkül.
+Egy sor felépítése: Név;Kategória;Ár;KészletenLévőDarab (Példa: Mechanikus billentyűzet;Periféria;25000;12)
+
+01. Osztály és metódus létrehozása
+- Hozz létre egy Termek nevű osztályt!
+- Készítsd el az osztály tulajdonságait a fájl szerkezetének megfelelően: Nev, Kategoria, Ar, Keszlet.
+- Készíts az osztályhoz egy megfelelő konstruktort, amely paraméterként várja és beállítja ezeket az értékeket!
+- Írj az osztályba egy KeszletErtek() nevű, paraméter nélküli metódust, amely kiszámolja és visszaadja, hogy az adott termékből mekkora értékű készlet van a raktárban (Ár szorozva a Készlettel).
+
+02. Adatok beolvasása függvénnyel
+- A Program osztályban (a Main függvényen kívül) írj egy AdatokBeolvasasa nevű függvényt!
+- A függvény paraméterként kapja meg a beolvasandó fájl nevét (szöveg).
+- A függvény feladata: olvassa be a fájl sorait, soronként darabolja fel az adatokat, példányosítsa a Termek osztályt, majd ezeket az objektumokat gyűjtse össze egy listába.
+- A függvény térjen vissza a kész listával!
+
+03. Statisztikák készítése LINQ segítségével.
+A Main függvényben hívd meg az AdatokBeolvasasa függvényt.
+A visszakapott listán végezd el a következő feladatokat LINQ használatával, és az eredményeket írasd ki a konzolra:
+03-1: Teljes készletérték: Mennyi a raktárban lévő összes termék együttes értéke? (Használd a Termek osztály KeszletErtek() metódusát a számításhoz!)
+03-2: Kategória átlagára: Számold ki és írasd ki, hogy mennyi a Periféria kategóriába tartozó termékek átlagára!
+03-3: Kifogyóban lévő áruk: Listázd ki a konzolra azoknak a termékeknek a nevét és aktuális darabszámát, amelyekből 3 vagy annál kevesebb maradt a raktáron!
+
+data\\termekek.csv
+jobb click -> properties -> copy if newer
+
+CSV FILE:
+Mechanikus billentyűzet;Periféria;25000;12
+Vezeték nélküli egér;Periféria;12000;2
+Full HD Monitor;Kijelző;45000;8
+Gamer fejhallgató;Audio;18500;3
+Webkamera 1080p;Periféria;15000;5
+500GB SSD;Alkatrész;14000;20
+1TB HDD;Alkatrész;11000;0
+Ergonomikus egérpad;Periféria;3500;15
+Kondenzátor mikrofon;Audio;22000;1
+4K Monitor;Kijelző;120000;4
+RGB billentyűzet;Periféria;19000;7
+Bluetooth hangszóró;Audio;16000;2
+Alaplap;Alkatrész;40000;5
+16GB RAM kit;Alkatrész;21000;10
+
+
+
+
+namespace _03_webshop
+{
+    internal class Program
+    {
+        // 01. Feladat
+        class Termek(string nev, string kategoria, int ar, int keszlet)
+        {
+            public string Nev { get; set; } = nev;
+            public string Kategoria { get; set; } = kategoria;
+            public int Ar { get; set; } = ar;
+            public int Keszlet { get; set; } = keszlet;
+
+            public int KeszletErtek()
+            {
+                return Ar * Keszlet;
+            }
+        }
+
+        // 02. Feladat
+        static List<Termek> AdatokBeolvasasa(string fileName)
+        {
+            //List<Termek> termekLista = new List<Termek>();
+            //string[] sorok = File.ReadAllLines($"data\\{fileName}");
+            //foreach (var sor in sorok)
+            //{
+            //    string[] adat = sor.Split(";");
+            //    Termek termek = new Termek(adat[0], adat[1], int.Parse(adat[2]), int.Parse(adat[3]));
+            //    termekLista.Add(termek);
+            //}
+
+            var termekLista = File.ReadAllLines($"data\\{fileName}")
+                .Select(sor => sor.Split(";"))
+                .Select(adat => new Termek(adat[0], adat[1], int.Parse(adat[2]), int.Parse(adat[3])))
+                .ToList();
+
+            return termekLista;
+        }
+
+        static void Main(string[] args)
+        {
+            // 03 Feladat
+            string fileName = "termekek.csv";
+            List<Termek> termekek = AdatokBeolvasasa(fileName);
+
+            // 03-1:
+            int teljesKeszletErtek = termekek.Sum(t => t.KeszletErtek());
+            Console.WriteLine($"A teljes készletérték: {teljesKeszletErtek}Ft.");
+
+            // 03-2:
+            var periferiaAtlagAr = termekek
+                .Where(t => t.Kategoria == "Periféria")
+                .Average(t => t.Ar);
+            Console.WriteLine($"A periféria kategória átlagára: {periferiaAtlagAr}Ft");
+
+            // 03-3:
+            var kifogyoban = termekek.Where(t => t.Keszlet <= 3);
+            foreach (var termek in kifogyoban)
+            {
+                Console.WriteLine($"{termek.Nev}: {termek.Keszlet}db");
+            }            
+        }
+    }
+}

@@ -1,0 +1,11 @@
+.header {
+  background-color: #bebebe;
+  padding: 1rem;
+  border-bottom: 1px solid #000;
+}
+
+.header nav ul {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+}

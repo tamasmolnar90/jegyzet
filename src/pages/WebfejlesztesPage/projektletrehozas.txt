@@ -1,0 +1,82 @@
+#################
+##### react #####
+#################
+
+npm create vite@latest my-react-app || npm create vite@14 my-react-app
+cd my-react-app
+npm install
+npm run dev
+
+npm create vite@latest .
+
+
+
+
+################
+##### next #####
+################
+
+npx create-next-app@latest project-name || npx create-next-app@14 project-name
+TS - NO - YES
+ESLint - YES
+Tailwind CSS - YES
+RSC - NO
+App Router - YES (modern) NO (old verzio)
+import alias - NO
+cd project-name
+npm run dev
+
+npm run build (létrehozom a futtatható alkalmazást)
+npm start (és így futtathatom nem fejlesztőként, hanem... )
+
+
+
+
+################
+##### node #####
+################
+
+node -v
+npm -v
+npm init (végig kérdez)
+npm init -y (automatikusan elfogadja az összes alapbeállítást)
+init: új node.js projektet indít
+
+npm install express nodemon cors pg
+express: legnépszerűbb node.js backend keret
+nodemon: fejlesztéshez használt, automatikusan újra indítja a szervert
+cors: cross-origin resource sharing (engedélyezi a böngészőnek, hogy React alkalmazásból hozzáférjen a backend API-hoz.)
+pg: PostgreSQL klienskönyvtár node.js-hez (kapcsolódás az PostgreSQL adatbázishoz)
+
+server.js (vagy index.js ritkábban) file létrehozása
+
+
+
+
+###################
+##### angular #####
+###################
+
+npm install -g @angular/cli (ahhoz hogy használni lehessen a cli-t telepíteni kell, ezt csak egyszer, ha még nem volt a gépen)
+
+ng new first-angular-app
+
+Would you like to share pseudonymous usage data about this project with
+the Angular Team at Google under Google's Privacy Policy at
+https://policies.google.com/privacy.
+For more details and how to change this setting,
+see https://angular.dev/cli/analytics. - NO
+Which stylesheet system would like to use? - CSS - Tailwind ...
+Do you want enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? - YES / NO
+Which AI tools do you want to configure with Angular best practices? - ...
+
+npm start
+
+
+
+
+########################
+##### react native #####
+########################
+npx create-expo-app@latest ./
+npm start

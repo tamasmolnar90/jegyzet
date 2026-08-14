@@ -1,0 +1,641 @@
+https://infojegyzet.hu/webszerkesztes/mysql/pizza/
+
+
+
+-- 01. Hogy hívják az egyes pizzafutárokat?
+SELECT futar_nev
+FROM futar;
+
+
+
+-- 02. Milyen pizzák közül lehet rendelni, és mennyibe kerülnek?
+SELECT pizza_nev, pizza_ar
+FROM pizza;
+
+
+
+-- 03. Mennyibe kerül átlagosan egy pizza?
+SELECT AVG(pizza_ar) AS 'átlagos pizzaár'
+FROM pizza;
+
+
+
+-- 04. Mely pizzák olcsóbbak 1000 Ft-nál?
+SELECT pizza_nev, pizza_ar
+FROM pizza
+WHERE pizza_ar < 1000;
+
+
+
+-- 05. Ki szállította házhoz az első (egyes sorszámú) rendelést?
+SELECT futar.futar_nev
+FROM rendeles
+INNER JOIN futar ON rendeles.futar_id = futar.futar_id
+WHERE rendeles.rendeles_id = 1;
+
+
+
+-- 06. Kik rendeltek pizzát délelőtt?
+SELECT DISTINCT vevo.vevo_nev
+FROM rendeles
+INNER JOIN vevo ON rendeles.vevo_id = vevo.vevo_id
+WHERE TIME(rendeles.rendeles_idopont) < '12:00:00';
+
+
+
+-- 07. Milyen pizzákat evett Morgó?
+SELECT p.pizza_nev, t.tetel_db
+FROM vevo v
+JOIN rendeles r ON v.vevo_id = r.vevo_id
+JOIN tetel t ON r.rendeles_id = t.rendeles_id
+JOIN pizza p ON t.pizza_id = p.pizza_id
+WHERE v.vevo_nev = 'Morgó';
+
+
+
+-- 08. Ki szállított házhoz Tudornak?
+SELECT DISTINCT f.futar_nev
+FROM rendeles r
+JOIN futar f ON r.futar_id = f.futar_id
+JOIN vevo v ON r.vevo_id = v.vevo_id
+WHERE v.vevo_nev = 'Tudor';
+
+
+
+
+-- 09. Az egyes rendelések alkalmával ki kinek szállított házhoz?
+SELECT r.rendeles_id, v.vevo_nev AS vevo, f.futar_nev AS futar, r.rendeles_idopont
+FROM rendeles r
+JOIN vevo v ON r.vevo_id = v.vevo_id
+JOIN futar f ON r.futar_id = f.futar_id
+ORDER BY r.rendeles_id;
+
+
+
+-- 10. Mennyit költött pizzára Vidor?
+SELECT v.vevo_nev, COALESCE(SUM(t.tetel_db * p.pizza_ar),0) AS ossz_koltseg
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+WHERE v.vevo_nev = 'Vidor'
+GROUP BY v.vevo_id;
+
+
+
+-- 11. Hány alkalommal rendelt Sorrento pizzát Kuka?
+SELECT COUNT(DISTINCT r.rendeles_id) AS alkalom
+FROM rendeles r
+JOIN tetel t ON r.rendeles_id = t.rendeles_id
+JOIN pizza p ON t.pizza_id = p.pizza_id
+JOIN vevo v ON r.vevo_id = v.vevo_id
+WHERE v.vevo_nev = 'Kuka' AND p.pizza_nev = 'Sorrento';
+
+
+
+-- 12. Hány pizzát evett Szende?
+SELECT v.vevo_nev, COALESCE(SUM(t.tetel_db),0) AS ossz_darab
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+WHERE v.vevo_nev = 'Szende'
+GROUP BY v.vevo_id;
+
+
+
+-- 13. Hányszor rendelt pizzát Hapci?
+SELECT v.vevo_nev, COUNT(r.rendeles_id) AS rendelesek_szama
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+WHERE v.vevo_nev = 'Hapci'
+GROUP BY v.vevo_id;
+
+
+
+-- 14. Hány darab Hawaii pizza fogyott összesen?
+SELECT p.pizza_nev, COALESCE(SUM(t.tetel_db),0) AS ossz_darab
+FROM pizza p
+LEFT JOIN tetel t ON p.pizza_id = t.pizza_id
+WHERE p.pizza_nev = 'Hawaii'
+GROUP BY p.pizza_id;
+
+
+
+-- 15. Mennyit költöttek pizzára az egyes vevők?
+SELECT v.vevo_nev, COALESCE(SUM(t.tetel_db * p.pizza_ar),0) AS ossz_koltseg
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY v.vevo_id
+ORDER BY ossz_koltseg DESC;
+
+
+
+-- 16. Mennyit vettek az egyes vevők a különböző pizzákból?
+SELECT v.vevo_nev, p.pizza_nev, COALESCE(SUM(t.tetel_db),0) AS db
+FROM vevo v
+JOIN rendeles r ON v.vevo_id = r.vevo_id
+JOIN tetel t ON r.rendeles_id = t.rendeles_id
+JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY v.vevo_id, p.pizza_id
+ORDER BY v.vevo_nev, p.pizza_nev;
+
+
+
+-- 17. Ki hány pizzát szállított házhoz az egyes napokon?
+SELECT DATE(r.rendeles_idopont) AS nap, f.futar_nev, COALESCE(SUM(t.tetel_db),0) AS db
+FROM rendeles r
+JOIN futar f ON r.futar_id = f.futar_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+GROUP BY nap, f.futar_id
+ORDER BY nap, f.futar_nev;
+
+
+
+-- 18. Ki hány pizzát rendelt az egyes napokon?
+SELECT DATE(r.rendeles_idopont) AS nap, v.vevo_nev, COALESCE(SUM(t.tetel_db),0) AS db
+FROM rendeles r
+JOIN vevo v ON r.vevo_id = v.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+GROUP BY nap, v.vevo_id
+ORDER BY nap, v.vevo_nev;
+
+
+
+-- 19. Mennyi volt a bevétel az egyes napokon?
+SELECT DATE(r.rendeles_idopont) AS nap, COALESCE(SUM(t.tetel_db * p.pizza_ar),0) AS bevetel
+FROM rendeles r
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY nap
+ORDER BY nap;
+
+
+
+-- 20. Hány pizza fogyott naponta?
+SELECT DATE(r.rendeles_idopont) AS nap, COALESCE(SUM(t.tetel_db),0) AS napi_db
+FROM rendeles r
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+GROUP BY nap
+ORDER BY nap;
+
+
+
+-- 21. Mennyi pizza fogyott átlagosan naponta?
+SELECT AVG(napi_db) AS atlag_napi_fogyasztas
+FROM (
+  SELECT DATE(r.rendeles_idopont) AS nap, SUM(t.tetel_db) AS napi_db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY nap
+) AS napi;
+
+
+
+-- 22. Hány pizzát rendeltek átlagosan egyszerre?
+SELECT AVG(order_db) AS atlag_db_rendelesenkent
+FROM (
+  SELECT r.rendeles_id, SUM(t.tetel_db) AS order_db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY r.rendeles_id
+) AS ord;
+
+
+
+-- 23. Hány házhoz szállítása volt az egyes futároknak?
+SELECT f.futar_nev, COUNT(r.rendeles_id) AS szallitasi_szam
+FROM futar f
+LEFT JOIN rendeles r ON f.futar_id = r.futar_id
+GROUP BY f.futar_id
+ORDER BY szallitasi_szam DESC;
+
+
+
+-- 24. A fogyasztás alapján mi a pizzák népszerűségi sorrendje?
+SELECT p.pizza_nev, COALESCE(SUM(t.tetel_db),0) AS ossz_eladas
+FROM pizza p
+LEFT JOIN tetel t ON p.pizza_id = t.pizza_id
+GROUP BY p.pizza_id
+ORDER BY ossz_eladas DESC;
+
+
+
+-- 25. A rendelések összértéke alapján mi a vevők sorrendje?
+SELECT v.vevo_nev, COALESCE(SUM(t.tetel_db * p.pizza_ar),0) AS ossz_ertek
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY v.vevo_id
+ORDER BY ossz_ertek DESC;
+
+
+
+-- 26. Melyik a legdrágább pizza?
+SELECT pizza_nev, pizza_ar
+FROM pizza
+ORDER BY pizza_ar DESC
+LIMIT 1;
+
+
+
+-- 27. Ki szállította házhoz a legtöbb pizzát?
+SELECT f.futar_nev, COALESCE(SUM(t.tetel_db),0) AS ossz_db
+FROM futar f
+LEFT JOIN rendeles r ON f.futar_id = r.futar_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+GROUP BY f.futar_id
+ORDER BY ossz_db DESC
+LIMIT 1;
+
+
+
+-- 28. Ki ette a legtöbb pizzát?
+SELECT v.vevo_nev, COALESCE(SUM(t.tetel_db),0) AS ossz_db
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+GROUP BY v.vevo_id
+ORDER BY ossz_db DESC
+LIMIT 1;
+
+
+
+-- 29. Melyik nap fogyott a legtöbb pizza?
+SELECT nap, ossz_db
+FROM (
+  SELECT DATE(r.rendeles_idopont) AS nap, SUM(t.tetel_db) AS ossz_db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY nap
+) AS napi
+ORDER BY ossz_db DESC
+LIMIT 1;
+
+
+
+-- 30. Melyik nap fogyott a legtöbb Hawaii pizza?
+SELECT nap, ossz_db
+FROM (
+  SELECT DATE(r.rendeles_idopont) AS nap, SUM(t.tetel_db) AS ossz_db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  JOIN pizza p ON t.pizza_id = p.pizza_id
+  WHERE p.pizza_nev = 'Hawaii'
+  GROUP BY nap
+) AS napi_hawaii
+ORDER BY ossz_db DESC
+LIMIT 1;
+
+
+
+-- 31. Hány pizza fogyott a legforgalmasabb napon?
+SELECT MAX(napi_db) AS legtobb_darab
+FROM (
+  SELECT DATE(r.rendeles_idopont) AS nap, SUM(t.tetel_db) AS napi_db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY nap
+) AS napi;
+
+
+
+-- 32. Mennyi volt a bevétel a legjobb napon?
+SELECT nap, MAX(bevetel) AS legjobb_bevetel
+FROM (
+  SELECT DATE(r.rendeles_idopont) AS nap, SUM(t.tetel_db * p.pizza_ar) AS bevetel
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  JOIN pizza p ON t.pizza_id = p.pizza_id
+  GROUP BY nap
+) AS napi_bevetel;
+
+
+
+-- 33. Mi Szundi kedvenc pizzája?
+SELECT p.pizza_nev, SUM(t.tetel_db) AS db
+FROM vevo v
+JOIN rendeles r ON v.vevo_id = r.vevo_id
+JOIN tetel t ON r.rendeles_id = t.rendeles_id
+JOIN pizza p ON t.pizza_id = p.pizza_id
+WHERE v.vevo_nev = 'Szundi'
+GROUP BY p.pizza_id
+ORDER BY db DESC
+LIMIT 1;
+
+
+
+-- 34. Kik rendeltek pizzát a nyitás napján?
+SELECT DISTINCT v.vevo_nev
+FROM rendeles r
+JOIN vevo v ON r.vevo_id = v.vevo_id
+WHERE DATE(r.rendeles_idopont) = (
+  SELECT MIN(DATE(r2.rendeles_idopont)) FROM rendeles r2
+);
+
+
+
+-- 35. Mely pizzák olcsóbbak a Capricciosa pizzánál?
+SELECT p2.pizza_nev, p2.pizza_ar
+FROM pizza p2
+WHERE p2.pizza_ar < (
+  SELECT pizza_ar FROM pizza WHERE pizza_nev = 'Capricciosa' LIMIT 1
+);
+
+
+
+-- 36. Mely pizzák drágábbak az átlagosnál?
+SELECT pizza_nev, pizza_ar
+FROM pizza
+WHERE pizza_ar > (SELECT AVG(pizza_ar) FROM pizza);
+
+
+
+-- 37. Mely pizza ára van legközelebb az átlagárhoz?
+SELECT pizza_nev, pizza_ar, ABS(pizza_ar - avg_ar) AS diff
+FROM (
+  SELECT p.*, (SELECT AVG(pizza_ar) FROM pizza) AS avg_ar
+  FROM pizza p
+) AS sub
+ORDER BY diff
+LIMIT 1;
+
+
+
+-- 38. Mely futárok mentek többet házhoz az átlagosnál?
+WITH futar_totals AS (
+  SELECT f.futar_id, f.futar_nev, COALESCE(SUM(t.tetel_db),0) AS total
+  FROM futar f
+  LEFT JOIN rendeles r ON f.futar_id = r.futar_id
+  LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY f.futar_id
+)
+SELECT ft.futar_nev, ft.total
+FROM futar_totals ft
+WHERE ft.total > (SELECT AVG(total) FROM futar_totals);
+
+
+
+-- 39. Kik rendeltek legalább háromszor annyi pizzát, mint egy átlagos vevő?
+WITH vevo_totals AS (
+  SELECT v.vevo_id, v.vevo_nev, COALESCE(SUM(t.tetel_db),0) AS total
+  FROM vevo v
+  LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+  LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY v.vevo_id
+)
+SELECT vt.vevo_nev, vt.total
+FROM vevo_totals vt
+WHERE vt.total >= 3 * (SELECT AVG(total) FROM vevo_totals);
+
+
+
+-- 40. Kik szállítottak házhoz legalább tízszer?
+SELECT f.futar_nev, COUNT(r.rendeles_id) AS rendeles_szam
+FROM futar f
+LEFT JOIN rendeles r ON f.futar_id = r.futar_id
+GROUP BY f.futar_id
+HAVING rendeles_szam >= 10;
+
+
+
+-- 41. Mely pizzából fogyott legalább 50 db?
+SELECT p.pizza_nev, SUM(t.tetel_db) AS ossz_db
+FROM pizza p
+LEFT JOIN tetel t ON p.pizza_id = t.pizza_id
+GROUP BY p.pizza_id
+HAVING ossz_db >= 50;
+
+
+
+-- 42. Mely vevők nem rendeltek legalább háromszor?
+SELECT v.vevo_nev, COUNT(r.rendeles_id) AS rendeles_szam
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+GROUP BY v.vevo_id
+HAVING rendeles_szam < 3;
+
+
+
+-- 43. Kik rendeltek legalább 5 Hawaii pizzát?
+SELECT v.vevo_nev, SUM(t.tetel_db) AS hawaii_db
+FROM vevo v
+JOIN rendeles r ON v.vevo_id = r.vevo_id
+JOIN tetel t ON r.rendeles_id = t.rendeles_id
+JOIN pizza p ON t.pizza_id = p.pizza_id
+WHERE p.pizza_nev = 'Hawaii'
+GROUP BY v.vevo_id
+HAVING hawaii_db >= 5;
+
+
+
+-- 44. Milyen pizzából nem rendelt soha Tudor?
+SELECT p.pizza_nev
+FROM pizza p
+WHERE p.pizza_id NOT IN (
+  SELECT t.pizza_id
+  FROM tetel t
+  JOIN rendeles r ON t.rendeles_id = r.rendeles_id
+  JOIN vevo v ON r.vevo_id = v.vevo_id
+  WHERE v.vevo_nev = 'Tudor'
+);
+
+
+
+-- 45. Van-e olyan pizza, amelyből soha nem rendeltek?
+SELECT p.pizza_nev
+FROM pizza p
+LEFT JOIN tetel t ON p.pizza_id = t.pizza_id
+WHERE t.pizza_id IS NULL;
+
+
+
+-- 46. Ki nem rendelt soha Vesuvio pizzát?
+SELECT v.vevo_nev
+FROM vevo v
+WHERE v.vevo_id NOT IN (
+  SELECT r.vevo_id
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  JOIN pizza p ON t.pizza_id = p.pizza_id
+  WHERE p.pizza_nev = 'Vesuvio'
+);
+
+
+
+-- 47. Mely pizzafutárokkal nem találkoztak az egyes vevők?
+SELECT v.vevo_nev, f.futar_nev
+FROM vevo v
+CROSS JOIN futar f
+LEFT JOIN rendeles r ON r.vevo_id = v.vevo_id AND r.futar_id = f.futar_id
+WHERE r.rendeles_id IS NULL
+ORDER BY v.vevo_nev, f.futar_nev;
+
+
+
+-- 48. Kik rendeltek több Sorrento pizzát, mint Vesuviot?
+SELECT v.vevo_nev,
+  SUM(CASE WHEN p.pizza_nev = 'Sorrento' THEN t.tetel_db ELSE 0 END) AS sorrento_db,
+  SUM(CASE WHEN p.pizza_nev = 'Vesuvio' THEN t.tetel_db ELSE 0 END) AS vesuvio_db
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY v.vevo_id
+HAVING sorrento_db > vesuvio_db;
+
+
+
+-- 49. Kik rendeltek legalább 5 Capricciosa vagy 8 Frutti di Mare pizzát?
+SELECT v.vevo_nev,
+  SUM(CASE WHEN p.pizza_nev = 'Capricciosa' THEN t.tetel_db ELSE 0 END) AS capri_db,
+  SUM(CASE WHEN p.pizza_nev = 'Frutti di Mare' THEN t.tetel_db ELSE 0 END) AS frutti_db
+FROM vevo v
+LEFT JOIN rendeles r ON v.vevo_id = r.vevo_id
+LEFT JOIN tetel t ON r.rendeles_id = t.rendeles_id
+LEFT JOIN pizza p ON t.pizza_id = p.pizza_id
+GROUP BY v.vevo_id
+HAVING capri_db >= 5 OR frutti_db >= 8;
+
+
+
+-- 50. Kik rendeltek kétfajta pizzából is legalább 10 darabot?
+SELECT v.vevo_nev
+FROM vevo v
+JOIN (
+  SELECT r.vevo_id, t.pizza_id, SUM(t.tetel_db) AS db
+  FROM rendeles r
+  JOIN tetel t ON r.rendeles_id = t.rendeles_id
+  GROUP BY r.vevo_id, t.pizza_id
+) AS vp ON v.vevo_id = vp.vevo_id
+GROUP BY v.vevo_id
+HAVING SUM(CASE WHEN vp.db >= 10 THEN 1 ELSE 0 END) >= 2;
+
+
+
+///////////////////////////////
+////////// ADATBÁZIS //////////
+///////////////////////////////
+
+CREATE DATABASE IF NOT EXISTS pizza
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+USE pizza;
+
+CREATE TABLE `futar` (
+  `futar_id` INT NOT NULL default '0',
+  `futar_nev` varchar(25) collate latin2_hungarian_ci NOT NULL default '',
+  `futar_tel` varchar(25) collate latin2_hungarian_ci NOT NULL default '',
+  PRIMARY KEY  (`futar_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+INSERT INTO `futar` VALUES (1, 'Hurrikán', '+36-30/123-4567');
+INSERT INTO `futar` VALUES (2, 'Gyalogkakukk', '+36-70/343-4343');
+INSERT INTO `futar` VALUES (3, 'Gömbvillám', '+36-30/434-3434');
+INSERT INTO `futar` VALUES (4, 'Szélvész', '+36-30/258-3698');
+INSERT INTO `futar` VALUES (5, 'Imperial', '+36-70/987-6543');
+
+CREATE TABLE `pizza` (
+  `pizza_id` INT NOT NULL default '0',
+  `pizza_nev` varchar(15) collate latin2_hungarian_ci NOT NULL default '',
+  `pizza_ar` INT NOT NULL default '0',
+  PRIMARY KEY  (`pizza_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+INSERT INTO `pizza` VALUES (1, 'Capricciosa', 1050);
+INSERT INTO `pizza` VALUES (2, 'Frutti di Mare', 1350);
+INSERT INTO `pizza` VALUES (3, 'Hawaii', 850);
+INSERT INTO `pizza` VALUES (4, 'Vesuvio', 900);
+INSERT INTO `pizza` VALUES (5, 'Sorrento', 1050);
+
+CREATE TABLE `rendeles` (
+  `rendeles_id` INT NOT NULL default '0',
+  `vevo_id` INT NOT NULL default '0',
+  `futar_id` INT NOT NULL default '0',
+  `rendeles_idopont` datetime NOT NULL,
+  PRIMARY KEY  (`rendeles_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+INSERT INTO `rendeles` VALUES (1, 4, 2, '2016-10-01 12:04:11');
+INSERT INTO `rendeles` VALUES (2, 7, 2, '2016-10-01 13:18:44');
+INSERT INTO `rendeles` VALUES (3, 1, 1, '2016-10-02 10:11:41');
+INSERT INTO `rendeles` VALUES (4, 5, 2, '2016-10-02 10:24:59');
+INSERT INTO `rendeles` VALUES (5, 2, 3, '2016-10-02 13:19:06');
+INSERT INTO `rendeles` VALUES (6, 4, 2, '2016-10-03 13:14:38');
+INSERT INTO `rendeles` VALUES (7, 6, 2, '2016-10-04 11:10:35');
+INSERT INTO `rendeles` VALUES (8, 7, 4, '2016-10-04 15:34:58');
+INSERT INTO `rendeles` VALUES (9, 1, 5, '2016-10-04 17:07:59');
+INSERT INTO `rendeles` VALUES (10, 3, 5, '2016-10-04 20:21:51');
+INSERT INTO `rendeles` VALUES (11, 2, 1, '2016-10-05 18:52:53');
+INSERT INTO `rendeles` VALUES (12, 5, 2, '2016-10-05 19:59:02');
+INSERT INTO `rendeles` VALUES (13, 6, 2, '2016-10-06 14:55:03');
+INSERT INTO `rendeles` VALUES (14, 4, 3, '2016-10-06 15:01:14');
+INSERT INTO `rendeles` VALUES (15, 1, 4, '2016-10-06 18:48:46');
+INSERT INTO `rendeles` VALUES (16, 2, 5, '2016-10-06 19:11:03');
+INSERT INTO `rendeles` VALUES (17, 7, 2, '2016-10-06 19:56:28');
+INSERT INTO `rendeles` VALUES (18, 3, 2, '2016-10-07 12:45:30');
+INSERT INTO `rendeles` VALUES (19, 4, 5, '2016-10-07 13:00:56');
+INSERT INTO `rendeles` VALUES (20, 1, 1, '2016-10-07 15:42:50');
+INSERT INTO `rendeles` VALUES (21, 5, 3, '2016-10-08 18:56:00');
+
+CREATE TABLE `tetel` (
+  `rendeles_id` INT NOT NULL default '0',
+  `pizza_id` INT NOT NULL default '0',
+  `tetel_db` INT NOT NULL default '0'
+) ENGINE=MyISAM DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+INSERT INTO `tetel` VALUES (1, 1, 2);
+INSERT INTO `tetel` VALUES (1, 4, 3);
+INSERT INTO `tetel` VALUES (2, 2, 1);
+INSERT INTO `tetel` VALUES (3, 1, 2);
+INSERT INTO `tetel` VALUES (4, 1, 1);
+INSERT INTO `tetel` VALUES (4, 4, 1);
+INSERT INTO `tetel` VALUES (5, 2, 4);
+INSERT INTO `tetel` VALUES (6, 1, 1);
+INSERT INTO `tetel` VALUES (6, 4, 1);
+INSERT INTO `tetel` VALUES (6, 5, 1);
+INSERT INTO `tetel` VALUES (7, 5, 5);
+INSERT INTO `tetel` VALUES (8, 4, 3);
+INSERT INTO `tetel` VALUES (9, 2, 1);
+INSERT INTO `tetel` VALUES (10, 1, 1);
+INSERT INTO `tetel` VALUES (10, 4, 1);
+INSERT INTO `tetel` VALUES (11, 1, 1);
+INSERT INTO `tetel` VALUES (12, 2, 2);
+INSERT INTO `tetel` VALUES (12, 4, 2);
+INSERT INTO `tetel` VALUES (13, 4, 1);
+INSERT INTO `tetel` VALUES (13, 5, 1);
+INSERT INTO `tetel` VALUES (13, 2, 1);
+INSERT INTO `tetel` VALUES (14, 2, 2);
+INSERT INTO `tetel` VALUES (15, 1, 1);
+INSERT INTO `tetel` VALUES (16, 2, 1);
+INSERT INTO `tetel` VALUES (16, 4, 1);
+INSERT INTO `tetel` VALUES (16, 5, 1);
+INSERT INTO `tetel` VALUES (17, 1, 2);
+INSERT INTO `tetel` VALUES (17, 2, 3);
+INSERT INTO `tetel` VALUES (18, 1, 4);
+INSERT INTO `tetel` VALUES (18, 5, 1);
+INSERT INTO `tetel` VALUES (19, 1, 1);
+INSERT INTO `tetel` VALUES (19, 2, 1);
+INSERT INTO `tetel` VALUES (19, 4, 1);
+INSERT INTO `tetel` VALUES (19, 5, 1);
+INSERT INTO `tetel` VALUES (20, 5, 3);
+INSERT INTO `tetel` VALUES (21, 2, 2);
+INSERT INTO `tetel` VALUES (21, 4, 1);
+
+CREATE TABLE `vevo` (
+  `vevo_id` INT NOT NULL default '0',
+  `vevo_nev` varchar(30) collate latin2_hungarian_ci NOT NULL default '',
+  `vevo_cim` varchar(30) collate latin2_hungarian_ci NOT NULL default '',
+  PRIMARY KEY  (`vevo_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin2 COLLATE=latin2_hungarian_ci;
+
+INSERT INTO `vevo` VALUES (1, 'Hapci', '');
+INSERT INTO `vevo` VALUES (2, 'Vidor', '');
+INSERT INTO `vevo` VALUES (3, 'Tudor', '');
+INSERT INTO `vevo` VALUES (4, 'Kuka', '');
+INSERT INTO `vevo` VALUES (5, 'Szende', '');
+INSERT INTO `vevo` VALUES (6, 'Szundi', '');
+INSERT INTO `vevo` VALUES (7, 'Morgó', '');

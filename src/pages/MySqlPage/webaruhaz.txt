@@ -1,0 +1,133 @@
+-- I. Adatrögzítés (INSERT)
+-- 01. Vegyél fel egy új kategóriát a Kategoria táblába, amelynek a neve: Tablet!
+INSERT INTO kategoria (kategoria_nev) VALUES
+('Tablet');
+
+-- 02. Vegyél fel egy új terméket a Termek táblába! A neve legyen iPad Air, az ára 220000 Ft, készleten 10 db van, a kategóriája pedig az előbb létrehozott "Tablet" (az azonosítója az 5-ös szám lesz).
+INSERT INTO termek (termek_nev, ar, keszlet, kategoria_id) VALUES
+('iPad Air', 220000, 10, 5);
+
+-- II. Adatmódosítás (UPDATE)
+-- 01. A Sony WH-1000XM4 fülhallgató akcióba került. Módosítsd az árát 105000 Ft-ra a termék neve alapján!
+UPDATE termek
+SET ar = 105000
+WHERE termek_nev = 'Sony WH-1000XM4';
+
+-- 02. Egy nagy megrendelés érkezett a laptopokra. Csökkentsd 2 darabbal minden olyan termék készletét, amely a Laptop kategóriába (kategoria_id = 2) tartozik!
+UPDATE termek
+SET keszlet = keszlet - 2
+WHERE kategoria_id = 2;
+
+-- III. Lekérdezések (SELECT)
+-- 01. Listázd ki az összes termék nevét és árát!
+SELECT termek_nev, ar
+FROM termek;
+
+-- 02. Keresd meg a drága eszközöket! Listázd ki a 250000 Ft-nál drágább termékek nevét és árát, ár szerint csökkenő sorrendben!
+SELECT termek_nev, ar
+FROM termek
+WHERE ar > 250000
+ORDER BY ar DESC;
+
+-- 03. A raktáros a kifogyóban lévő árukat keresi. Listázd ki azoknak a termékeknek a nevét és készletét, amelyekből kevesebb mint 10 darab van raktáron!
+SELECT termek_nev, keszlet
+FROM termek
+WHERE keszlet < 10;
+
+-- 04. Keresd meg azokat a termékeket, amelyeknek a nevében szerepel az Air szó! (Csak a termék nevét jelenítsd meg).
+SELECT termek_nev
+FROM termek
+WHERE termek_nev LIKE '%Air%';
+
+-- 05. Határozd meg egyetlen aggregált függvénnyel, hogy mennyi a webáruházban kapható termékek átlagára!
+SELECT AVG(ar) AS atlag_ar
+FROM termek;
+
+-- 06. Jelenítsd meg a legkisebb (MIN) és a legnagyobb (MAX) raktárkészletet egyetlen lekérdezésben! Adj beszédes álnevet az oszlopoknak!
+SELECT MIN(keszlet) AS min_keszlet, MAX(keszlet) AS max_keszlet
+FROM termek;
+
+-- 07. Listázd ki az összes termék nevét és a hozzájuk tartozó kategória nevét! (INNER JOIN)
+SELECT termek.termek_nev, kategoria.kategoria_nev
+FROM termek
+INNER JOIN kategoria
+ON termek.kategoria_id = kategoria.kategoria_id;
+
+-- 08. Határozd meg kategóriánként (a kategoria_id alapján), hogy hány darab különböző termék tartozik hozzájuk! (GROUP BY, COUNT)
+SELECT kategoria_id, COUNT(*) AS termekek_szama
+FROM termek
+GROUP BY kategoria_id;
+
+-- 09. Bővítsd a 7-es feladat többtáblás lekérdezését: Listázd ki csak azoknak a termékeknek a nevét és a kategóriájuk nevét, amelyek ára pontosan 110000 Ft vagy 95000 Ft! (IN operátor)
+SELECT termek.termek_nev, kategoria.kategoria_nev
+FROM termek
+INNER JOIN kategoria
+ON termek.kategoria_id = kategoria.kategoria_id
+WHERE ar IN (110000, 95000);
+
+-- 10. Készíts egy lekérdezést, amely kilistázza az összes kategória nevét (még azokat is, amelyekhez esetleg egyáltalán nem tartozik termék), és mellé a termékek nevét! (LEFT JOIN)
+SELECT kategoria.kategoria_nev, termek.termek_nev
+FROM kategoria
+LEFT JOIN termek
+ON kategoria.kategoria_id = termek.kategoria_id;
+
+-- 11. Határozd meg, hogy melyik a legolcsóbb termék a webáruházban! Listázd ki a nevét és az árát, a sorok limitálásának segítségével (ORDER BY és LIMIT / TOP)!
+SELECT termek_nev, ar
+FROM termek
+ORDER BY ar ASC
+LIMIT 1;
+
+-- 12. Listázd ki azoknak a kategóriáknak a nevét (Kategoria táblából), amelyekhez több mint 2 termék tartozik! (JOIN, GROUP BY, HAVING)
+SELECT kategoria.kategoria_nev, COUNT(termek.termek_id) AS termek_db
+FROM kategoria
+INNER JOIN termek
+ON kategoria.kategoria_id = termek.kategoria_id
+GROUP BY kategoria.kategoria_id, kategoria.kategoria_nev
+HAVING COUNT(termek.termek_id) > 2;
+
+
+
+
+CREATE DATABASE IF NOT EXISTS webaruhaz
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+USE webaruhaz;
+
+CREATE TABLE termek (
+  termek_id INT AUTO_INCREMENT PRIMARY KEY,
+  termek_nev VARCHAR(100),
+  ar INT,
+  keszlet INT,
+  kategoria_id INT
+);
+
+CREATE TABLE kategoria (
+  kategoria_id INT AUTO_INCREMENT PRIMARY KEY,
+  kategoria_nev VARCHAR (50)
+);
+
+-- FOREIGN KEY KAPCSOLAT
+ALTER TABLE termek
+ADD CONSTRAINT fk_termek_kategoria
+FOREIGN KEY (kategoria_id)
+REFERENCES kategoria(kategoria_id)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+INSERT INTO kategoria (kategoria_nev) VALUES 
+('Okostelefon'), 
+('Laptop'), 
+('Okosóra'), 
+('Fülhallgató');
+
+INSERT INTO termek (termek_nev, ar, keszlet, kategoria_id) VALUES
+('iPhone 13', 250000, 15, 1),
+('Samsung Galaxy S22', 230000, 20, 1),
+('MacBook Air M1', 350000, 8, 2),
+('Lenovo ThinkPad', 310000, 12, 2),
+('Asus ROG Zephyrus', 550000, 3, 2),
+('Apple Watch SE', 110000, 25, 3),
+('Garmin Fenix 7', 280000, 5, 3),
+('AirPods Pro', 95000, 30, 4),
+('Sony WH-1000XM4', 120000, 10, 4);

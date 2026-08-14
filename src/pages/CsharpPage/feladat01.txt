@@ -1,0 +1,195 @@
+01. Webshop
+
+01. Feladat: Osztály létrehozása Készítsen egy Termek nevű osztályt az alábbi tulajdonságokkal:
+- Nev (string)
+- Kategoria (string)
+- Ar (int)
+
+02. Feladat: Az osztályon belül lészítsen egy függvényt akciosAr(double szazalek) néven a Termek osztályba, amely paraméterben kap egy százalékot, majd visszatér a termék akciós árával.
+
+03. Feladat: A főprogramban készítsen egy függvényt termekekBekerese() néven, amely létrehoz egy listát, feltölti tesztadatokkal, és visszatér a listával.
+
+Példa Adatok:
+- Egér, Periféria, 8000
+- Billentyűzet, Periféria, 15000
+- Monitor, Kijelző, 45000
+- Fülhallgató, Audio, 12000
+- Webkamera, Periféria, 20000
+
+04. Feladat: LINQ lekérdezések: A főprogramban hívja meg a TermekekBekerese() függvényt, majd oldják meg a következő feladatokat LINQ segítségével:
+04-1: Szűrés: Listázzák ki azokat a termékeket, amelyek 15 000 Ft-nál olcsóbbak.
+04-2: Kiválasztás: Kérjék le és írassák ki csak a neveit azoknak a termékeknek, amelyek a Periféria kategóriába tartoznak.
+04-3: Rendezés: Írassák ki az összes terméket ár szerint csökkenő sorrendben.
+04-4: Legdrágább termék a perifériából
+04-5: Összes termékre 20% akció
+04-6: Összes termék összege
+04-7: Összes termék átlaga
+04-8: Perifériák darabszám
+04-9: Egyedi kategóriák
+04-10: Kategória darab
+
+
+
+
+namespace _01_webshop
+{
+    internal class Program
+    {
+        //class Termek
+        //{
+        //    public string Nev { get; set; }
+        //    public string Kategoria { get; set; }
+        //    public int Ar { get; set; }
+
+        //    public Termek(string nev, string kategoria, int ar)
+        //    {
+        //        Nev = nev;
+        //        Kategoria = kategoria;
+        //        Ar = ar;
+        //    }
+        //}
+
+        // 01. Feladat
+        class Termek(string nev, string kategoria, int ar)
+        {
+            public string Nev { get; set; } = nev;
+            public string Kategoria { get; set; } = kategoria;
+            public int Ar { get; set; } = ar;
+
+            // 02. Feladat
+            public double AkciosAr(double szazalek)
+            {
+                double ujAr = Ar * (1 - (szazalek / 100));
+                return ujAr;
+            }
+        }
+
+        // 03. Feladat
+        static List<Termek> TermekekBekerese()
+        {
+            Termek termek1 = new("Egér", "Periféria", 8000);
+            Termek termek2 = new("Billentyűzet", "Periféria", 15000);
+            Termek termek3 = new("Monitor", "Kijelző", 45000);
+            Termek termek4 = new("Fülhallgató", "Audio", 12000);
+            Termek termek5 = new("Webkamera", "Periféria", 20000);
+
+            List<Termek> termekLista = new List<Termek>();
+
+            termekLista.Add(termek1);
+            termekLista.Add(termek2);
+            termekLista.Add(termek3);
+            termekLista.Add(termek4);
+            termekLista.Add(termek5);
+
+            return termekLista;
+        }
+
+        static void Main(string[] args)
+        {
+            // 04. Feladat
+            List<Termek> termekLista = TermekekBekerese();
+
+            // 04-1 Szűrés:
+            var szurtTermekek = termekLista
+                .Where(t => t.Ar < 15000)
+                .ToList();
+            foreach (var termek in szurtTermekek)
+            {
+                Console.WriteLine($"{termek.Nev} - {termek.Ar}Ft");
+            }
+
+            // 04-2 Kiválasztás:
+            var periferiakNevei = termekLista
+                .Where(t => t.Kategoria == "Periféria")
+                .Select(t => t.Nev)
+                .ToList();
+            foreach (var termek in periferiakNevei)
+            {
+                Console.WriteLine(termek);
+            }
+
+            // 04-3 Rendezés:
+            var rendezett = termekLista
+                .OrderByDescending(t => t.Ar)
+                .ToList();
+            foreach (var termek in rendezett)
+            {
+                Console.WriteLine($"{termek.Nev} - {termek.Ar}Ft");
+            }
+
+            // 04-4:
+            var legdragabbPeriferia = termekLista
+                .Where(t => t.Kategoria == "Periféria")
+                .MaxBy(t => t.Ar);
+            Console.WriteLine($"{legdragabbPeriferia.Nev} - {legdragabbPeriferia.Ar}Ft");
+
+            // 04-5:
+            foreach (var termek in termekLista)
+            {
+                Console.WriteLine($"{termek.Nev} - Akciós ár: {termek.AkciosAr(20)}Ft");
+            }
+
+            // 04-6:
+            var osszeg = termekLista.Sum(t => t.Ar);
+            Console.WriteLine($"Összes termék ára összeadva: {osszeg}Ft");
+
+            // 04-7:
+            var atlag = termekLista.Average(t => t.Ar);
+            Console.WriteLine($"Összes termék átlaga: {atlag:F2}Ft");
+
+            // 04-8:
+            var periferiaDarab = termekLista
+                //.Where(t => t.Kategoria == "Periféria").Count();
+                .Count(t => t.Kategoria == "Periféria");
+            Console.WriteLine($"Periféria darab: {periferiaDarab}db");
+
+            // 04-9
+            var kategoriak = termekLista
+                .Select(t => t.Kategoria)
+                .Distinct()
+                .ToList();
+            foreach (var kategoria in kategoriak)
+            {
+                Console.WriteLine(kategoria);
+            }
+
+            // 04-10
+            var kategoriaDarab = kategoriak.Count();
+            Console.WriteLine($"Kategóriák száma: {kategoriaDarab}db");
+
+            // Bónuszok:
+            // Perifériák átlaga:
+            var periferiaAtlag = termekLista
+               .Where(t => t.Kategoria == "Periféria")
+               .Average(t => t.Ar);
+            Console.WriteLine($"Perifériák átlaga: {periferiaAtlag:F2}");
+
+            // Periféria és 10000 Ft-nál olcsóbb
+            var asd1 = termekLista
+                .Where(t => t.Kategoria == "Periféria" && t.Ar < 10000)
+                .ToList();
+            foreach (var i in asd1)
+            {
+                Console.WriteLine($"{i.Nev}, Ár:{i.Ar}");
+            }
+
+            // Név szerinti ABC sorrend
+            var asd2 = termekLista
+                .OrderBy(t => t.Nev)
+                .ToList();
+            foreach (var i in asd2)
+            {
+                Console.WriteLine($"{i.Nev}, Ár:{i.Ar}");
+            }
+
+            // Kijelző kategóriában minden termék 50% akció
+            var asd3 = termekLista
+                .Where(t => t.Kategoria == "Kijelző")
+                .ToList();
+            foreach (var i in asd3)
+            {
+                Console.WriteLine($"Név: {i.Nev}, Új ár:{i.AkciosAr(50)}");
+            }            
+        }
+    }
+}

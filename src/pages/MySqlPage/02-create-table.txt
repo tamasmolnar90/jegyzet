@@ -1,0 +1,136 @@
+////////// TÁBLE LÉTREHOZÁSA //////////
+
+CREATE TABLE table_name (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    age INT NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    car VARCHAR(255) DEFAULT 'Ford',
+    doors INT CHECK (doors < 6),
+    date DATE NOT NULL
+);
+
+
+
+////////// CONSTRAINTS //////////
+
+NOT NULL – Biztosítja, hogy egy oszlop ne lehessen NULL értékű.
+
+UNIQUE – Biztosítja, hogy egy oszlop összes értéke különböző legyen.
+
+PRIMARY KEY – A NOT NULL és UNIQUE kombinációja. Egyedi módon azonosít minden sort a táblában.
+
+FOREIGN KEY – Megakadályozza az olyan műveleteket, amelyek megszakítanák a táblák közötti kapcsolatokat.
+
+CHECK – Biztosítja, hogy egy oszlop értékei megfeleljenek egy adott feltételnek.
+
+DEFAULT – Beállít egy alapértelmezett értéket az oszlophoz, ha nem adnak meg értéket.
+
+CREATE INDEX – Arra használják, hogy gyorsan lehessen adatokat keresni az adatbázisból
+
+
+
+////////// STRING DATA TYPES //////////
+
+CHAR(size)		Fix hosszúságú szöveg (betűk, számok, speciális karakterek). A size a karakterek számát adja meg (0 - 255). Alapértelmezett: 1.
+
+VARCHAR(size)		Változó hosszúságú szöveg. A size a maximális karakterszámot adja meg (0 - 65535).
+
+BINARY(size)		Hasonló a CHAR-hoz, de bináris adatokat (byte-okat) tárol. A size a byte-ok számát adja meg. Alapértelmezett: 1.
+
+VARBINARY(size)		Hasonló a VARCHAR-hoz, de bináris adatokat tárol. A size a maximális byte méret.
+
+BLOB(size)		Bináris nagy objektum, max. 65535 byte.
+
+TINYBLOB(size)		Kis BLOB, max. 255 byte.
+
+MEDIUMBLOB		Közepes méretű BLOB, max. 16 777 215 byte.
+
+LONGBLOB		Nagy BLOB, max. ~4 GB.
+
+TEXT(size)		Szöveg, max. 65535 byte.
+
+TINYTEXT		Kis szöveg, max. 255 karakter.
+
+MEDIUMTEXT		Közepes szöveg, max. 16 777 215 karakter.
+
+LONGTEXT		Nagy szöveg, max. ~4 GB.
+
+ENUM(val1, val2, …)	Egyetlen értéket tartalmazhat egy előre megadott listából. Max. 65535 érték. Ha nem szerepel a listában, üres érték kerül be.
+
+SET(val1, val2, …)	Több értéket is tartalmazhat egy listából (akár egyet sem). Max. 64 különböző érték.
+
+
+
+////////// NUMERIC DATA TYPES //////////
+
+BIT(size)		Bit típusú adat. A size megadja a bitek számát (1-64). Alapértelmezett: 1.
+
+TINYINT(size)		Nagyon kicsi egész szám.
+			Előjeles: -128 → 127
+			Előjel nélküli: 0 → 255
+			A size a megjelenítési szélesség (max 255).
+
+BOOL			Logikai érték.
+			0 = hamis, minden más = igaz.
+
+BOOLEAN			Ugyanaz, mint a BOOL.
+
+SMALLINT(size)		Kis egész szám.
+			Előjeles: -32 768 → 32 767
+			Előjel nélküli: 0 → 65 535
+
+MEDIUMINT(size)		Közepes méretű egész szám.
+			Előjeles: -8 388 608 → 8 388 607
+			Előjel nélküli: 0 → 16 777 215
+
+INT(size)		Normál egész szám.
+			Előjeles: -2 147 483 648 → 2 147 483 647
+			Előjel nélküli: 0 → 4 294 967 295
+
+INTEGER(size)		Ugyanaz, mint az INT.
+
+BIGINT(size)		Nagy egész szám.
+			Előjeles: kb. -9.22×10¹⁸ → +9.22×10¹⁸
+			Előjel nélküli: 0 → ~1.84×10¹⁹
+
+DECIMAL(size, d)	Pontos, fixpontos szám (pl. pénz).
+			size: összes számjegy (max 65)
+			d: tizedesek száma (max 30)
+			Alap: size=10, d=0
+
+DEC(size, d)		Ugyanaz, mint a DECIMAL.
+
+FLOAT(size, d)		Kis pontosságú lebegőpontos szám. Elavult (MySQL 8.0.17-től).
+
+FLOAT(p)		Lebegőpontos szám.
+			p=0-24 → FLOAT
+			p=25-53 → DOUBLE
+
+DOUBLE(size, d)		Nagyobb pontosságú lebegőpontos szám. Nagyon nagy tartomány (±10³⁰⁸).
+
+DOUBLE PRECISION(size, d)	Ugyanaz, mint a DOUBLE.
+
+
+
+////////// DATE AND TIME DATA TYPES //////////
+
+DATE			Egy dátum. Formátum: YYYY-MM-DD.
+			A támogatott tartomány: '1000-01-01' - '9999-12-31'
+
+DATETIME(fsp)		Dátum és idő kombinációja. Formátum: YYYY-MM-DD hh:mm:ss.
+			A támogatott tartomány: '1000-01-01 00:00:00' - '9999-12-31 23:59:59'.
+			A DEFAULT és ON UPDATE használatával automatikusan beállítható és frissíthető az aktuális dátum és idő.
+
+TIMESTAMP(fsp)		Időbélyeg. Formátum: YYYY-MM-DD hh:mm:ss.
+			A TIMESTAMP értékek a Unix epoch óta eltelt másodpercek száma
+			('1970-01-01 00:00:00' UTC).
+			A támogatott tartomány:
+			'1970-01-01 00:00:01' UTC - '2038-01-09 03:14:07' 	UTC.
+			Automatikus beállítás és frissítés lehetséges DEFAULT CURRENT_TIMESTAMP és ON UPDATE CURRENT_TIMESTAMP használatával.
+
+TIME(fps)		Idő. Formátum: hh:mm:ss.
+			A támogatott tartomány: '-838:59:59' – '838:59:59'
+
+YEAR			Év négyjegyű formátumban (YYYY).
+			Megengedett értékek: 1901–2155, illetve 0000

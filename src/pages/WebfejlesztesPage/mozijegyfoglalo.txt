@@ -1,0 +1,157 @@
+Egyszerű Mozi Jegyfoglaló
+
+Készíts egy weboldalt, ahol a felhasználó 6 szék közül választhat. A kódnak automatikusan ki kell számolnia a fizetendő összeget (egy jegy 2000 Ft).
+
+1. Rész: HTML (kb 15 perc)
+Készítsd el az index.html fájlt a következő pontos lépések alapján:
+Hozz létre egy div elemet, amelynek az osztálya legyen tarolo.
+Ebbe kerüljön minden más.
+A tárolón belül hozz létre egy h1 címsort "Mozi Jegyfoglaló" szöveggel.
+Hozz létre egy p elemet, amely kiírja: "A jegy ára: 2000 Ft".
+Hozz létre egy újabb div elemet szekek-tarolo osztállyal.
+A szekek-tarolo div-en belül hozz létre 6 darab div elemet.
+Mindegyik kapja meg a szek osztályt.
+A hat szék közül a második és az ötödik kapjon meg még egy osztályt: foglalt.
+A szekek-tarolo alá hozz létre egy h3 elemet ezzel a szöveggel: "Fizetendő: 0 Ft".
+A "0" számot tedd bele egy span elembe, aminek az ID-ja legyen osszeg.
+Végül hozz létre egy gombot, amelynek az ID-ja vasarlas-gomb, a felirata pedig "Megveszem".
+
+2. Rész: CSS (kb 15 perc)
+Készítsd el a style.css fájlt a következő elvárások szerint:
+A body háttérszíne legyen sötétszürke (#333), a betűszín pedig fehér.
+A .szek osztály stílusai: szélessége és magassága legyen 50px, a háttérszíne világoskék.
+Állíts be 5px margót, és használd a display: inline-block; (vagy flexbox) tulajdonságot, hogy a székek egymás mellé kerüljenek.
+A kurzor legyen mutató (cursor: pointer;).
+A .szek.foglalt osztály stílusai: a háttérszíne legyen piros, és a kurzor jelezze, hogy nem kattintható (cursor: not-allowed;).
+Hozz létre egy .kivalasztva osztályt.
+Ennek a háttérszíne legyen zöld.
+
+3. Rész: JavaScript (kb 30 perc)
+Készítsd el a script.js fájlt, és kövesd pontosan az alábbi logikát:
+Válaszd ki a DOM-ból az összes széket (.szek), és mentsd el egy szekek nevű változóba.
+Válaszd ki az osszeg ID-jú span elemet, és mentsd el egy osszegKijelzo változóba.
+Válaszd ki a vasarlas-gomb ID-jú gombot, és mentsd el egy vasarlasGomb változóba.
+Írj egy forEach ciklust, ami végigmegy a szekek listán.
+A cikluson belül tegyél egy kattintás eseményfigyelőt minden egyes székre.
+A kattintás eseménykezelőjén belül először írj egy feltételt: vizsgáld meg, hogy a lekattintott szék tartalmazza-e a foglalt osztályt.
+Ha igen, a kód ne csináljon semmit azaz csak térjen vissza.
+Ha a szék nem volt foglalt, akkor add hozzá/vedd le a kivalasztva osztályt a székről.
+Ezután számold meg, hány zöld szék van!
+Ezt a számot szorozd be 2000-rel (ez a végösszeg).
+A kiszámolt végösszeget írd be az osszegKijelzo elem szöveg tulajdonságába.
+Végül tegyél egy kattintás eseményfigyelőt a vasarlasGomb-ra is.
+Kattintáskor dobjon fel egy értesítést, ami kiírja: "Sikeres vásárlás!".
+
+//////////////////////////
+////////// HTML //////////
+//////////////////////////
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="tarolo">
+      <h1>Mozi Jegyfoglaló</h1>
+      <p>A jegy ára: 2000 Ft</p>
+    </div>
+
+    <div class="szekek-tarolo">
+      <div class="szek"></div>
+      <div class="szek foglalt"></div>
+      <div class="szek"></div>
+      <div class="szek"></div>
+      <div class="szek foglalt"></div>
+      <div class="szek"></div>
+    </div>
+
+    <h3>Fizetendő: <span id="osszeg">0</span> Ft</h3>
+
+    <button id="vasarlas-gomb">Megveszem</button>
+  </body>
+</html>
+
+////////////////////////////////
+////////// JavaScript //////////
+////////////////////////////////
+
+////////// FOREACH //////////
+const szekek = document.querySelectorAll(".szek");
+const osszegKijelzo = document.querySelector("#osszeg");
+const vasarlasGomb = document.querySelector("#vasarlas-gomb");
+
+szekek.forEach((szek) => {
+  szek.addEventListener("click", () => {
+    if (szek.classList.contains("foglalt")) return;
+    szek.classList.toggle("kivalasztva");
+    osszegSzamitas();
+  });
+});
+
+function osszegSzamitas() {
+  const kivalasztottSzekek = document.querySelectorAll(".szek.kivalasztva");
+  const osszeg = kivalasztottSzekek.length * 2000;
+  osszegKijelzo.textContent = osszeg;
+}
+
+vasarlasGomb.addEventListener("click", () => {
+  alert(`Sikeres vásárlás!\n${osszegKijelzo.textContent} Ft`);
+});
+
+////////// EVENT DELEGATION //////////
+const szekekTarolo = document.querySelector(".szekek-tarolo");
+const osszegKijelzo = document.querySelector("#osszeg");
+const vasarlasGomb = document.querySelector("#vasarlas-gomb");
+
+szekekTarolo.addEventListener("click", (e) => {
+  const szek = e.target.closest(".szek");
+  if (!szek) return;
+  if (szek.classList.contains("foglalt")) return;
+  szek.classList.toggle("kivalasztva");
+  osszegSzamitas();
+});
+
+function osszegSzamitas() {
+  const kivalasztottSzekek = document.querySelectorAll(".szek.kivalasztva");
+  const osszeg = kivalasztottSzekek.length * 2000;
+  osszegKijelzo.textContent = osszeg;
+}
+
+vasarlasGomb.addEventListener("click", () => {
+  alert(`Sikeres vásárlás!\n${osszegKijelzo.textContent} Ft`);
+});
+
+/////////////////////////
+////////// CSS //////////
+/////////////////////////
+
+body {
+  background-color: #333;
+  color: #fff;
+}
+
+.szekek-tarolo {
+  display: flex;
+}
+
+.szek {
+  background-color: #4b6cff;
+  height: 50px;
+  width: 50px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.szek.foglalt {
+  background-color: #ff4b4b;
+  cursor: not-allowed;
+}
+
+.kivalasztva {
+  background-color: #69ff4b;
+}
