@@ -80,6 +80,8 @@ import AIModellek from "../pages/CsharpPage/AIModellek";
 
 import WinFormPage from "../pages/WinFormPage/WinFormPage";
 import WinFormJegyzet from "../pages/WinFormPage/Jegyzet";
+import MoziAppMySql from "../pages/WinFormPage/MoziAppMySql";
+import MoziAppPost from "../pages/WinFormPage/MoziAppPost";
 
 import LinuxPage from "../pages/LinuxPage/LinuxPage";
 import LinuxJegyzet from "../pages/LinuxPage/Jegyzet";
@@ -199,6 +201,12 @@ const csharpLinks = [
 
 const winFormLinks = [
   { name: "Jegyzet", path: "jegyzet", component: WinFormJegyzet },
+  { name: "MoziApp (MySQL)", path: "mozi-app-mysql", component: MoziAppMySql },
+  {
+    name: "MoziApp (Postgres)",
+    path: "mozi-app-postgres",
+    component: MoziAppPost,
+  },
 ];
 
 const linuxLinks = [
