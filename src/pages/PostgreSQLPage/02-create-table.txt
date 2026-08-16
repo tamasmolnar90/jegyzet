@@ -1,0 +1,111 @@
+////////// TÁBLE LÉTREHOZÁSA //////////
+
+CREATE TABLE table_name (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age INTEGER NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    car VARCHAR(255) DEFAULT 'Ford',
+    doors INTEGER CHECK (doors < 6),
+    date DATE NOT NULL
+);
+
+
+
+////////// CONSTRAINTS //////////
+
+NOT NULL – Az oszlop nem lehet NULL
+UNIQUE – Az oszlop értékei egyediek kell legyenek
+PRIMARY KEY – Egyedi azonosító, NOT NULL + egyediség
+FOREIGN KEY – Másik tábla rekordjára való hivatkozást biztosít
+CHECK – Feltételt határoz meg az értékre
+DEFAULT – Alapértelmezett értéket ad
+CREATE INDEX – Gyorsabb keresést tesz lehetővé bizonyos lekérdezéseknél
+
+
+
+////////// STRING DATA TYPES //////////
+
+CHAR(n)			Fix hosszúságú szöveg
+VARCHAR(n)		Maximum n karakter hosszú szöveg
+TEXT			Tetszőleges hosszúságú szöveg
+
+
+
+////////// BINARY DATA TYPE //////////
+
+BYTEA			Bináris adat tárolására szolgál, például képek, fájlok stb.
+
+
+
+////////// ENUM DATA TYPE //////////
+
+Először létrehozod a típust:
+
+CREATE TYPE car_type AS ENUM (
+    'Ford',
+    'BMW',
+    'Audi',
+    'Toyota'
+);
+
+Majd:
+
+CREATE TABLE cars (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    brand car_type NOT NULL
+);
+
+
+
+////////// ALTERNATÍVA: CHECK //////////
+
+Sok esetben egyszerűbb:
+
+CREATE TABLE cars (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    brand VARCHAR(50) NOT NULL
+        CHECK (brand IN ('Ford', 'BMW', 'Audi', 'Toyota'))
+);
+
+
+
+////////// NUMERIC DATA TYPES //////////
+
+SMALLINT		Kis egész szám (-32 768 → 32 767)
+INTEGER / INT		Normál egész szám (-2 147 483 648 → 2 147 483 647)
+BIGINT			Nagy egész szám (-9 223 372 036 854 775 808 → 9 223 372 036 854 775 807)
+NUMERIC(p,s)		Pontos fixpontos szám (price NUMERIC(10,2))
+DECIMAL(p,s)		Ugyanaz, mint NUMERIC (price DECIMAL(10,2)) ugyan az
+REAL			32 bites lebegőpontos szám
+DOUBLE PRECISION	64 bites lebegőpontos szám
+BOOLEAN			Logikai érték (TRUE / FALSE)
+
+SERIAL			Automatikusan növekvő egész szám			
+SMALLSERIAL		Automatikusan növekvő kis egész szám
+BIGSERIAL		Automatikusan növekvő nagy egész szám
+(FONTOS: automatikusan növekvő azonosítót hoz létre, de új kódnál az IDENTITY szintaxit érdemes használni: id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY)
+
+
+
+////////// DATE AND TIME DATA TYPES //////////
+
+DATE				Dátum (YYYY-MM-DD)
+
+TIME				Idő (14:30:00)
+				Pontosságot is megadhatsz: TIME(3)
+
+TIME WITH TIME ZONE		Idő időzónával
+				created_at TIMESTAMP WITH TIME ZONE
+				Röviden: created_at TIMESTAMPTZ
+				Ez különösen hasznos webalkalmazásoknál és backendeknél, ahol időzónák is számítanak.
+				Például: created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+
+TIMESTAMP			Dátum + idő, időzóna nélkül (2026-08-16 10:30:45)
+
+TIMESTAMP WITH TIME ZONE	Dátum + idő időzónakezeléssel
+
+INTERVAL			Időtartam tárolás
+				Például:
+				SELECT INTERVAL '2 hours 30 minutes';
+				SELECT CURRENT_TIMESTAMP + INTERVAL '7 days';

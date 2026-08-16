@@ -45,6 +45,10 @@ import Webaruhaz from "../pages/MySqlPage/Webaruhaz";
 import Taxi from "../pages/MySqlPage/Taxi";
 
 import PostgreSQLPage from "../pages/PostgreSQLPage/PostgreSQLPage";
+import PostCreateDB from "../pages/PostgreSQLPage/CreateDB";
+import PostCreateTable from "../pages/PostgreSQLPage/CreateTable";
+import PostInsertInto from "../pages/PostgreSQLPage/InsertInto";
+import PostForeignKey from "../pages/PostgreSQLPage/ForeignKey";
 import PostBeadando01 from "../pages/PostgreSQLPage/Beadando01";
 import PostBeadando02 from "../pages/PostgreSQLPage/Beadando02";
 
@@ -155,6 +159,14 @@ const mysqlLinks = [
 ];
 
 const postgresqlLinks = [
+  {
+    name: "CREATE DATABASE",
+    path: "create-database",
+    component: PostCreateDB,
+  },
+  { name: "CREATE TABLE", path: "create-table", component: PostCreateTable },
+  { name: "INSERT INTO", path: "insert-into", component: PostInsertInto },
+  { name: "FOREIGN KEY", path: "foreign-key", component: PostForeignKey },
   { name: "Beadandó 1", path: "beadando01", component: PostBeadando01 },
   { name: "Beadandó 2", path: "beadando02", component: PostBeadando02 },
 ];

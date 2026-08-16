@@ -1,0 +1,34 @@
+CREATE TABLE table_name (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age INTEGER NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    car VARCHAR(255) DEFAULT 'Ford',
+    doors INTEGER CHECK (doors < 6),
+    manual_date DATE NOT NULL DEFAULT CURRENT_DATE,
+    auto_date DATE DEFAULT CURRENT_DATE,
+    date_and_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+////////// RECORD //////////
+
+INSERT INTO table_name (name, age, email, car, doors, date) VALUES
+('Teljes Név', 26, 'example@gmail.com', 'Ford', 5, '2026-06-08' vagy CURRENT_DATE);
+
+
+
+//////// RECORD UNIQUE KEY UPDATE //////////
+
+INSERT INTO table_name (name, age, email, car, doors, date) VALUES
+('Teljes Név', 26, 'example@gmail.com', 'Ford', 5, '2026-06-08' vagy CURRENT_DATE)
+
+ON CONFLICT (email)
+DO UPDATE SET
+    name = EXCLUDED.name,
+    age = EXCLUDED.age,
+    email = EXCLUDED.email,
+    car = EXCLUDED.car,
+    doors = EXCLUDED.doors;
+
+Ha az email már létezik, nem hoz létre új sort, de frissíti a többi adatot az ON DUPLICATE KEY UPDATE miatt.
+Ha az email nem létezik, simán beszúrja az új sort.

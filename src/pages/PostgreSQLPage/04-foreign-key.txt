@@ -1,0 +1,57 @@
+CREATE TABLE szerzo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nev VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE konyv (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cim VARCHAR(255) NOT NULL,
+    szerzo_id INTEGER NOT NULL
+);
+
+ALTER TABLE konyv
+ADD CONSTRAINT fk_konyv_szerzo
+FOREIGN KEY(szerzo_id)
+REFERENCES szerzo(id)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+
+
+ON DELETE CASCADE → ha törlöd a szerzőt, a könyvei is törlődnek.
+
+ON UPDATE CASCADE → ha megváltozik a szerző id-je, a kapcsolódó könyvekben is frissül.
+Ha már vannak adatok a konyv táblában, akkor a foreign key létrehozása csak akkor sikerül, ha minden szerzo_id valóban létezik a szerzo.id oszlopban.
+
+ON DELETE RESTRICT → ha megpróbálod törölni a szerzőt, és van hozzá kapcsolódó könyv, a törlés nem fog megtörténni (hibát kapsz).
+A rendszer megakadályozza az „árva” könyvek létrejöttét.
+
+ON UPDATE RESTRICT → ha megpróbálod módosítani a szerző id értékét, és erre az id-re hivatkozik könyv, az UPDATE nem fog lefutni (hibát kapsz).
+
+
+
+CREATE TABLE szerzo (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nev VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE konyv (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    cim VARCHAR(255) NOT NULL,
+    szerzo_id INTEGER NOT NULL,
+
+    FOREIGN KEY(szerzo_id)
+    REFERENCES szerzo(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+);
+
+INSERT INTO szerzo (nev) VALUES
+('J. K. Rowling');
+
+INSERT INTO konyv (cim, szerzo_id) VALUES
+('Harry Potter és a bölcsek köve', 1);
+
+SELECT id, nev
+FROM szerzo
+WHERE nev = 'J. K. Rowling';
