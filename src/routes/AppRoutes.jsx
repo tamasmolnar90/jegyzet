@@ -87,6 +87,9 @@ import WinFormJegyzet from "../pages/WinFormPage/Jegyzet";
 import MoziAppMySql from "../pages/WinFormPage/MoziAppMySql";
 import MoziAppPost from "../pages/WinFormPage/MoziAppPost";
 
+import MauiPage from "../pages/MauiPage/MauiPage";
+import MoziAppMauiPost from "../pages/MauiPage/MoziAppPost";
+
 import LinuxPage from "../pages/LinuxPage/LinuxPage";
 import LinuxJegyzet from "../pages/LinuxPage/Jegyzet";
 
@@ -221,6 +224,14 @@ const winFormLinks = [
   },
 ];
 
+const mauiLinks = [
+  {
+    name: "MoziApp (Postgresql)",
+    path: "mozi-app-postgresql",
+    component: MoziAppMauiPost,
+  },
+];
+
 const linuxLinks = [
   { name: "Jegyzet", path: "jegyzet", component: LinuxJegyzet },
 ];
@@ -351,6 +362,16 @@ export default function AppRoutes() {
 
         <Route path="winform" element={<WinFormPage links={winFormLinks} />}>
           {winFormLinks.map((link) => (
+            <Route
+              key={link.path}
+              path={link.path}
+              element={<link.component />}
+            />
+          ))}
+        </Route>
+
+        <Route path="maui" element={<MauiPage links={mauiLinks} />}>
+          {mauiLinks.map((link) => (
             <Route
               key={link.path}
               path={link.path}

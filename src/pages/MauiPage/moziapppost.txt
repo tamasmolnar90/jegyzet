@@ -1,0 +1,394 @@
+Készítsen adatbázist mozik_db néven, karakterkódolása legyen utf-8, illesztése a magyar szabályok szerinti!
+Az adatbázis relációs diagramját az alábbi ábra mutatja:
+                                ___________________
+                               |        mozi       |
+ ____________________          |                   |
+|       filmek       |         | id: int           |
+|                    |         | mozi: varchar(50) |
+| id: int            |<-------x| film_id: int      |
+| cim: varchar(50)   |         |___________________|
+| mufaj: varchar(50) |
+| kiadas_eve: Year   |
+|____________________|
+
+###############################
+########## ADATBÁZIS ##########
+###############################
+
+CREATE DATABASE IF NOT EXISTS mozik_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+SET SQL_SAFE_UPDATES = 0;
+
+USE mozik_db;
+
+CREATE TABLE IF NOT EXISTS filmek (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cim VARCHAR(50) NOT NULL,
+    mufaj VARCHAR(50) NOT NULL,
+    kiadas_eve YEAR NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS mozi (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    mozi VARCHAR(50) NOT NULL,
+    film_id INT NOT NULL
+) ENGINE=InnoDB;
+
+ALTER TABLE mozi
+ADD CONSTRAINT fk_mozi_film
+FOREIGN KEY(film_id)
+REFERENCES filmek(id)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+INSERT INTO filmek (cim, mufaj, kiadas_eve) VALUES
+('Titanic', 'Romantikus', 1997),
+('Avatar', 'Sci-fi', 2009),
+('A keresztapa', 'Krimi', 1972),
+('Forrest Gump', 'Dráma', 1994),
+('A sötét lovag', 'Akció', 2008),
+('Interstellar', 'Sci-fi', 2014),
+('Gladiátor', 'Történelmi', 2000),
+('Mátrix', 'Sci-fi', 1999);
+
+INSERT INTO mozi (mozi, film_id) VALUES
+('Cinema City', 1),
+('Cinema City', 2),
+('Sugár Mozi', 3),
+('Sugár Mozi', 4),
+('Corvin Mozi', 5),
+('Corvin Mozi', 6),
+('Allee Mozi', 7),
+('Allee Mozi', 8);
+
+
+
+
+###################################
+########## MainPage.xaml ##########
+###################################
+
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MoziAppMauiPostgres.MainPage"
+             Loaded="MainPage_Loaded">
+
+    <!-- A (ContentPage) ablakban létrehoztam egy gridet -->
+    <Grid RowDefinitions="*, Auto, Auto" Padding="15" RowSpacing="15">
+
+        <!-- DataGrid megfelelője: CollectionView fejléc és adatlistával, border hozzáadásával -->       
+        <Border Grid.Row="0" StrokeShape="RoundRectangle 8" StrokeThickness="1">
+            <Grid RowDefinitions="Auto, *">                
+                <!--DataGrid fejléc-->
+                <Grid Grid.Row="0" ColumnDefinitions="50, *, *, *, *" BackgroundColor="#E0E0E0" Padding="10">
+                    <Label Text="ID" FontAttributes="Bold" Grid.Column="0" TextColor="#1F1F1F"/>
+                    <Label Text="Cím" FontAttributes="Bold" Grid.Column="1" TextColor="#1F1F1F"/>
+                    <Label Text="Műfaj" FontAttributes="Bold" Grid.Column="2" TextColor="#1F1F1F"/>
+                    <Label Text="Kiadás éve" FontAttributes="Bold" Grid.Column="3" TextColor="#1F1F1F"/>
+                    <Label Text="Mozi" FontAttributes="Bold" Grid.Column="4" TextColor="#1F1F1F"/>
+                </Grid>
+                
+                <!-- Adatsorok (CollectionView) -->
+                <CollectionView x:Name="dataGrid" Grid.Row="1" SelectionMode="Single" SelectionChanged="dataGrid_SelectionChanged">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="50, *, *, *, *" Padding="10">
+                                <Label Text="{Binding Id}" Grid.Column="0" VerticalOptions="Center"/>
+                                <Label Text="{Binding Cim}" Grid.Column="1" VerticalOptions="Center"/>
+                                <Label Text="{Binding Mufaj}" Grid.Column="2" VerticalOptions="Center"/>
+                                <Label Text="{Binding KiadasEve}" Grid.Column="3" VerticalOptions="Center"/>
+                                <Label Text="{Binding Mozi}" Grid.Column="4" VerticalOptions="Center"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Border>
+        
+        <!-- Mezők és Labelek (Form) -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10" MaximumWidthRequest="500">
+            <!-- Kiválasztott ID kijelzése -->
+            <Label x:Name="idLabel" Text="Kijelölt ID: -" FontAttributes="Bold" HorizontalOptions="Center"/>
+
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="100, *" RowSpacing="10">
+                <Label Text="Cím:" Grid.Row="0" Grid.Column="0" VerticalOptions="Center"/>
+                <Entry x:Name="cimTextBox" Grid.Row="0" Grid.Column="1" Placeholder="Film címe"/>
+
+                <Label Text="Műfaj:" Grid.Row="1" Grid.Column="0" VerticalOptions="Center"/>
+                <Entry x:Name="mufajTextBox" Grid.Row="1" Grid.Column="1" Placeholder="Film műfaja"/>
+
+                <Label Text="Kiadás éve:" Grid.Row="2" Grid.Column="0" VerticalOptions="Center"/>
+                <Entry x:Name="kiadasEveTextBox" Grid.Row="2" Grid.Column="1" Placeholder="Évszám" Keyboard="Numeric"/>
+
+                <Label Text="Mozi:" Grid.Row="3" Grid.Column="0" VerticalOptions="Center"/>
+                <Entry x:Name="moziTextBox" Grid.Row="3" Grid.Column="1" Placeholder="Mozi neve"/>
+            </Grid>
+        </VerticalStackLayout>
+        
+        <!-- Gombok -->
+        <HorizontalStackLayout Grid.Row="2" Spacing="10" HorizontalOptions="Center">
+            <Button x:Name="addButton" Text="Hozzáad" Clicked="addButton_Clicked"/>
+            <Button x:Name="updateButton" Text="Módosít" Clicked="updateButton_Clicked"/>
+            <Button x:Name="deleteButton" Text="Töröl" Clicked="deleteButton_Clicked"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
+
+
+
+######################################
+########## MainPage.xaml.cs ##########
+######################################
+
+using Npgsql;
+using System.Collections.ObjectModel;
+
+namespace MoziAppMauiPostgres {
+
+    // Adatmodell a CollectionView elemeihez
+    public class FilmModel {
+        public long Id { get; set; }
+        public string Cim { get; set; } = string.Empty;
+        public string Mufaj { get; set; } = string.Empty;
+        public int KiadasEve { get; set; }
+        public string Mozi { get; set; } = string.Empty;
+    }
+
+    public partial class MainPage : ContentPage {
+
+        // Adatbázis elérési útja
+        private NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder {
+            Host = "localhost",
+            Port = 5432,
+            Username = "postgres",
+            Password = "postgresql123",
+            Database = "mozik_db",
+        };
+
+        // Kollekció a dinamikus adatmegjelenítéshez
+        private ObservableCollection<FilmModel> filmekLista = new ObservableCollection<FilmModel>();
+        private bool adatokBetoltve;
+
+        public MainPage() {
+            InitializeComponent();
+
+            // Rákötjük a kollekciót a CollectionView-ra
+            dataGrid.ItemsSource = filmekLista;
+
+        }
+
+        private async void MainPage_Loaded(object? sender, EventArgs e) {
+            if (adatokBetoltve) {
+                return;
+            }
+
+            adatokBetoltve = true;
+            await TablaBetolt();
+        }
+
+        // Adatok betöltése az adatbázisból a CollectionView-ba
+        private async Task TablaBetolt() {
+            try {
+                using (var connection = new NpgsqlConnection(builder.ConnectionString)) {
+                    await connection.OpenAsync();
+
+                    string query = "SELECT filmek.id, filmek.cim, filmek.mufaj, filmek.kiadas_eve, mozi.mozi FROM filmek INNER JOIN mozi ON filmek.id = mozi.film_id";
+
+                    using (var command = new NpgsqlCommand(query, connection))
+                    using (var reader = await command.ExecuteReaderAsync()) {
+
+                        // Az adatok összegyűjtése egy ideiglenes listába
+                        var tempList = new List<FilmModel>();
+                        while (await reader.ReadAsync()) {
+                            tempList.Add(new FilmModel {
+                                Id = Convert.ToInt64(reader[0]),
+                                Cim = reader[1].ToString() ?? "",
+                                Mufaj = reader[2].ToString() ?? "",
+                                KiadasEve = Convert.ToInt32(reader[3]),
+                                Mozi = reader[4].ToString() ?? ""
+                            });
+                        }
+
+                        // A UI frissítése a főszálon
+                        MainThread.BeginInvokeOnMainThread(() => {
+                            filmekLista.Clear();
+                            foreach (var film in tempList) {
+                                filmekLista.Add(film);
+                            }
+                        });
+                    }
+                }
+            } catch (Exception ex) {
+                MainThread.BeginInvokeOnMainThread(async () => {
+                    await DisplayAlert("Hiba", "Hiba az adatok betöltésekor: " + ex.Message, "OK");
+                });
+            }
+        }
+
+        // Kiválasztás kezelése a CollectionView-ban
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (e.CurrentSelection.FirstOrDefault() is FilmModel selectedFilm) {
+                idLabel.Text = $"Kijelölt ID: {selectedFilm.Id}";
+                cimTextBox.Text = selectedFilm.Cim;
+                mufajTextBox.Text = selectedFilm.Mufaj;
+                kiadasEveTextBox.Text = selectedFilm.KiadasEve.ToString();
+                moziTextBox.Text = selectedFilm.Mozi;
+            }
+        }
+
+        // Hozzáadás gomb
+        private async void addButton_Clicked(object sender, EventArgs e) {
+            // Mezők ellenőrzése
+            if (string.IsNullOrWhiteSpace(cimTextBox.Text) ||
+                string.IsNullOrWhiteSpace(mufajTextBox.Text) ||
+                string.IsNullOrWhiteSpace(kiadasEveTextBox.Text) ||
+                string.IsNullOrWhiteSpace(moziTextBox.Text)) {
+                await DisplayAlert("Figyelmeztetés", "Minden mezőt ki kell tölteni!", "OK");
+                return;
+            }
+
+            try {
+                using (var connection = new NpgsqlConnection(builder.ConnectionString)) {
+                    await connection.OpenAsync();
+
+                    // Új film beszúrása
+                    string insertFilmQuery = @"INSERT INTO filmek (cim, mufaj, kiadas_eve) 
+                                               VALUES (@cim, @mufaj, @kiadas_eve)
+                                               RETURNING id;";
+
+                    long ujFilmId;
+                    using (var command = new NpgsqlCommand(insertFilmQuery, connection)) {
+                        command.Parameters.AddWithValue("@cim", cimTextBox.Text);
+                        command.Parameters.AddWithValue("@mufaj", mufajTextBox.Text);
+                        command.Parameters.AddWithValue("@kiadas_eve", int.Parse(kiadasEveTextBox.Text));
+
+                        var result = await command.ExecuteScalarAsync();
+                        ujFilmId = Convert.ToInt64(result);
+                    }
+
+                    // Új mozi adat beszúrása
+                    string insertMoziQuery = "INSERT INTO mozi (film_id, mozi) VALUES (@film_id, @mozi)";
+                    using (var command = new NpgsqlCommand(insertMoziQuery, connection)) {
+                        command.Parameters.AddWithValue("@film_id", ujFilmId);
+                        command.Parameters.AddWithValue("@mozi", moziTextBox.Text);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    await DisplayAlert("Siker", "A film sikeresen hozzáadva!", "OK");
+
+                    MezokUritese();
+                    await TablaBetolt();
+                }
+            } catch (FormatException) {
+                await DisplayAlert("Hiba", "A kiadás éve csak szám lehet!", "OK");
+            } catch (Exception ex) {
+                await DisplayAlert("Hiba", "Hiba a hozzáadáskor: " + ex.Message, "OK");
+            }
+
+        }
+
+        // Módosítás gomb
+        private async void updateButton_Clicked(object sender, EventArgs e) {
+            if (dataGrid.SelectedItem is not FilmModel selectedFilm) {
+                await DisplayAlert("Figyelmeztetés", "Kérlek, válassz ki egy módosítandó filmet a listából!", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(cimTextBox.Text) ||
+                string.IsNullOrWhiteSpace(mufajTextBox.Text) ||
+                string.IsNullOrWhiteSpace(kiadasEveTextBox.Text) ||
+                string.IsNullOrWhiteSpace(moziTextBox.Text)) {
+                await DisplayAlert("Figyelmeztetés", "Minden mezőt ki kell tölteni a módosításhoz!", "OK");
+                return;
+            }
+
+            try {
+                using (var connection = new NpgsqlConnection(builder.ConnectionString)) {
+                    await connection.OpenAsync();
+
+                    // 1. Film adatainak frissítése
+                    string updateFilmQuery = @"UPDATE filmek 
+                                               SET cim = @cim, mufaj = @mufaj, kiadas_eve = @kiadas_eve 
+                                               WHERE id = @id";
+
+                    using (var command = new NpgsqlCommand(updateFilmQuery, connection)) {
+                        command.Parameters.AddWithValue("@cim", cimTextBox.Text);
+                        command.Parameters.AddWithValue("@mufaj", mufajTextBox.Text);
+                        command.Parameters.AddWithValue("@kiadas_eve", int.Parse(kiadasEveTextBox.Text));
+                        command.Parameters.AddWithValue("@id", selectedFilm.Id);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    // 2. Mozi frissítése
+                    string updateMoziQuery = "UPDATE mozi SET mozi = @mozi WHERE film_id = @id";
+                    using (var command = new NpgsqlCommand(updateMoziQuery, connection)) {
+                        command.Parameters.AddWithValue("@mozi", moziTextBox.Text);
+                        command.Parameters.AddWithValue("@id", selectedFilm.Id);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    await DisplayAlert("Siker", "A film sikeresen módosítva!", "OK");
+
+                    MezokUritese();
+                    await TablaBetolt();
+                }
+            } catch (FormatException) {
+                await DisplayAlert("Hiba", "A kiadás éve csak szám lehet!", "OK");
+            } catch (Exception ex) {
+                await DisplayAlert("Hiba", "Hiba a módosításkor: " + ex.Message, "OK");
+            }
+        }
+
+        // Törlés gomb
+        private async void deleteButton_Clicked(object sender, EventArgs e) {
+            if (dataGrid.SelectedItem is not FilmModel selectedFilm) {
+                await DisplayAlert("Figyelmeztetés", "Kérlek, válassz ki egy törlendő filmet a listából!", "OK");
+                return;
+            }
+
+            bool isConfirmed = await DisplayAlert("Megerősítés", $"Biztosan törölni szeretnéd a(z) '{selectedFilm.Cim}' nevű filmet?", "Igen", "Nem");
+            if (!isConfirmed) return;
+
+            try {
+                using (var connection = new NpgsqlConnection(builder.ConnectionString)) {
+                    await connection.OpenAsync();
+
+                    // Nincs szükség külön a mozi törlésére, mert remélhetőleg be van állítva az ON DELETE CASCADE
+                    // vagy először a mozi töröljük
+                    string deleteMoziQuery = "DELETE FROM mozi WHERE film_id = @id";
+                    using (var command = new NpgsqlCommand(deleteMoziQuery, connection)) {
+                        command.Parameters.AddWithValue("@id", selectedFilm.Id);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    string deleteFilmQuery = "DELETE FROM filmek WHERE id = @id";
+                    using (var command = new NpgsqlCommand(deleteFilmQuery, connection)) {
+                        command.Parameters.AddWithValue("@id", selectedFilm.Id);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    await DisplayAlert("Siker", "A film sikeresen törölve!", "OK");
+
+                    MezokUritese();
+                    await TablaBetolt();
+                }
+            } catch (Exception ex) {
+                await DisplayAlert("Hiba", "Hiba a törléskor: " + ex.Message, "OK");
+            }
+        }
+
+        private void MezokUritese() {
+            idLabel.Text = "Kijelölt ID: -";
+            cimTextBox.Text = string.Empty;
+            mufajTextBox.Text = string.Empty;
+            kiadasEveTextBox.Text = string.Empty;
+            moziTextBox.Text = string.Empty;
+            dataGrid.SelectedItem = null;
+        }
+    }
+}

@@ -43,6 +43,9 @@ export default function MainNavigation() {
             <Link to="/winform">WIN FORM</Link>
           </li>
           <li>
+            <Link to="/maui">MAUI</Link>
+          </li>
+          <li>
             <Link to="/linux">LINUX</Link>
           </li>
           <li>
