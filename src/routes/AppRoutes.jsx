@@ -23,6 +23,7 @@ import MiniTodo from "../pages/WebfejlesztesPage/MiniTodo";
 import MoziJegyfoglalo from "../pages/WebfejlesztesPage/MoziJegyfoglalo";
 import Szamologep from "../pages/WebfejlesztesPage/Szamologep";
 import TodoApp from "../pages/WebfejlesztesPage/TodoApp";
+import PromisePage from "../pages/WebfejlesztesPage/PromisePage";
 import FetchAlapok from "../pages/WebfejlesztesPage/FetchAlapok";
 import FetchApi from "../pages/WebfejlesztesPage/FetchApi";
 import ProjektLetrehozas from "../pages/WebfejlesztesPage/ProjektLetrehozas";
@@ -133,6 +134,7 @@ const webLinks = [
   },
   { name: "Számológép", path: "szamologep", component: Szamologep },
   { name: "TodoApp", path: "todo-app", component: TodoApp },
+  { name: "Promise alapok", path: "promise-alapok", component: PromisePage },
   { name: "Fetch alapok", path: "fetchalapok", component: FetchAlapok },
   { name: "Fetch-API", path: "fetch-api", component: FetchApi },
   {

@@ -1,0 +1,46 @@
+const jegyEllenorzo = (egyenleg) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (egyenleg >= 15000) {
+        resolve(`Sikeres vásárlás, a jegyet kiállítottuk!`);
+      } else {
+        reject(`Hiba: Nincs elegendő fedezet!`);
+      }
+    }, 1500);
+  });
+
+const vasarlasInditasa = async (aktualisEgyenleg) => {
+  try {
+    const eredmeny = await jegyEllenorzo(aktualisEgyenleg);
+    console.log(eredmeny);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+vasarlasInditasa(20000);
+
+
+
+
+const jelszoEllenorzo = (jelszo) =>
+  new Promise((resolve, reject) => {
+    console.log("Adatbázis keresés");
+
+    setTimeout(() => {
+      jelszo.length >= 8
+        ? resolve("Jelszó elfogadva!")
+        : reject("Túl rövid jelszó!");
+    }, 1000);
+  });
+
+const jelszoMegadasa = async (jelszo) => {
+  try {
+    const eredmeny = await jelszoEllenorzo(jelszo);
+    console.log(eredmeny);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+jelszoMegadasa("12345678");

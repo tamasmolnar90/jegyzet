@@ -52,5 +52,3 @@ vagy
 
 win + r
 appwiz.cpl
-
---
