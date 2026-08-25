@@ -29,6 +29,9 @@ import FetchApi from "../pages/WebfejlesztesPage/FetchApi";
 import ProjektLetrehozas from "../pages/WebfejlesztesPage/ProjektLetrehozas";
 import Express from "../pages/WebfejlesztesPage/Express";
 
+import ReactPage from "../pages/ReactPage/ReactPage";
+import FetchReact from "../pages/ReactPage/FetchAlapok";
+
 import PythonPage from "../pages/PythonPage/PythonPage";
 import PyJegyzet from "../pages/PythonPage/PyJegyzet";
 import PyTermekek from "../pages/PythonPage/Termekek";
@@ -144,6 +147,8 @@ const webLinks = [
   },
   { name: "Express", path: "express", component: Express },
 ];
+
+const reactLinks = [{ name: "Fetch", path: "fetch", component: FetchReact }];
 
 const pythonLinks = [
   { name: "Jegyzet", path: "jegyzet", component: PyJegyzet },
@@ -281,6 +286,16 @@ export default function AppRoutes() {
           element={<WebfejlesztesPage links={webLinks} />}
         >
           {webLinks.map((link) => (
+            <Route
+              key={link.path}
+              path={link.path}
+              element={<link.component />}
+            />
+          ))}
+        </Route>
+
+        <Route path="react" element={<ReactPage links={reactLinks} />}>
+          {reactLinks.map((link) => (
             <Route
               key={link.path}
               path={link.path}

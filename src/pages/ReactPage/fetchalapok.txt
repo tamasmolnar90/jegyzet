@@ -1,0 +1,22 @@
+import { useEffect, useState } from "react";
+
+export default function FetchAlapok() {
+  const [availablePlaces, setAvailablePlaces] = useState([]);
+
+  useEffect(() => {
+    async function fetchPlaces() {
+      const response = await fetch("http://localhost:3000/places");
+      const data = await response.json();
+      setAvailablePlaces(data.places);
+    }
+    fetchPlaces();
+  }, []);
+
+  return (
+    <div>      
+      {availablePlaces.map((place) => (
+        <li key={place.id}>{place.title}</li>
+      ))}
+    </div>
+  );
+}

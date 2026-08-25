@@ -19,6 +19,9 @@ export default function MainNavigation() {
             <Link to="/webfejlesztes">WEBFEJLESZTES</Link>
           </li>
           <li>
+            <Link to="/react">REACT</Link>
+          </li>
+          <li>
             <Link to="/python">PYTHON</Link>
           </li>
           <li>
