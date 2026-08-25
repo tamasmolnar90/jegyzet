@@ -1,22 +1,57 @@
 import { useEffect, useState } from "react";
 
 export default function FetchAlapok() {
+  const [isFetching, setIsFetching] = useState(false);
   const [availablePlaces, setAvailablePlaces] = useState([]);
+  const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchPlaces() {
-      const response = await fetch("http://localhost:3000/places");
-      const data = await response.json();
-      setAvailablePlaces(data.places);
+      setIsFetching(true);
+
+      try {
+        const response = await fetch("http://localhost:3000/places");
+
+        if (!response.ok) throw new Error(`Failed to fetch places: ${response.status}`);
+
+        const data = await response.json();
+
+        setAvailablePlaces(data.places);        
+      } catch (error) {
+        setError({ message: error.message || "Could not fetch places, please try again later" });
+        console.error(error.message);
+      }
+
+      setIsFetching(false);
     }
+
     fetchPlaces();
   }, []);
 
+  if (error) {
+    return (
+      <div>
+        <h2>An error occured!</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+
   return (
-    <div>      
-      {availablePlaces.map((place) => (
-        <li key={place.id}>{place.title}</li>
-      ))}
+    <div>
+      {isFetching && <p>Fetching place data...</p>}
+
+      {!isFetching && availablePlaces.length === 0 && (
+        <p>No places available.</p>
+      )}
+
+      {!isFetching && availablePlaces.length > 0 && (
+        <ul>
+          {availablePlaces.map((place) => (
+            <li key={place.id}>{place.title}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
