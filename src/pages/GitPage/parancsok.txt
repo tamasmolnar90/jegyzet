@@ -1,3 +1,17 @@
+git init
+git remote add origin https://github.com/example/example.git
+git branch -M main
+git add .
+git commit -m "example"
+git push origin main
+
+A git push origin main helyett érdemes a git push -u origin main parancsot használni az első feltöltésnél.
+A -u (vagy --set-upstream) kapcsoló megjegyzi, hogy a helyi main ág a távoli origin/main-hez tartozik,
+így a jövőben elég lesz csak annyit beírnod, hogy git push vagy git pull.
+
+
+
+
 Parancsok
 
 git init //local repo létrehozása
@@ -10,8 +24,8 @@ git remote add origin https://github.com/example/movie-app.git
 
 
           remote   branch
-git pull origin master //lehúzom a módosításokat
-git pull origin master –allow-unrelated-histories
+git pull origin main //lehúzom a módosításokat
+git pull origin main –allow-unrelated-histories
 //ha valamiért nem akarja lehúzni
 
 git clone https://github.com/example/movie-app.git //HTTPS
@@ -28,7 +42,7 @@ git reset //össze hozzáadott filet leveszi
 git reset mappa vagy file.txt //csak az adott mappát vagy filet veszi ki
 
 git commit -m "messages" //staging areából beküldöm a helyi repomba
-git push origin master //helyi repot küldöm a központi szerverre
+git push origin main //helyi repot küldöm a központi szerverre
 
 git status
 //Milyen fájlok változtak meg, mely fájlokat adtad hozzá a staging area-hoz (git add után), mely fájlok vannak még kimaradva (módosítva, de nem hozzáadva), van-e bármi commitálható változás.
@@ -174,7 +188,7 @@ A git három területtel dolgozik:
 - A commit üzenetek legyenek rövidek és érthetőek, projekttől függ a nyelvezetük, de legyen egységes.
 - A git pull két műveletből áll: fetch + merge.
 - A git push csak a commitolt változtatásokat tölti fel.
-- Ágkezelés a gyakorlatban: - main/master mindig stabil - development ág ahol egyesítjük a változtatásokat - fejlesztés külön feature brancheken.
+- Ágkezelés a gyakorlatban: - main/main mindig stabil - development ág ahol egyesítjük a változtatásokat - fejlesztés külön feature brancheken.
 - A .gitignore fájlban lehet megadni, hogy mi NE kerüljön a repo-ba.
 - Ha valamit véletlenül törölsz, a git log és git checkout segítségével visszaállítható.
 - Merge konfliktus esetén a fájlban jelzések jelennek meg (<<<<<< HEAD stb.), ezeket kézzel kell javítani, gui rendszeren ajánlott.
