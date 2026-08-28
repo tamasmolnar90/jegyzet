@@ -2,11 +2,14 @@
 ########## BIOS ##########
 ##########################
 
-AMD fTPM Switch:          AMD CPU fTPM
-Security Device Support:  Enable
-CSM:                      Disable
-Secure Boot:              Enable
-Secure Boot Mode:         Standard
+AMD fTPM Switch:          AMD CPU fTPM (Advanced)
+Security Device Support:  Enable (Advanced -> Trusted Computing)
+CSM:                      Disable (Boot -> CSM)
+Secure Boot:              Enable (Security -> Security Boot)
+Secure Boot Mode:         Standard (Security -> Security Boot)
+
+Above 4G Decoding: Enable (Advanced -> PCI Configuration)
+Re-Size BAR Support: Enable (Advanced -> PCI Configuration)
 
 ##########################################
 ########## TELEPÍTŐ LÉTREHOZÁSA ##########
@@ -19,28 +22,36 @@ Secure Boot Mode:         Standard
       INDÍTÁS
       Követelmény eltávolítása: online Microsoft fiók - pipa
       Adatgyűjtés letiltása - pipa
-      BitLocker automatikus eszköz titkosítás letiltása - pipa	
-
-2. Windows feltelepítése, frissítése, driverek
-
-3. Atlas feltelepítése
-
-4. Brave Cleaner regedit futtatása, kereső motor duckduckgo beállítása
-
-5. Töredezettség mentesítés ütemezés letiltása
-
-6. Egér pontosság beállítása
+      BitLocker automatikus eszköz titkosítás letiltása - pipa
 
 ###############################
 ########## TELEPÍTÉS ##########
 ###############################
 
 SHIFT + F10
+
 OOBE\BYPASSNRO (újraindul és lesz offline opció) (már kivették)
 NCPA.CPL (wifit előhívja, ha kell)
 
 Offline bejelentkezés (without Microsoft account)
 start ms-cxh:localonly
+
+#########################################
+########## WINDOWS BEÁLLÍTÁSOK ##########
+#########################################
+
+Töredezettség mentesítés ütemezés letiltása
+Egér pontosság beállítása
+Rendszervédelem: kikapcsolni (visszaállítási pont, semmire sem jó) - (win + r -> sysdm.cpl)
+
+XtremeShell:
+- Uninstall Edge
+- Disable Telemetry
+- Disable Ads
+- Disable Sticky Keys Hotkey
+- Classic Context menu - pipa be
+- Windows Copilot - pipa ki
+- Debloat Brave (Ha brave böngészőt használsz)
 
 #######################################
 ########## PROGRAMOK TÖRLÉSE ##########
