@@ -43,6 +43,7 @@ start ms-cxh:localonly
 Töredezettség mentesítés ütemezés letiltása
 Egér pontosság beállítása
 Rendszervédelem: kikapcsolni (visszaállítási pont, semmire sem jó) - (win + r -> sysdm.cpl)
+Magelkülönítés: kikapcsolni
 
 XtremeShell:
 - Uninstall Edge
