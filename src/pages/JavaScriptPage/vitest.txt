@@ -73,12 +73,13 @@ describe("Calculator", () => {
     // Arrange
     const num1 = 1;
     const num2 = 2;
+    const expectedResult = 3;
 
     // Act
     const result = add(num1, num2);
 
     // Assert
-    expect(result).toBe(3);
+    expect(result).toBe(expectedResult);
   });
 
   // SUBTRACT
