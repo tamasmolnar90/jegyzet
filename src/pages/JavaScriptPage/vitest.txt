@@ -1,6 +1,8 @@
 npm init -y
 npm install -D vitest
 
+npm test (futtatáshoz)
+
 
 
 {
@@ -68,7 +70,15 @@ import {
 describe("Calculator", () => {
   // ADD
   test("1 + 2 should equal 3", () => {
-    expect(add(1, 2)).toBe(3);
+    // Arrange
+    const num1 = 1;
+    const num2 = 2;
+
+    // Act
+    const result = add(num1, num2);
+
+    // Assert
+    expect(result).toBe(3);
   });
 
   // SUBTRACT
