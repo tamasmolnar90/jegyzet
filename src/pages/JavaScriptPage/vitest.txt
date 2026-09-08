@@ -1,0 +1,215 @@
+npm init -y
+npm install -D vitest
+
+
+
+{
+  "name": "vite-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node index.js", <-----
+    "test": "vitest" <------------
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module", <-------------
+  "devDependencies": {
+    "vitest": "^5.0.0"
+  }
+}
+
+
+
+###################################
+########## calculator.js ##########
+###################################
+
+export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+
+export function divide(a, b) {
+  if (typeof a !== "number" || typeof b !== "number") {
+    throw new Error("Both values must be numbers");
+  }
+
+  if (b === 0) {
+    throw new Error("Cannot divide by zero");
+  }
+
+  return a / b;
+}
+
+
+
+########################################
+########## calculator.test.js ##########
+########################################
+
+import { describe, test, expect } from "vitest";
+import {
+  add,
+  subtract,
+  multiply,
+  divide,
+} from "../../src/functions/calculator.js";
+
+describe("Calculator", () => {
+  // ADD
+  test("1 + 2 should equal 3", () => {
+    expect(add(1, 2)).toBe(3);
+  });
+
+  // SUBTRACT
+  test("1 - 2 should equal -1", () => {
+    expect(subtract(1, 2)).toBe(-1);
+  });
+
+  // MULTIPLY
+  test("1 * 2 should equal 2", () => {
+    expect(multiply(1, 2)).toBe(2);
+  });
+
+  // DIVIDE
+  test("return int: 10 / 2 should equal 5", () => {
+    expect(divide(10, 2)).toBe(5);
+  });
+
+  test("return decimal: 1 / 2 should equal 0.5", () => {
+    expect(divide(1, 2)).toBeCloseTo(0.5);
+  });
+
+  test("throws error when dividing by zero: 10 / 0", () => {
+    expect(() => {
+      divide(10, 0);
+    }).toThrow("Cannot divide by zero");
+  });
+
+  test("throws error when first value is not a number", () => {
+    expect(() => {
+      divide("10", 2);
+    }).toThrow("Both values must be numbers");
+  });
+});
+
+// describe("Calculator", () => {});
+// Ez egy tesztcsoport, a Calculator funkcióit teszteljük.
+
+// test("2 + 3 should equal 5", () => {});
+// Ez egy konkrét teszt.
+
+// expect(add(2, 3)).toBe(5);
+// Az add(2, 3) eredményének 5-nek kell lennie.
+
+
+
+####################################
+########## további példák ##########
+####################################
+
+// toBe()
+// - pontos primitív értékek
+// expect(5).toBe(5)
+
+// toEqual()
+// - objektumok
+// - tömbök
+
+// toBeCloseTo()
+// - lebegőpontos számok
+
+// toThrow()
+// - hibák
+
+// toBeTruthy()
+// - igaznak számító érték
+
+// toBeFalsy()
+// - hamisnak számító érték
+
+
+
+// EQUAL - OBJECTS
+test("two objects are equal", () => {
+  const user = {
+    name: "Vision",
+    age: 36,
+  };
+
+  expect(user).toEqual({ name: "Vision", age: 36 });
+});
+
+
+
+// EQUAL - ARRAYS
+test("two arrays are equal", () => {
+  const numbers = [1, 2, 3];
+
+  expect(numbers).toEqual([1, 2, 3]);
+});
+
+
+
+// TRUTHY
+test("string is truthy", () => {
+  expect("hello").toBeTruthy();
+});
+
+// TRUTHY ÉRTÉK PÉLDÁK:
+// expect(true).toBeTruthy();
+// expect(1).toBeTruthy();
+// expect(-5).toBeTruthy();
+// expect("hello").toBeTruthy();
+// expect([]).toBeTruthy();
+// expect({}).toBeTruthy();
+
+
+
+// FALSY
+test("false is falsy", () => {
+  expect(false).toBeFalsy();
+});
+
+// FALSY ÉRTÉK PÉLDÁK:
+// expect(false).toBeFalsy();
+// expect(0).toBeFalsy();
+// expect("").toBeFalsy();
+// expect(null).toBeFalsy();
+// expect(undefined).toBeFalsy();
+// expect(NaN).toBeFalsy();
+
+
+###################################
+########## további példa ##########
+###################################
+
+function isLoggedIn(user) {
+  return user !== null;
+}
+
+// TRUTHY
+test("user is logged in", () => {
+  const user = {
+    name: "Vision",
+  };
+
+  expect(isLoggedIn(user)).toBeTruthy();
+});
+
+// FALSY
+test("user is not logged in", () => {
+  const user = null;
+
+  expect(isLoggedIn(user)).toBeFalsy();
+});

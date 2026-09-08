@@ -1,0 +1,69 @@
+Egyszerű projektstruktúra
+
+my-project/
+│
+├── node_modules/
+│
+├── src/
+│   └── calculator.js
+│
+├── tests/
+│   └── calculator.test.js
+│
+├── package.json
+├── package-lock.json
+└── README.md
+
+
+
+
+Nagyobb projekstruktúra
+
+project/
+│
+├── src/
+│   │
+│   ├── functions/
+│   │   ├── calculator.js
+│   │   └── user.js
+│   │
+│   ├── services/
+│   │   └── userService.js
+│   │
+│   ├── utils/
+│   │   └── formatDate.js
+│   │
+│   └── index.js
+│
+├── tests/
+│   │
+│   ├── functions/
+│   │   ├── calculator.test.js
+│   │   └── user.test.js
+│   │
+│   ├── services/
+│   │   └── userService.test.js
+│   │
+│   └── utils/
+│       └── formatDate.test.js
+│
+├── package.json
+├── package-lock.json
+├── .gitignore
+└── README.md
+
+
+
+React esetében gyakori
+
+src/
+│
+├── components/
+│   ├── Button.jsx
+│   └── Button.test.jsx
+│
+├── pages/
+│   ├── Home.jsx
+│   └── Home.test.jsx
+│
+└── App.jsx

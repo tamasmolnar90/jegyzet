@@ -9,6 +9,7 @@ npm init -y
 npm install express // https://www.npmjs.com/package/express
 npm install dotenv // https://www.npmjs.com/package/dotenv
 npm install nodemon --save-dev // https://www.npmjs.com/package/nodemon
+npm install -D vitest // https://www.npmjs.com/package/vitest
 npm install sqlite3 // https://www.npmjs.com/package/sqlite
 
 

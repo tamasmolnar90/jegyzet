@@ -8,10 +8,14 @@ import Jegyzet from "../pages/HtmlPage/Jegyzet";
 import CssPage from "../pages/CssPage/CssPage";
 import CssJegyzet from "../pages/CssPage/Jegyzet";
 import CssMediaQuery from "../pages/CssPage/MediaQuery";
+import Flexbox from "../pages/CssPage/Flexbox";
+import Grid from "../pages/CssPage/Grid";
 
 import JavaScriptPage from "../pages/JavaScriptPage/JavaScriptPage";
 import Es6 from "../pages/JavaScriptPage/Es6";
 import JsBeadando01 from "../pages/JavaScriptPage/Beadando01";
+import Struktura from "../pages/JavaScriptPage/Struktura";
+import Vitest from "../pages/JavaScriptPage/Vitest";
 
 import WebfejlesztesPage from "../pages/WebfejlesztesPage/WebfejlesztesPage";
 import HasznosLinkek from "../pages/WebfejlesztesPage/HasznosLinkek";
@@ -108,11 +112,15 @@ const htmlLinks = [
 const cssLinks = [
   { name: "Jegyzet", path: "jegyzet", component: CssJegyzet },
   { name: "Media Query", path: "mediaquery", component: CssMediaQuery },
+  { name: "Flexbox", path: "flexbox", component: Flexbox },
+  { name: "Grid", path: "grid", component: Grid },
 ];
 
 const jsLinks = [
   { name: "ES6", path: "es6", component: Es6 },
   { name: "Beadandó 1", path: "beadando01", component: JsBeadando01 },
+  { name: "Struktúra", path: "struktura", component: Struktura },
+  { name: "Vitest", path: "vitest", component: Vitest },
 ];
 
 const webLinks = [
