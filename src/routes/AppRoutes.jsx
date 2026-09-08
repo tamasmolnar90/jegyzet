@@ -103,6 +103,7 @@ import LinuxJegyzet from "../pages/LinuxPage/Jegyzet";
 
 import WindowsPage from "../pages/WindowsPage/WindowsPage";
 import WindowsInstall from "../pages/WindowsPage/Install";
+import MSTest from "../pages/CsharpPage/MSTest";
 
 const htmlLinks = [
   { name: "Szemantika", path: "szemantika", component: Szemantika },
@@ -227,6 +228,7 @@ const csharpLinks = [
   { name: "Szuperhosok", path: "szuperhosok", component: Szuperhosok },
   { name: "MarsRover", path: "marsrover", component: MarsRover },
   { name: "AIModellek", path: "aimodellek", component: AIModellek },
+  { name: "MSTest", path: "mstest", component: MSTest },
 ];
 
 const winFormLinks = [

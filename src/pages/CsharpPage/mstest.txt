@@ -1,0 +1,129 @@
+
+
+################################
+########## Szamologep ##########
+################################
+
+namespace Teszt {
+    public class Szamologep(int szam1, int szam2) {
+        public int Szam1 { get; set; } = szam1;
+        public int Szam2 { get; set; } = szam2;
+
+        public int Osszead() {
+            return Szam1 + Szam2;
+        }
+
+        public int Kivonas() {
+            return Szam1 - Szam2;
+        }
+
+        public int Szorzas() {
+            return Szam1 * Szam2;
+        }
+
+        public double Osztas() {
+            if (Szam2 == 0) {
+                //return double.NaN;
+                throw new ArgumentException("Nem lehet osztani 0-val");
+            }
+
+            //return Convert.ToDouble(Szam1) / Convert.ToDouble(Szam2);
+            return (double)Szam1 / Szam2;
+        }
+    }
+}
+
+
+
+###########################
+########## Teszt ##########
+###########################
+
+namespace Teszt.TesztProjekt {
+
+    [TestClass]
+    public sealed class Test1 {
+
+        [TestMethod]
+        [Description("Ellenőrzi, hogy két pozitív szám összeadása helyes eredményt ad.")]
+        public void OsszeadasTeszt1() {
+            // Arrange
+            int szam1 = 1;
+            int szam2 = 2;
+            int elvartEredmeny = 3;
+
+            var szamologep = new Szamologep(szam1, szam2);
+
+            // Act
+            var eredmeny = szamologep.Osszead();
+
+            // Assert
+            Assert.AreEqual(elvartEredmeny, eredmeny);
+        }
+
+        [TestMethod]
+        [Description("Ellenőrzi, hogy két pozitív szám kivonása helyes eredményt ad.")]
+        public void KivonasTeszt1() {
+            // Arrange
+            int szam1 = 1;
+            int szam2 = 2;
+            int elvartEredmeny = -1;
+
+            var szamologep = new Szamologep(szam1, szam2);
+
+            // Act
+            var eredmeny = szamologep.Kivonas();
+
+            // Assert
+            Assert.AreEqual(elvartEredmeny, eredmeny);
+        }
+
+        [TestMethod]
+        [Description("Ellenőrzi, hogy két pozitív szám szorzata helyes eredményt ad.")]
+        public void SzorzasTeszt1() {
+            // Arrange
+            int szam1 = 1;
+            int szam2 = 2;
+            int elvartEredmeny = 2;
+
+            var szamologep = new Szamologep(szam1, szam2);
+
+            // Act
+            var eredmeny = szamologep.Szorzas();
+
+            // Assert
+            Assert.AreEqual(elvartEredmeny, eredmeny);
+        }
+
+        //[TestMethod]
+        //public void OsztasTeszt1() {
+        //    // Arrange
+        //    int szam1 = 4;
+        //    int szam2 = 2;
+        //    double elvartEredmeny = 2;
+
+        //    var szamologep = new Szamologep(szam1, szam2);
+
+        //    // Act
+        //    var eredmeny = szamologep.Osztas();
+
+        //    // Assert
+        //    Assert.AreEqual(elvartEredmeny, eredmeny);
+        //}
+
+        [TestMethod]
+        [DataRow(4, 2, 2)]
+        [DataRow(4, 0, double.NaN)]
+        [DataRow(1, 2, 0.5)]
+        public void OsztasTeszt1(int szam1, int szam2, double elvartEredmeny) {
+            // Arrange
+            var szamologep = new Szamologep(szam1, szam2);
+
+            // Act
+            var eredmeny = szamologep.Osztas();
+
+            // Assert
+            Assert.AreEqual(elvartEredmeny, eredmeny);
+        }
+    }
+}
