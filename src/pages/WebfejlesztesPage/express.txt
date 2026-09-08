@@ -35,7 +35,9 @@ app.get("/", async (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => console.log(`The server is running: http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`The server is running: http://localhost:${PORT}`),
+);
 
 
 ///////////////////////////////////
