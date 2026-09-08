@@ -7,10 +7,14 @@ JSON.stringify(data)
 npm init -y
 
 npm install express // https://www.npmjs.com/package/express
-npm install dotenv // https://www.npmjs.com/package/dotenv
 npm install nodemon --save-dev // https://www.npmjs.com/package/nodemon
-npm install -D vitest // https://www.npmjs.com/package/vitest
+npm install dotenv // https://www.npmjs.com/package/dotenv
+npm install cors // https://www.npmjs.com/package/cors
+npm install pg // https://www.npmjs.com/package/pg
 npm install sqlite3 // https://www.npmjs.com/package/sqlite
+npm install bcryptjs // https://www.npmjs.com/package/bcryptjs
+npm install jsonwebtoken // https://www.npmjs.com/package/jsonwebtoken
+npm install -D vitest // https://www.npmjs.com/package/vitest
 
 
 "type": "module",
@@ -31,7 +35,7 @@ app.get("/", async (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => console.log(`server connected on port: ${PORT}`));
+app.listen(PORT, () => console.log(`The server is running: http://localhost:${PORT}`));
 
 
 ///////////////////////////////////
