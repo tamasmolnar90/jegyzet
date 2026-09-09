@@ -1,3 +1,6 @@
+XAML Live Preview bekapcsolása:
+Debug -> Windows -> XAML Live Preview
+
 git repo: cinema-app-maui
 
 git repo description: A .NET MAUI & PostgreSQL movie database management application with full CRUD functionality.
