@@ -596,9 +596,9 @@ backend/
 │   │   └── env.js
 │   │
 │   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── errorMiddleware.js
-│   │   └── notFoundMiddleware.js
+│   │   ├── auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── notFound.middleware.js
 │   │
 │   ├── shared/
 │   │   ├── errors/
