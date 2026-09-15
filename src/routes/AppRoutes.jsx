@@ -33,6 +33,9 @@ import FetchApi from "../pages/WebfejlesztesPage/FetchApi";
 import ProjektLetrehozas from "../pages/WebfejlesztesPage/ProjektLetrehozas";
 import Express from "../pages/WebfejlesztesPage/Express";
 
+import ExpressPage from "../pages/ExpressPage/ExpressPage";
+import ExStruktura from "../pages/ExpressPage/Struktura";
+
 import ReactPage from "../pages/ReactPage/ReactPage";
 import FetchReact from "../pages/ReactPage/FetchAlapok";
 
@@ -155,6 +158,10 @@ const webLinks = [
     component: ProjektLetrehozas,
   },
   { name: "Express", path: "express", component: Express },
+];
+
+const expressLinks = [
+  { name: "Struktura", path: "struktura", component: ExStruktura },
 ];
 
 const reactLinks = [{ name: "Fetch", path: "fetch", component: FetchReact }];
@@ -296,6 +303,16 @@ export default function AppRoutes() {
           element={<WebfejlesztesPage links={webLinks} />}
         >
           {webLinks.map((link) => (
+            <Route
+              key={link.path}
+              path={link.path}
+              element={<link.component />}
+            />
+          ))}
+        </Route>
+
+        <Route path="express" element={<ExpressPage links={expressLinks} />}>
+          {expressLinks.map((link) => (
             <Route
               key={link.path}
               path={link.path}
