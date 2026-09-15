@@ -1,6 +1,8 @@
 Node.js + Express backend mappastruktúra
 
-Egy Node.js + Express backendnél nincs egyetlen kötelező mappastruktúra. A kisebb projektekben sok mindent egy server.js fájlban tartanak, a nagyobb, professzionálisabb alkalmazásokban pedig különválasztják a route-okat, controllereket, üzleti logikát, adatbázis-kezelést és egyéb feladatokat.
+Egy Node.js + Express backendnél nincs egyetlen kötelező mappastruktúra.
+A kisebb projektekben sok mindent egy server.js fájlban tartanak, a nagyobb,
+professzionálisabb alkalmazásokban pedig különválasztják a route-okat, controllereket, üzleti logikát, adatbázis-kezelést és egyéb feladatokat.
 
 
 
@@ -556,30 +558,61 @@ Előnyei:
 B) Feature-based / Module-based – Funkcióalapú struktúra
 Itt nem minden controllert egy közös controllers mappában tartanak, hanem funkciók szerint csoportosítják őket.
 
-src/
-├── config/
-├── middleware/
+backend/
 │
-├── modules/
-│   ├── movies/
-│   │   ├── movieRoutes.js
-│   │   ├── movieController.js
-│   │   ├── movieService.js
-│   │   ├── movieModel.js
-│   │   └── movieValidator.js
+├── src/
 │   │
-│   ├── users/
-│   │   ├── userRoutes.js
-│   │   ├── userController.js
-│   │   ├── userService.js
-│   │   └── userModel.js
+│   ├── modules/
+│   │   │
+│   │   ├── movies/
+│   │   │   ├── movie.routes.js
+│   │   │   ├── movie.controller.js
+│   │   │   ├── movie.service.js
+│   │   │   ├── movie.repository.js
+│   │   │   ├── movie.validation.js
+│   │   │   └── movie.test.js
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── auth.routes.js
+│   │   │   ├── auth.controller.js
+│   │   │   ├── auth.service.js
+│   │   │   ├── auth.repository.js
+│   │   │   └── auth.validation.js
+│   │   │
+│   │   ├── cinemas/
+│   │   │   ├── cinema.routes.js
+│   │   │   ├── cinema.controller.js
+│   │   │   ├── cinema.service.js
+│   │   │   └── cinema.repository.js
+│   │   │
+│   │   └── users/
+│   │       ├── user.routes.js
+│   │       ├── user.controller.js
+│   │       ├── user.service.js
+│   │       └── user.repository.js
 │   │
-│   └── auth/
-│       ├── authRoutes.js
-│       ├── authController.js
-│       └── authService.js
+│   ├── config/
+│   │   ├── database.js
+│   │   └── env.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   ├── errorMiddleware.js
+│   │   └── notFoundMiddleware.js
+│   │
+│   ├── shared/
+│   │   ├── errors/
+│   │   ├── utils/
+│   │   └── constants/
+│   │
+│   ├── app.js
+│   └── server.js
 │
-└── app.js
+├── tests/
+├── .env
+├── .env.example
+├── package.json
+└── README.md
 
 Ez nagyobb projektekben gyakran kényelmesebb, mert egy funkcióhoz tartozó összes fájl egy helyen van.
 
