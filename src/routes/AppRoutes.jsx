@@ -164,10 +164,10 @@ const webLinks = [
 ];
 
 const expressLinks = [
-  { name: "Npm csomagok", path: "struktura", component: NpmPackages },
-  { name: "Status kódok", path: "struktura", component: StatusCodes },
+  { name: "Npm csomagok", path: "npm-csomagok", component: NpmPackages },
+  { name: "Status kódok", path: "status-codes", component: StatusCodes },
   { name: "Struktura", path: "struktura", component: ExStruktura },
-  { name: "Hosok", path: "struktura", component: Hosok },
+  { name: "Hosok", path: "hosok", component: Hosok },
 ];
 
 const reactLinks = [{ name: "Fetch", path: "fetch", component: FetchReact }];
