@@ -31,12 +31,12 @@ import PromisePage from "../pages/WebfejlesztesPage/PromisePage";
 import FetchAlapok from "../pages/WebfejlesztesPage/FetchAlapok";
 import FetchApi from "../pages/WebfejlesztesPage/FetchApi";
 import ProjektLetrehozas from "../pages/WebfejlesztesPage/ProjektLetrehozas";
-import Express from "../pages/WebfejlesztesPage/Express";
 
 import ExpressPage from "../pages/ExpressPage/ExpressPage";
 import NpmPackages from "../pages/ExpressPage/NpmPackages";
 import StatusCodes from "../pages/ExpressPage/StatusCodes";
 import ExStruktura from "../pages/ExpressPage/Struktura";
+import Szerver from "../pages/ExpressPage/Szerver";
 import Hosok from "../pages/ExpressPage/Hosok";
 
 import ReactPage from "../pages/ReactPage/ReactPage";
@@ -160,13 +160,13 @@ const webLinks = [
     path: "projektletrehozas",
     component: ProjektLetrehozas,
   },
-  { name: "Express", path: "express", component: Express },
 ];
 
 const expressLinks = [
   { name: "Npm csomagok", path: "npm-csomagok", component: NpmPackages },
   { name: "Status kódok", path: "status-codes", component: StatusCodes },
   { name: "Struktura", path: "struktura", component: ExStruktura },
+  { name: "Szerver", path: "szerver", component: Szerver },
   { name: "Hosok", path: "hosok", component: Hosok },
 ];
 

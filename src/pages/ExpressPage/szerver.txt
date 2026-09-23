@@ -1,0 +1,49 @@
+Webszerverről jön
+JSON.parse(data); //str -> obj
+
+Webszerverre küld (JSON-ra alakít)
+JSON.stringify(data); //obj -> str
+
+
+
+##################################
+########## package.json ##########
+##################################
+
+"type": "module",
+"scripts": {
+  "dev": "nodemon server.js",
+},
+
+###############################
+########## server.js ##########
+###############################
+
+import express from "express";
+import mysql from "mysql2/promise";
+
+const pool = mysql.createPool({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "jelszó",
+  database: "adatbázis neve",
+});
+
+const app = express();
+
+app.use(express.json());
+
+app.get("/", async (req, res) => {
+  try {
+
+  } catch (error) {
+    console.error(error);    
+    res.status(500).json(error);
+  }
+});
+
+const PORT = 5000;
+app.listen(PORT, () =>
+  console.log(`The server is running: http://localhost:${PORT}\n`),
+);

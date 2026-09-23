@@ -9,7 +9,7 @@ npm init –y (automatikusan elfogadja az alapbeállításokat)
 NPM csomagok || https://www.npmjs.com/
 
 npm install express         https://www.npmjs.com/package/express
-npm install nodemon         https://www.npmjs.com/package/nodemon
+npm install nodemon -D      https://www.npmjs.com/package/nodemon
 npm install dotenv          https://www.npmjs.com/package/dotenv
 npm install mysql2          https://www.npmjs.com/package/mysql2
 npm install pg              https://www.npmjs.com/package/pg
@@ -18,7 +18,7 @@ npm install bcryptjs        https://www.npmjs.com/package/bcryptjs
 npm install jsonwebtoken    https://www.npmjs.com/package/jsonwebtoken
 npm install prisma          https://www.npmjs.com/package/prisma
 npm install cors            https://www.npmjs.com/package/cors
-npm install vitest          https://www.npmjs.com/package/vitest
+npm install vitest -D       https://www.npmjs.com/package/vitest
 npm i react-router-dom      https://www.npmjs.com/package/react-router-dom
 npm install axios           https://www.npmjs.com/package/axios
 
