@@ -2,13 +2,15 @@ Node.js + Express backend mappastruktúra
 
 Egy Node.js + Express backendnél nincs egyetlen kötelező mappastruktúra.
 A kisebb projektekben sok mindent egy server.js fájlban tartanak, a nagyobb,
-professzionálisabb alkalmazásokban pedig különválasztják a route-okat, controllereket, üzleti logikát, adatbázis-kezelést és egyéb feladatokat.
+professzionálisabb alkalmazásokban pedig különválasztják a route-okat,
+controllereket, üzleti logikát, adatbázis-kezelést és egyéb feladatokat.
 
 
 
-##################################################
-########## 1. Ajánlott projektstruktúra ##########
-##################################################
+
+#################################################################
+########## Layered architecture – Rétegezett struktúra ##########
+#################################################################
 
 backend/
 │
@@ -18,31 +20,31 @@ backend/
 │   │   └── env.js
 │   │
 │   ├── routes/
-│   │   ├── movieRoutes.js
-│   │   ├── authRoutes.js
-│   │   └── userRoutes.js
+│   │   ├── movie.routes.js
+│   │   ├── auth.routes.js
+│   │   └── user.routes.js
 │   │
 │   ├── controllers/
-│   │   ├── movieController.js
-│   │   ├── authController.js
-│   │   └── userController.js
+│   │   ├── movie.controller.js
+│   │   ├── auth.controller.js
+│   │   └── user.controller.js
 │   │
 │   ├── services/
-│   │   ├── movieService.js
-│   │   ├── authService.js
-│   │   └── userService.js
+│   │   ├── movie.service.js
+│   │   ├── auth.service.js
+│   │   └── user.service.js
 │   │
 │   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── errorMiddleware.js
-│   │   └── notFoundMiddleware.js
+│   │   ├── auth.middleware.js
+│   │   ├── error.middleware.js
+│   │   └── notFound.middleware.js
 │   │
 │   ├── models/
-│   │   └── movieModel.js
+│   │   └── movie.model.js
 │   │
 │   ├── validators/
-│   │   ├── movieValidator.js
-│   │   └── authValidator.js
+│   │   ├── movie.validator.js
+│   │   └── auth.validator.js
 │   │
 │   ├── utils/
 │   │   └── generateToken.js
@@ -56,506 +58,6 @@ backend/
 ├── package.json
 └── README.md
 
-
-
-#################################################
-########## 2. Melyik mappába mi kerül? ##########
-#################################################
-
-### config/
-
-Ide kerülnek az alkalmazás beállításai és külső kapcsolatok konfigurációi.
-
-Például:
-- PostgreSQL adatbázis-kapcsolat.
-- Környezeti változók beolvasása.
-- Egyéb konfigurációk.
-
-
-
-### config/database.js
-
-Például:
-
-import pg from "pg";
-import "dotenv/config";
-
-const { Pool } = pg;
-
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
-
-export default pool;
-
-Más fájlok innen importálják a pool-t.
-
-import pool from "../config/database.js";
-
-
-
-### config/env.js
-
-Ha szeretnéd külön kezelni a környezeti változókat:
-
-import "dotenv/config";
-
-export const env = {
-  serverPort: process.env.SERVER_PORT || 5000,
-  clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
-
-  db: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-  },
-};
-
-Fontos: a .env fájl maga általában a projekt gyökerében marad, nem a config mappában.
-
-
-
-### routes/
-
-A route határozza meg, hogy milyen HTTP kérések érkezhetnek az alkalmazáshoz, és melyik controller kezelje őket.
-
-Például:
-
-GET    /movies
-GET    /movies/:id
-POST   /movies
-PUT    /movies/:id
-DELETE /movies/:id
-
-
-
-### routes/movieRoutes.js
-
-import express from "express";
-import {
-  getMovies,
-  getMovieById,
-  createMovie,
-} from "../controllers/movieController.js";
-
-const router = express.Router();
-
-router.get("/", getMovies);
-
-router.get("/:id", getMovieById);
-
-router.post("/", createMovie);
-
-export default router;
-
-
-
-### app.js
-
-import express from "express";
-import movieRoutes from "./routes/movieRoutes.js";
-
-const app = express();
-
-app.use(express.json());
-
-app.use("/movies", movieRoutes);
-
-export default app;
-
-Miért jó külön route fájl?
-Mert nem kell az összes végpontot az app.js vagy server.js fájlban tartani.
-
-
-
-### controllers/ – A HTTP kérések kezelése
-
-A controller feladata:
-- Fogadja a requestet.
-- Kiolvassa a szükséges adatokat.
-- Meghívja a service-t.
-- Visszaadja a HTTP választ.
-
-A controller alapvetően a HTTP réteggel foglalkozik.
-
-
-
-### controllers/movieController.js
-
-import * as movieService from "../services/movieService.js";
-
-export async function getMovies(req, res, next) {
-  try {
-    const movies = await movieService.getAllMovies();
-
-    res.status(200).json(movies);
-  } catch (error) {
-    next(error);
-  }
-}
-
-A controller itt nem közvetlenül adatbázisozik, hanem meghívja a service-t.
-
-Példa controller feladatokra:
-
-export async function getMovieById(req, res, next) {}
-
-export async function createMovie(req, res, next) {}
-
-export async function updateMovie(req, res, next) {}
-
-export async function deleteMovie(req, res, next) {}
-
-Megjegyzés: kisebb projektnél a controller és a service akár egy fájlban is lehet. A szétválasztás akkor hasznos, amikor már kezd sok logika lenni.
-
-
-
-### services/ – Üzleti logika
-
-Ez az egyik legfontosabb réteg.
-A service tartalmazza az alkalmazás működéséhez szükséges üzleti logikát.
-Például:
-- Film létrehozása.
-- Film adatainak ellenőrzése.
-- Film keresése.
-- Felhasználó regisztrációja.
-- Jelszó hash-elése.
-- Jogosultságok ellenőrzése.
-- Összetettebb műveletek több adatbázis-lekérdezéssel.
-
-
-
-### services/movieService.js
-
-import * as movieModel from "../models/movieModel.js";
-
-export async function getAllMovies() {
-  const movies = await movieModel.findAllMovies();
-
-  return movies;
-}
-
-Ez most még egyszerű, de később ide kerülhet az üzleti logika.
-Például:
-
-export async function createMovie(movieData) {
-  const { title, genre, release_year } = movieData;
-
-  if (release_year < 1888) {
-    throw new Error("Invalid release year");
-  }
-
-  const movie = await movieModel.insertMovie({
-    title,
-    genre,
-    release_year,
-  });
-
-  return movie;
-}
-
-A service feladata nem az, hogy res.status() vagy res.json() választ küldjön.
-
-
-
-### models/ – Adatmodell és adatbázis-lekérdezések
-
-A model réteg feladata az adatok kezelése.
-A te PostgreSQL projektedben ide kerülhetnek az SQL lekérdezések.
-
-
-
-### models/movieModel.js
-
-import pool from "../config/database.js";
-
-export async function findAllMovies() {
-  const result = await pool.query(`
-    SELECT *
-    FROM movies
-    ORDER BY id
-  `);
-
-  return result.rows;
-}
-
-Film létrehozása:
-
-export async function insertMovie(movie) {
-  const { title, genre, release_year } = movie;
-
-  const result = await pool.query(
-    `
-    INSERT INTO movies (title, genre, release_year)
-    VALUES ($1, $2, $3)
-    RETURNING id, title, genre, release_year
-    `,
-    [title, genre, release_year]
-  );
-
-  return result.rows[0];
-}
-
-
-
-A rétegek együtt:
-
-REACT FRONTEND
-axios / fetch ---> HTTP kérés
-
-      |
-      V
-
-ROUTES
-melyik url és http metódus?
-
-      |
-      V
-
-CONTROLLERS
-request feldolgozása és response
-
-      |
-      V
-
-SERVICES
-üzleti logika
-
-      |
-      V
-
-MODELS / REPOSITORY
-sql és adatbázis-műveletek
-
-      |
-      V
-
-ADATBÁZIS (SQL, NOSQL, ...)
-users, movies, cinemas ...
-
-Ez nem kötelező sorrend minden projektnél, hanem az egyik gyakori megoldás.
-
-
-##############################################################
-########## 3. Middleware/ - Köztes feldolgozó réteg ##########
-##############################################################
-
-A middleware olyan függvény, amely a request és a response feldolgozása közben fut.
-
-Egy middleware:
-- Módosíthatja a requestet.
-- Ellenőrizheti a jogosultságot.
-- Továbbengedheti a kérést next() segítségével.
-- Megállíthatja a kérést és választ küldhet.
-- Hibát továbbíthat a hibakezelőnek.
-
-Példa: authMiddleware
-
-export function authMiddleware(req, res, next) {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({
-      message: "Unauthorized",
-    });
-  }
-
-  next();
-}
-
-Használata:
-
-router.get(
-  "/",
-  authMiddleware,
-  getMovies
-);
-
-Ebben az esetben:
-GET /movies
-     ↓
-authMiddleware
-     ↓
-getMovies
-
-Ha nincs token, a controller nem fut le.
-
-Gyakori middleware-ek
-
-Middleware                 Feladat
-authMiddleware.js          Bejelentkezés / token ellenőrzés
-errorMiddleware.js         Központi hibakezelés
-notFoundMiddleware.js      Nem létező útvonalak kezelése
-validateMiddleware.js      Beérkező adatok ellenőrzése
-rateLimitMiddleware.js     Túl sok kérés korlátozása
-uploadMiddleware.js        Fájlok feltöltésének kezelése
-
-Az express.json() is middleware, csak az Express beépített middleware-e.
-
-
-###############################################
-########## 4. További gyakori mappák ##########
-###############################################
-
-### validators/ - Adatellenőrzés
-
-A beérkező adatok formai ellenőrzésére szolgál.
-Például egy új filmnél:
-
-{
-  "title": "Interstellar",
-  "genre": "Sci-Fi",
-  "release_year": 2014
-}
-
-Ellenőrzések:
-- Kötelező-e a title?
-- Szöveg-e a title?
-- Nem túl hosszú-e?
-- Szám-e a release_year?
-- Érvényes-e a műfaj?
-
-Példa:
-
-export function validateMovie(movie) {
-  const { title, genre, release_year } = movie;
-
-  if (!title || !genre || !release_year) {
-    return false;
-  }
-
-  return true;
-}
-
-Nagyobb projektekben gyakran használnak erre könyvtárakat, például:
-- Zod
-- Joi
-- express-validator
-
-
-
-### utils/ – Segédfüggvények
-
-Olyan általános függvények, amelyek több helyen használhatók.
-
-Példák:
-
-utils/
-├── generateToken.js
-├── hashPassword.js
-├── formatDate.js
-└── calculatePrice.js
-
-Például:
-
-export function formatDate(date) {
-  return new Date(date).toLocaleDateString("hu-HU");
-}
-
-A utils mappába ne kerüljön mindenféle véletlenszerű logika. Csak valóban általános segédfüggvények.
-
-
-
-### app.js – Express alkalmazás konfigurációja
-
-Itt hozod létre az Express appot, és itt állítod be:
-- Middleware-ek.
-- Route-ok.
-- Hibakezelők.
-- Egyéb Express konfiguráció.
-
-Példa:
-
-import express from "express";
-import cors from "cors";
-import movieRoutes from "./routes/movieRoutes.js";
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.use("/movies", movieRoutes);
-
-export default app;
-
-
-
-### server.js – A szerver indítása
-
-A server.js feladata általában az alkalmazás elindítása.
-
-import app from "./src/app.js";
-
-const PORT = process.env.SERVER_PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-Miért külön app.js és server.js?
-Mert így az Express alkalmazás külön tesztelhető és importálható.
-
-app.js     → Express alkalmazás összeállítása
-server.js  → Szerver elindítása
-
-Kisebb projektnél az egész lehet egyetlen server.js fájlban is.
-
-
-
-###########################################################
-########## 5. Másképp is szokták nevezni ezeket? ##########
-###########################################################
-
-Igen. A mappanevek nem szabványosak, ezért többféle elnevezés is teljesen elfogadott.
-
-Gyakori név      Más lehetséges név                   Mit tartalmaz?
-routes           routers, api                         Útvonalak
-controllers      handlers, http                       HTTP kérések kezelése
-services         use-cases, application               Üzleti logika
-models           repositories, data-access, db        Adatkezelés
-middleware       middlewares                          Köztes feldolgozás
-config           configuration, settings              Beállítások
-utils            helpers, common                      Segédfüggvények
-validators       validation, schemas                  Adatellenőrzés
-
-models vs repositories
-Ezeket nem mindig ugyanarra használják.
-
-Model:
-Gyakran az adatmodellhez vagy az adatbázis-műveletekhez kapcsolódik.
-movieModel.findAllMovies();
-
-Repository:
-Kifejezetten az adatbázis elérését rejti el.
-movieRepository.findAll();
-movieRepository.create(movie);
-
-Egyes projektekben a model és repository ugyanazt a szerepet tölti be. Más projektekben különválasztják őket.
-
-
-###################################################
-########## 6. Két gyakori struktúratípus ##########
-###################################################
-
-A) Layered architecture – Rétegezett struktúra
-Ez az, amit fentebb mutattam.
-
-src/
-├── config/
-├── routes/
-├── controllers/
-├── services/
-├── models/
-├── middleware/
-└── utils/
-
 Előnyei:
 - Könnyen érthető kezdőknek.
 - Jól szétválasztja a feladatokat.
@@ -565,8 +67,10 @@ Előnyei:
 
 
 
-B) Feature-based / Module-based – Funkcióalapú struktúra
-Itt nem minden controllert egy közös controllers mappában tartanak, hanem funkciók szerint csoportosítják őket.
+
+###########################################################################
+########## Feature-based / Module-based – Funkcióalapú struktúra ##########
+###########################################################################
 
 backend/
 │
@@ -625,8 +129,498 @@ backend/
 
 Ez nagyobb projektekben gyakran kényelmesebb, mert egy funkcióhoz tartozó összes fájl egy helyen van.
 
-Melyiket válaszd?
-A te jelenlegi mozi projektedhez a rétegezett struktúra egyszerűbb tanulási szempontból. Később, ha sok funkciód lesz, áttérhetsz feature-based struktúrára.
+
+
+
+##############################################
+########## Melyik mappába mi kerül? ##########
+##############################################
+
+### config/
+
+Ide kerülnek az alkalmazás beállításai és külső kapcsolatok konfigurációi.
+
+Például:
+- PostgreSQL adatbázis-kapcsolat.
+- Környezeti változók beolvasása.
+- Egyéb konfigurációk.
+
+
+
+
+### config/database.js
+
+Például:
+
+import pg from "pg";
+import "dotenv/config";
+
+const { Pool } = pg;
+
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
+export default pool;
+
+Más fájlok innen importálják a pool-t.
+
+import pool from "../config/database.js";
+
+
+
+
+### config/env.js
+
+Ha szeretnéd külön kezelni a környezeti változókat:
+
+import "dotenv/config";
+
+export const env = {
+  serverPort: process.env.SERVER_PORT || 5000,
+  clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+
+  db: {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  },
+};
+
+Fontos: a .env fájl maga általában a projekt gyökerében marad, nem a config mappában.
+
+
+
+
+### routes/
+
+A route határozza meg, hogy milyen HTTP kérések érkezhetnek az alkalmazáshoz, és melyik controller kezelje őket.
+
+Például:
+
+GET    /movies
+GET    /movies/:id
+POST   /movies
+PUT    /movies/:id
+DELETE /movies/:id
+
+
+
+
+### routes/movie.routes.js
+
+import express from "express";
+import {
+  getMovies,
+  getMovieById,
+  createMovie,
+} from "../controllers/movieController.js";
+
+const router = express.Router();
+router.get("/", getMovies);
+router.get("/:id", getMovieById);
+router.post("/", createMovie);
+export default router;
+
+
+
+
+### app.js
+
+import express from "express";
+import movie.routes from "./routes/movieRoutes.js";
+
+const app = express();
+app.use(express.json());
+app.use("/movies", movieRoutes);
+export default app;
+
+Miért jó külön route fájl?
+Mert nem kell az összes végpontot az app.js vagy server.js fájlban tartani.
+
+
+
+
+### controllers/ – A HTTP kérések kezelése
+
+A controller feladata:
+- Fogadja a requestet.
+- Kiolvassa a szükséges adatokat.
+- Meghívja a service-t.
+- Visszaadja a HTTP választ.
+
+A controller alapvetően a HTTP réteggel foglalkozik.
+
+
+
+
+### controllers/movie.controller.js
+
+import * as movieService from "../services/movieService.js";
+
+export async function getMovies(req, res, next) {
+  try {
+    const movies = await movieService.getAllMovies();
+
+    res.status(200).json(movies);
+  } catch (error) {
+    next(error);
+  }
+}
+
+A controller itt nem közvetlenül adatbázisozik, hanem meghívja a service-t.
+
+Példa controller feladatokra:
+
+export async function getMovieById(req, res, next) {...}
+export async function createMovie(req, res, next) {...}
+export async function updateMovie(req, res, next) {...}
+export async function deleteMovie(req, res, next) {...}
+
+Megjegyzés: kisebb projektnél a controller és a service akár egy fájlban is lehet.
+A szétválasztás akkor hasznos, amikor már kezd sok logika lenni.
+
+
+
+
+### services/ – Üzleti logika
+
+Ez az egyik legfontosabb réteg.
+A service tartalmazza az alkalmazás működéséhez szükséges üzleti logikát.
+Például:
+- Film létrehozása.
+- Film adatainak ellenőrzése.
+- Film keresése.
+- Felhasználó regisztrációja.
+- Jelszó hash-elése.
+- Jogosultságok ellenőrzése.
+- Összetettebb műveletek több adatbázis-lekérdezéssel.
+
+
+
+
+### services/movie.service.js
+
+import * as movieModel from "../models/movieModel.js";
+
+export async function getAllMovies() {
+  const movies = await movieModel.findAllMovies();
+
+  return movies;
+}
+
+Ez most még egyszerű, de később ide kerülhet az üzleti logika.
+
+Például:
+
+export async function createMovie(movieData) {
+  const { title, genre, release_year } = movieData;
+
+  if (release_year < 1888) {
+    throw new Error("Invalid release year");
+  }
+
+  const movie = await movieModel.insertMovie({
+    title,
+    genre,
+    release_year,
+  });
+
+  return movie;
+}
+
+A service feladata nem az, hogy res.status() vagy res.json() választ küldjön.
+
+
+
+
+### models/ – Adatmodell és adatbázis-lekérdezések
+
+A model réteg feladata az adatok kezelése.
+A te PostgreSQL projektedben ide kerülhetnek az SQL lekérdezések.
+
+
+
+
+### models/movie.model.js
+
+import pool from "../config/database.js";
+
+export async function findAllMovies() {
+  const result = await pool.query(`
+    SELECT *
+    FROM movies
+    ORDER BY id
+  `);
+
+  return result.rows;
+}
+
+Film létrehozása:
+
+export async function insertMovie(movie) {
+  const { title, genre, release_year } = movie;
+
+  const result = await pool.query(
+    `
+    INSERT INTO movies (title, genre, release_year)
+    VALUES ($1, $2, $3)
+    RETURNING id, title, genre, release_year
+    `,
+    [title, genre, release_year]
+  );
+
+  return result.rows[0];
+}
+
+
+
+
+A rétegek együtt:
+
+REACT FRONTEND
+axios / fetch ---> HTTP kérés
+
+      |
+      V
+
+ROUTES
+melyik url és http metódus?
+
+      |
+      V
+
+CONTROLLERS
+request feldolgozása és response
+
+      |
+      V
+
+SERVICES
+üzleti logika
+
+      |
+      V
+
+MODELS / REPOSITORY
+sql és adatbázis-műveletek
+
+      |
+      V
+
+ADATBÁZIS (SQL, NOSQL, ...)
+users, movies, cinemas ...
+
+Ez nem kötelező sorrend minden projektnél, hanem az egyik gyakori megoldás.
+
+
+
+
+###########################################################
+########## Middleware/ - Köztes feldolgozó réteg ##########
+###########################################################
+
+A middleware olyan függvény, amely a request és a response feldolgozása közben fut.
+
+Egy middleware:
+- Módosíthatja a requestet.
+- Ellenőrizheti a jogosultságot.
+- Továbbengedheti a kérést next() segítségével.
+- Megállíthatja a kérést és választ küldhet.
+- Hibát továbbíthat a hibakezelőnek.
+
+Példa: auth.middleware
+
+export function authMiddleware(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
+  }
+
+  next();
+}
+
+Használata:
+router.get("/", authMiddleware, getMovies);
+
+Ebben az esetben:
+GET /movies
+     ↓
+authMiddleware
+     ↓
+getMovies
+
+Ha nincs token, a controller nem fut le.
+
+Gyakori middleware-ek
+
+Middleware                  Feladat
+auth.middleware.js          Bejelentkezés / token ellenőrzés
+error.middleware.js         Központi hibakezelés
+notFound.middleware.js      Nem létező útvonalak kezelése
+validate.middleware.js      Beérkező adatok ellenőrzése
+rateLimit.middleware.js     Túl sok kérés korlátozása
+upload.middleware.js        Fájlok feltöltésének kezelése
+
+Az express.json() is middleware, csak az Express beépített middleware-je.
+
+
+
+
+############################################
+########## További gyakori mappák ##########
+############################################
+
+### validators/ - Adatellenőrzés
+
+A beérkező adatok formai ellenőrzésére szolgál.
+Például egy új filmnél:
+
+{
+  "title": "Interstellar",
+  "genre": "Sci-Fi",
+  "release_year": 2014
+}
+
+Ellenőrzések:
+- Kötelező-e a title?
+- Szöveg-e a title?
+- Nem túl hosszú-e?
+- Szám-e a release_year?
+- Érvényes-e a műfaj?
+
+Példa:
+
+export function validateMovie(movie) {
+  const { title, genre, release_year } = movie;
+
+  if (!title || !genre || !release_year) {
+    return false;
+  }
+
+  return true;
+}
+
+Nagyobb projektekben gyakran használnak erre könyvtárakat, például:
+- Zod
+- Joi
+- express-validator
+
+
+
+
+### utils/ – Segédfüggvények
+
+Olyan általános függvények, amelyek több helyen használhatók.
+
+Példák:
+
+utils/
+├── generateToken.js
+├── hashPassword.js
+├── formatDate.js
+└── calculatePrice.js
+
+Például:
+
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString("hu-HU");
+}
+
+A utils mappába ne kerüljön mindenféle véletlenszerű logika. Csak valóban általános segédfüggvények.
+
+
+
+### app.js – Express alkalmazás konfigurációja
+
+Itt hozod létre az Express appot, és itt állítod be:
+- Middleware-ek.
+- Route-ok.
+- Hibakezelők.
+- Egyéb Express konfiguráció.
+
+Példa:
+
+import express from "express";
+import cors from "cors";
+import movieRoutes from "./routes/movie.routes.js";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/movies", movieRoutes);
+
+export default app;
+
+
+
+
+### server.js – A szerver indítása
+
+A server.js feladata általában az alkalmazás elindítása.
+
+import app from "./src/app.js";
+
+const PORT = process.env.SERVER_PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}\n`);
+});
+
+Miért külön app.js és server.js?
+Mert így az Express alkalmazás külön tesztelhető és importálható.
+
+app.js     → Express alkalmazás összeállítása
+server.js  → Szerver elindítása
+
+Kisebb projektnél az egész lehet egyetlen server.js fájlban is.
+
+
+
+
+########################################################
+########## Másképp is szokták nevezni ezeket? ##########
+########################################################
+
+Igen. A mappanevek nem szabványosak, ezért többféle elnevezés is teljesen elfogadott.
+
+Gyakori név      Más lehetséges név                   Mit tartalmaz?
+routes           routers, api                         Útvonalak
+controllers      handlers, http                       HTTP kérések kezelése
+services         use-cases, application               Üzleti logika
+models           repositories, data-access, db        Adatkezelés
+middleware       middlewares                          Köztes feldolgozás
+config           configuration, settings              Beállítások
+utils            helpers, common                      Segédfüggvények
+validators       validation, schemas                  Adatellenőrzés
+
+models vs repositories
+Ezeket nem mindig ugyanarra használják.
+
+Model:
+Gyakran az adatmodellhez vagy az adatbázis-műveletekhez kapcsolódik.
+movieModel.findAllMovies();
+
+Repository:
+Kifejezetten az adatbázis elérését rejti el.
+movieRepository.findAll();
+movieRepository.create(movie);
+
+Egyes projektekben a model és repository ugyanazt a szerepet tölti be. Más projektekben különválasztják őket.
+
+
+
 
 A legfontosabb megjegyezni:
 

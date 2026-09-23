@@ -34,7 +34,10 @@ import ProjektLetrehozas from "../pages/WebfejlesztesPage/ProjektLetrehozas";
 import Express from "../pages/WebfejlesztesPage/Express";
 
 import ExpressPage from "../pages/ExpressPage/ExpressPage";
+import NpmPackages from "../pages/ExpressPage/NpmPackages";
+import StatusCodes from "../pages/ExpressPage/StatusCodes";
 import ExStruktura from "../pages/ExpressPage/Struktura";
+import Hosok from "../pages/ExpressPage/Hosok";
 
 import ReactPage from "../pages/ReactPage/ReactPage";
 import FetchReact from "../pages/ReactPage/FetchAlapok";
@@ -161,7 +164,10 @@ const webLinks = [
 ];
 
 const expressLinks = [
+  { name: "Npm csomagok", path: "struktura", component: NpmPackages },
+  { name: "Status kódok", path: "struktura", component: StatusCodes },
   { name: "Struktura", path: "struktura", component: ExStruktura },
+  { name: "Hosok", path: "struktura", component: Hosok },
 ];
 
 const reactLinks = [{ name: "Fetch", path: "fetch", component: FetchReact }];

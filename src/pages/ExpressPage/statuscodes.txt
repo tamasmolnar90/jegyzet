@@ -1,0 +1,53 @@
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
+
+
+
+##################################
+########## STATUS KÓDOK ##########
+##################################
+
+100     Continue                  A kliens elfogadja a kérését, de további kérelmek küldésére vár
+101     Switching Protocols       A szerver protokollt vált, pl. WebSocket kapcsolatnál
+
+200     OK                        Sikeres általános kérés, pl. GET, PUT
+201     Created                   Sikeresen létrehoztál egy új erőforrást, pl. POST
+202     Accepted                  A szerver elfogadta a kérést, de a feldolgozás még folyamatban van
+204     No Content                Sikeres művelet, de nincs visszaküldendő tartalom, pl. DELETE
+
+301     Moved Permanently         Az erőforrás véglegesen áthelyezésre került
+302     Found                     Ideiglenes átirányítás
+304     Not Modified              Az erőforrás nem változott, használható a cache-ben lévő verzió
+307     Temporary Redirect        Ideiglenes átirányítás, HTTP metódus megtartásával
+308     Permanent Redirect        Végleges átirányítás, HTTP metódus megtartásával
+
+400     Bad Request               Hibás vagy hiányos kérés, (szintaktikai hiba is)
+401     Unauthorized              Nincs megfelelő hitelesítés
+403     Forbidden                 Hitelesített, de nincs jogosultsága
+404     Not Found                 Nem található az erőforrás
+405     Method Not Allowed        Az adott HTTP metódus nem engedélyezett
+409     Conflict                  Ütközés az aktuális állapottal
+422     Unprocessable Content     A kérés szintaktikailag rendben van, de az adatok validációja sikertelen
+429     Too Many Requests         Túl sok kérés érkezett rövid idő alatt
+
+500     Internal Server Error     Általános szerverhiba
+501     Not Implemented           A szerver nem támogatja a kért funkciót
+502     Bad Gateway               Egy gateway/proxy hibás választ kapott egy másik szervertől
+503     Service Unavailable       A szolgáltatás jelenleg nem elérhető (túlterhelt, karbantatás alatt)
+504     Gateway Timeout           A gateway nem kapott időben választ a háttérszervertől
+
+
+
+####################################
+########## LEGFONTOSABBAK ##########
+####################################
+
+200     OK                        Sikeres GET / PUT
+201     Created                   Sikeres POST
+204     No Content                Sikeres DELETE
+400     Bad Request               Hibás/hiányos adat
+401     Unauthorized              Nincs megfelelő bejelentkezés/token
+403     Forbidden                 Nincs jogosultság
+404     Not Found                 Nem létezik az erőforrás
+409     Conflict                  Ütközés, pl. email már létezik
+422     Unprocessable Content     Validációs hiba
+500     Internal Server Error     Szerveroldali hiba
