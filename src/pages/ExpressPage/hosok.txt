@@ -1,3 +1,71 @@
+##############################
+########## DATABASE ##########
+##############################
+ _________________________
+|           hos           |
+|                         |
+| id: int                 |
+| nev: varchar(255)       |         ___________________
+| szarmazas: varchar(255) |        |       kaszt       |
+| szint: int              |        |                   |
+| kaszt_id: int           |x------>| id: int           |
+|_________________________|        | nev: varchar(255) |
+                                   |___________________|
+
+CREATE DATABASE IF NOT EXISTS heroes_db
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+SET SQL_SAFE_UPDATES = 0;
+
+USE heroes_db;
+
+CREATE TABLE kaszt (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nev VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE hos (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nev VARCHAR(255) NOT NULL,
+  szarmazas VARCHAR(255) NOT NULL,
+  szint INT NOT NULL,
+  kaszt_id INT NOT NULL
+);
+
+ALTER TABLE hos
+ADD CONSTRAINT fk_hos_kaszt
+FOREIGN KEY(kaszt_id)
+REFERENCES kaszt(id)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+INSERT INTO kaszt (id, nev) VALUES
+(1, 'Harcos'),
+(2, 'Mágus'),
+(3, 'Íjász'),
+(4, 'Pap'),
+(5, 'Zsivány');
+
+INSERT INTO hos (id, nev, szarmazas, szint, kaszt_id) VALUES
+(1, 'Ríviai Geralt', 'Rívia', 35, 1),
+(2, 'Gandalf', 'Középfölde', 99, 2),
+(3, 'Legolas', 'Bakacsinerdő', 25, 3),
+(4, 'Conan', 'Cimmeria', 18, 1),
+(5, 'Jaina Proudmoore', 'Kul Tiras', 40, 2),
+(6, 'Robin Hood', 'Sherwood', 12, 3),
+(7, 'Anduin Wrynn', 'Stormwind', 20, 4),
+(8, 'Garrett', 'A Város', 15, 5),
+(9, 'Xéna', 'Amphipolis', 22, 1),
+(10, 'Merlin', 'Camelot', 80, 2);
+
+
+
+
+##############################
+########## index.js ##########
+##############################
+
 import express from "express";
 import mysql from "mysql2/promise";
 
