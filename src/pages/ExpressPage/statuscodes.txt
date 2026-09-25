@@ -9,14 +9,14 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status
 100     Continue                  A kliens elfogadja a kérését, de további kérelmek küldésére vár
 101     Switching Protocols       A szerver protokollt vált, pl. WebSocket kapcsolatnál
 
-200     OK                        Sikeres általános kérés, pl. GET, PUT
+200     OK                        Sikeres általános kérés, pl. GET, PUT, PATCH
 201     Created                   Sikeresen létrehoztál egy új erőforrást, pl. POST
 202     Accepted                  A szerver elfogadta a kérést, de a feldolgozás még folyamatban van
-204     No Content                Sikeres művelet, de nincs visszaküldendő tartalom, pl. DELETE
+204     No Content                Sikeres művelet, de nincs visszaküldendő tartalom, pl. DELETE            res.status(204).send(); vagy res.sendStatus(204); NINCS VISSZAKÜLDENDŐ
 
 301     Moved Permanently         Az erőforrás véglegesen áthelyezésre került
 302     Found                     Ideiglenes átirányítás
-304     Not Modified              Az erőforrás nem változott, használható a cache-ben lévő verzió
+304     Not Modified              Az erőforrás nem változott, használható a cache-ben lévő verzió          NINCS VISSZAKÜLDENDŐ
 307     Temporary Redirect        Ideiglenes átirányítás, HTTP metódus megtartásával
 308     Permanent Redirect        Végleges átirányítás, HTTP metódus megtartásával
 

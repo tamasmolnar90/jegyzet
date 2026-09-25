@@ -38,6 +38,7 @@ import StatusCodes from "../pages/ExpressPage/StatusCodes";
 import ExStruktura from "../pages/ExpressPage/Struktura";
 import Szerver from "../pages/ExpressPage/Szerver";
 import Hosok from "../pages/ExpressPage/Hosok";
+import AiAdatok from "../pages/ExpressPage/AiAdatok";
 
 import ReactPage from "../pages/ReactPage/ReactPage";
 import FetchReact from "../pages/ReactPage/FetchAlapok";
@@ -168,6 +169,7 @@ const expressLinks = [
   { name: "Struktura", path: "struktura", component: ExStruktura },
   { name: "Szerver", path: "szerver", component: Szerver },
   { name: "Hosok", path: "hosok", component: Hosok },
+  { name: "Ai adatok", path: "ai-adatok", component: AiAdatok },
 ];
 
 const reactLinks = [{ name: "Fetch", path: "fetch", component: FetchReact }];

@@ -1,0 +1,280 @@
+##############################
+########## DATABASE ##########
+##############################
+
+                                   __________________________________
+ _______________________          |           ai_modellek            |
+|        gyartok        |         |                                  |
+|                       |         | modell_id INT PM AI              |
+| gyarto_id INT PM AI   | <-----x | gyarto_id INT NN                 |
+| nev VARCHAR(100) NN   |         | nev VARCHAR(100) NN              |
+| weboldal VARCHAR(255) |         | napi_lekerdezes_limit INT        |
+|_______________________|         | percenkenti_lekerdezes_limit INT |
+                                  | kontextus_ablak INT              |
+                                  |__________________________________|
+
+CREATE DATABASE AI_ADATOK
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_hungarian_ci;
+
+SET SQL_SAFE_UPDATES = 0;
+
+USE AI_ADATOK;
+
+CREATE TABLE gyartok(
+  gyarto_id INT PRIMARY KEY AUTO_INCREMENT,
+  nev VARCHAR(100) NOT NULL,
+  weboldal VARCHAR(255)
+);
+
+CREATE TABLE ai_modellek(
+  modell_id INT PRIMARY KEY AUTO_INCREMENT,
+  gyarto_id INT NOT NULL,
+  nev VARCHAR(100) NOT NULL,
+  napi_lekerdezes_limit INT,
+  percenkenti_lekerdezes_limit INT,
+  kontextus_ablak INT
+);
+
+ALTER TABLE ai_modellek
+ADD CONSTRAINT fk_ai_modellek_gyartok
+FOREIGN KEY(gyarto_id)
+REFERENCES gyartok(gyarto_id)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+INSERT INTO gyartok (gyarto_id, nev, weboldal) VALUES
+(1, 'OpenAI', 'https://openai.com'),
+(2, 'Google', 'https://deepmind.google'),
+(3, 'Anthropic', 'https://www.anthropic.com'),
+(4, 'Mistral AI', 'https://mistral.ai'),
+(5, 'Meta', 'https://ai.meta.com'),
+(6, 'Cohere', 'https://cohere.com'),
+(7, 'xAI', 'https://x.ai'),
+(8, 'Alibaba Cloud', 'https://www.alibabacloud.com');
+
+INSERT INTO ai_modellek (gyarto_id, nev, napi_lekerdezes_limit, percenkenti_lekerdezes_limit, kontextus_ablak) VALUES
+(1, 'GPT-4o', 10000, 500, 128000),
+(1, 'GPT-4 Turbo', 10000, 500, 128000),
+(1, 'GPT-3.5 Turbo', 50000, 3500, 16385),
+(1, 'o1-preview', 1000, 50, 128000),
+(1, 'o1-mini', 5000, 100, 128000),
+(2, 'Gemini 1.5 Pro', 1500, 360, 2097152),
+(2, 'Gemini 1.5 Flash', 10000, 1000, 1048576),
+(2, 'Gemini 1.0 Pro', 30000, 600, 32768),
+(2, 'Gemma 7B', NULL, NULL, 8192),
+(3, 'Claude 3.5 Sonnet', 4000, 50, 200000),
+(3, 'Claude 3 Opus', 1000, 50, 200000),
+(3, 'Claude 3 Haiku', 10000, 100, 200000),
+(3, 'Claude 2.1', 2000, 50, 100000),
+(4, 'Mistral Large', 2000, 100, 32768),
+(4, 'Mistral Small', 5000, 200, 32000),
+(4, 'Mixtral 8x22B', NULL, NULL, 65536), 
+(4, 'Mistral Nemo', NULL, NULL, 128000),
+(5, 'Llama 3 (70B)', NULL, NULL, 8192),
+(5, 'Llama 3 (8B)', NULL, NULL, 8192),
+(5, 'Llama 2 (70B)', NULL, NULL, 4096),
+(6, 'Command R+', 10000, 1000, 128000),
+(6, 'Command R', 20000, 2000, 128000),
+(6, 'Command Light', 50000, 5000, 4096),
+(7, 'Grok-1.5', 5000, 150, 128000),
+(7, 'Grok-1', 10000, 300, 8192),
+(8, 'Qwen 2 (72B)', NULL, NULL, 128000),
+(8, 'Qwen 1.5 (110B)', NULL, NULL, 32768);
+
+############################
+########## SERVER ##########
+############################
+
+import express from "express";
+import mysql from "mysql2/promise";
+
+const pool = mysql.createPool({
+  host: "localhost",
+  port: 3306,
+  user: "root",
+  password: "mysql123",
+  database: "ai_adatok",
+});
+
+const app = express();
+
+app.use(express.json());
+
+app.get("/api/v1/ai-model", async (_req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      `
+        SELECT
+          ai_modellek.modell_id,
+          ai_modellek.nev,
+          ai_modellek.napi_lekerdezes_limit,
+          ai_modellek.percenkenti_lekerdezes_limit,
+          ai_modellek.kontextus_ablak,
+          ai_modellek.gyarto_id,
+          gyartok.gyarto_id AS gyartoId,
+          gyartok.nev AS gyartoNev,
+          gyartok.weboldal AS gyartoWeboldal
+        FROM ai_modellek
+        INNER JOIN gyartok
+          ON ai_modellek.gyarto_id = gyartok.gyarto_id
+      `,
+    );
+
+    res.status(200).json(
+      rows.map((row) => ({
+        modell_id: row.modell_id,
+        nev: row.nev,
+        napi_lekerdezes_limit: row.napi_lekerdezes_limit,
+        percenkenti_lekerdezes_limit: row.percenkenti_lekerdezes_limit,
+        kontextus_ablak: row.kontextus_ablak,
+        gyarto_id: row.gyarto_id,
+        gyarto: {
+          gyarto_id: row.gyartoId,
+          nev: row.gyartoNev,
+          weboldal: row.gyartoWeboldal,
+        },
+      })),
+    );
+
+    // const [rows] = await pool.execute(
+    //   `
+    //     SELECT
+    //       ai_modellek.modell_id,
+    //       ai_modellek.nev,
+    //       ai_modellek.napi_lekerdezes_limit,
+    //       ai_modellek.percenkenti_lekerdezes_limit,
+    //       ai_modellek.kontextus_ablak,
+    //       ai_modellek.gyarto_id,
+    //       JSON_OBJECT(
+    //         'gyarto_id', gyartok.gyarto_id,
+    //         'nev', gyartok.nev,
+    //         'weboldal', gyartok.weboldal
+    //       ) AS gyarto
+    //     FROM ai_modellek
+    //     INNER JOIN gyartok
+    //       ON ai_modellek.gyarto_id = gyartok.gyarto_id
+    //   `,
+    // );
+
+    // res.status(200).json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
+
+app.post("/api/v1/ai-model", async (req, res) => {
+  try {
+    const {
+      nev,
+      napi_lekerdezes_limit,
+      percenkenti_lekerdezes_limit,
+      kontextus_ablak,
+      gyarto_id,
+    } = req.body;
+
+    if (!nev || !gyarto_id) {
+      return res.status(400).json({
+        üzenet: "Hiányzó adatok, a név és a gyarto_id kötelezőek!",
+      });
+    }
+
+    await pool.execute(
+      `
+        INSERT INTO ai_modellek (
+          nev,
+          napi_lekerdezes_limit,
+          percenkenti_lekerdezes_limit,
+          kontextus_ablak,
+          gyarto_id
+        )
+        VALUES (?, ?, ?, ?, ?)
+      `,
+      [
+        nev,
+        napi_lekerdezes_limit,
+        percenkenti_lekerdezes_limit,
+        kontextus_ablak,
+        gyarto_id,
+      ],
+    );
+
+    // adatok felvételénél 201 a helyes, de a feladat 200-at kért
+    res.status(200).json({
+      üzenet: "Sikeres adatfelvétel!",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Sikertelen adatfelvétel!");
+  }
+});
+
+app.patch("/api/v1/ai-model", async (req, res) => {
+  try {
+    const {
+      modell_id,
+      napi_lekerdezes_limit,
+      percenkenti_lekerdezes_limit,
+      kontextus_ablak,
+    } = req.body;
+
+    if (!modell_id) {
+      return res.status(400).json("Hiányzó modell_id");
+    }
+
+    const [result] = await pool.execute(
+      `
+        UPDATE ai_modellek
+        SET
+          napi_lekerdezes_limit = ?,
+          percenkenti_lekerdezes_limit = ?,
+          kontextus_ablak = ?
+        WHERE modell_id = ?
+      `,
+      [
+        napi_lekerdezes_limit,
+        percenkenti_lekerdezes_limit,
+        kontextus_ablak,
+        modell_id,
+      ],
+    );
+
+    if (result.affectedRows == 0) {
+      res.sendStatus(400);
+    } else {
+      res.sendStatus(200);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
+
+app.delete("/api/v1/ai-model/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [result] = await pool.execute(
+      `
+        DELETE FROM ai_modellek
+        WHERE modell_id = ?
+      `,
+      [id],
+    );
+
+    if (result.affectedRows == 0) {
+      res.sendStatus(404);
+    } else {
+      res.sendStatus(204);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
+
+const PORT = 3300;
+app.listen(PORT, () => {
+  console.log(`Server is running: http://localhost:${PORT}\n`);
+});
