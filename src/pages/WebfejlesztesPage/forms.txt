@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forms</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <form>
+      <!-- <input type="text"> szövegbeviteli mező -->
+      <div>
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="user_name"
+          placeholder="Username (text type)"
+        />
+      </div>
+
+      <!-- <input type="password"> jelszó mező -->
+      <div>
+        <label for="pwd">Password</label>
+        <input
+          type="password"
+          id="pwd"
+          name="password"
+          placeholder="Password (password type)"
+        />
+      </div>
+
+      <!-- <input type="email"> email mező -->
+      <div>
+        <label for="email">Enter your email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="example@email.com (email type)"
+        />
+      </div>
+
+      <!-- <input type="url"> URL mező -->
+      <div>
+        <label for="homepage">Add your homepage:</label>
+        <input
+          type="url"
+          id="homepage"
+          name="homepage"
+          placeholder="https://example.com (url type)"
+        />
+      </div>
+
+      <!-- <input type="tel"> telefonszám mező -->
+      <div>
+        <label for="phone">Enter your phone number:</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          maxlength="14"
+          placeholder="06-30-123-4567 (tel type)"
+        />
+        <script>
+          const phoneInput = document.getElementById("phone");
+
+          phoneInput.addEventListener("input", (e) => {
+            // Csak számokat engedünk meg
+            let digits = e.target.value.replace(/\D/g, "");
+
+            // A mintát követve formázzuk: 2-2-3-4 számjegy
+            let formatted = "";
+            if (digits.length > 0) formatted = digits.substring(0, 2);
+            if (digits.length >= 3) formatted += "-" + digits.substring(2, 4);
+            if (digits.length >= 5) formatted += "-" + digits.substring(4, 7);
+            if (digits.length >= 8) formatted += "-" + digits.substring(7, 11);
+
+            e.target.value = formatted;
+          });
+        </script>
+      </div>
+      <br />
+
+      <!-- <input type="search"> kereső mező (úgy viselkedik, mint egy normál szövegmező) -->
+      <div>
+        <label for="search">Search:</label>
+        <input
+          type="search"
+          id="search"
+          name="search"
+          placeholder="search (search type)"
+        />
+      </div>
+      <br />
+
+      <!-- <input type="radio"> radio gomb. Csak egy választható -->
+      <div>
+        <p>Choose your favorite Web language:</p>
+
+        <input type="radio" id="html" name="fav_lang" value="HTML" />
+        <label for="html">HTML</label>
+
+        <input type="radio" id="css" name="fav_lang" value="CSS" />
+        <label for="css">CSS</label>
+
+        <input type="radio" id="js" name="fav_lang" value="JS" />
+        <label for="js">JavaScript</label>
+      </div>
+
+      <!-- <input type="checkbox"> jelölő négyzet. Nulla vagy több választható. -->
+      <div>
+        <input type="checkbox" id="vehicle1" name="vehicle_1" value="Bike" />
+        <label for="vehicle1"> I have a bike</label>
+
+        <input type="checkbox" id="vehicle2" name="vehicle_2" value="Car" />
+        <label for="vehicle2"> I have a car</label>
+
+        <input type="checkbox" id="vehicle3" name="vehicle_3" value="Boat" />
+        <label for="vehicle3"> I have a boat</label>
+      </div>
+
+      <!-- <select> legördülő lista -->
+      <!-- <option> kiválasztható opció, alapértelmezés szerint a lista első eleme van kiválasztva, előre kiválasztáshoz adjuk hozzá a selected attribútumot, disabled nem kiválasztható -->
+      <div>
+        <label for="cars">Choose a car:</label>
+        <select id="cars" name="cars">
+          <option value="" selected disabled>Válassz egy autót</option>
+          <option value="volvo">Volvo</option>
+          <option value="saab">Saab</option>
+          <option value="fiat">Fiat</option>
+          <option value="audi">Audi</option>
+        </select>
+      </div>
+
+      <!-- Előre definiált opciók listáját adja meg egy input elemhez. Az input listjének a datalist id-ra kell hivatkoznia szokásosanm. -->
+      <div>
+        <input list="browsers" placeholder="Válassz egy böngészőt" />
+        <datalist id="browsers">
+          <option value="Edge"></option>
+          <option value="Firefox"></option>
+          <option value="Chrome"></option>
+          <option value="Opera"></option>
+          <option value="Safari"></option>
+        </datalist>
+      </div>
+      <br />
+
+      <!-- <input type="date"> dátum beviteli mező. A böngésző támogatásától függően egy dátumválasztó jelenik meg. -->
+      <div>
+        <label for="birthday">Birthday:</label>
+        <input type="date" id="birthday" name="birth_day" />
+      </div>
+
+      <!-- min és max attribútumokat is használhatod a dátumok hozzáadásánál -->
+      <div>
+        <label for="datemin">Enter a date after 2024-01-01:</label>
+        <input
+          type="date"
+          id="datemin"
+          name="date_min"
+          min="2024-01-01"
+        /><br />
+
+        <label for="datemin">Enter a date before 2026-12-31:</label>
+        <input type="date" id="datemax" name="date_max" max="2026-12-31" />
+      </div>
+
+      <!-- <input type="datetime-local"> dátum és időbeviteli mező -->
+      <div>
+        <label for="birthdaytime">Birthday (date and time):</label>
+        <input type="datetime-local" id="birthdaytime" name="birthdaytime" />
+      </div>
+
+      <!-- <input type="month"> év és hónap kiválasztása -->
+      <div>
+        <label for="bdaymonth">Birthday (month and year):</label>
+        <input type="month" id="bdaymonth" name="bdaymonth" />
+      </div>
+
+      <!-- <input type="week"> év és hét kiválasztása -->
+      <div>
+        <label for="week">Select a week:</label>
+        <input type="week" id="week" name="week" />
+      </div>
+
+      <!-- <input type="time"> idő kiválasztása (időzóna nélkül) -->
+      <div>
+        <label for="appt">Select a time:</label>
+        <input type="time" id="appt" name="appt" />
+      </div>
+      <br />
+
+      <!-- <input type="number"> numerikus beviteli mezőt. Azt is meg lehet állapítani, hogy milyen számok fogadhatók el. -->
+      <div>
+        <label for="quantity">Quantity (between 1 and 5):</label>
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          min="1"
+          max="5"
+          placeholder="1-5 (number type)"
+        />
+      </div>
+
+      <!-- <input type="range"> Egy olyan szám bevitelére szolgáló vezérlő, amelynek pontos értéke nem fontos (csúszka vezérlő). Az alapértelmezett tartomány 0 és 100 között van. Azonban korlátozásokat állíthat be arra vonatkozóan, hogy mely számok fogadhatók el pl: min max -->
+      <div>
+        <label for="vol">Volume (between 0 and 10):</label>
+        <input type="range" id="vol" name="vol" min="0" max="10" />
+      </div>
+
+      <!-- <input type="color"> szín beviteli mező. A böngésző támogatásától függően egy színválasztó jelenik meg. -->
+      <div>
+        <label for="favcolor">Select your favorite color</label>
+        <input type="color" id="favcolor" name="fav_color" />
+      </div>
+      <br />
+
+      <!-- Többsoros beviteli mező, rows, cols helyett css segítségével is formázhatjuk -->
+      <div>
+        <textarea
+          name="message"
+          rows="5"
+          cols="50"
+          placeholder="megjegyzés"
+        ></textarea>
+      </div>
+
+      <!-- <input type="file"> fájl kiválasztó gomb tallózáshoz. -->
+      <div>
+        <label for="myfile">Select a file:</label>
+        <input type="file" id="myfile" name="myfile" />
+      </div>
+      <br />
+
+      <!-- <input type="button"> definiál egy gombot, ez nem küldi be az adatokat -->
+      <div>
+        <input
+          type="button"
+          onclick="alert('Hello World!')"
+          value="Click Me!"
+        />
+      </div>
+      <br />
+
+      <!-- <input type="reset"> Reset gomb, az összes űrlapértéket visszaállítja alapértelmezettre -->
+      <div>
+        <input type="reset" />
+      </div>
+      <br />
+
+      <!-- <input type="submit"> Submit gomb. Az űrlapkezelőt az űrlap action attribútumában adjuk meg: <form action="..."> -->
+      <div>
+        <!-- ha elhagyod a value attribútumot, alapertelmezett szöveget kap a gomb -->
+        <input type="submit" value="Beküldés" />
+      </div>
+      <br />
+
+      <!-- <input type="image"> képként definiálja a beküldés gombot. -->
+      <div>
+        <input
+          type="image"
+          src="macska.jpg"
+          alt="Submit"
+          width="64"
+          height="48"
+        />
+      </div>
+      <br />
+
+      <!-- Űrlapon belüli csoportosítás -->
+      <div>
+        <fieldset>
+          <legend>Fieldset</legend>
+          <div>Kapcsolódó adatok űrlapon belüli csoportosítása</div>
+          <div>ide johetnek az űrlapelemek label, input stb...</div>
+        </fieldset>
+      </div>
+    </form>
+    <br />
+
+    <pre>
+
+
+        HTML Form Elements
+
+        &lt;input /&gt;
+        &lt;label /&gt;
+        &lt;select /&gt;
+        &lt;textarea /&gt;
+        &lt;button /&gt;
+        &lt;fieldset /&gt;
+        &lt;legend /&gt;
+        &lt;datalist /&gt;
+        &lt;output /&gt;
+        &lt;option /&gt;
+        &lt;optgroup /&gt;
+
+
+
+        INPUT
+        Az egyik leggyakrabban használt űrlapelem.
+        Többféleképpen is megjeleníthető a type attribútumtól függően.
+
+        LABEL
+        Több űrlapelem címkéjét határozza meg.
+        Hasznos a képernyőolvasó felhasználók számára, mivel a képernyőolvasó hangosan felolvassa a címkét,
+        amikor a felhasználó a beviteli elemre fókuszál.
+        A for címke attribútumának meg kell egyeznie az elem id attribútumával, hogy összekapcsolja őket.
+
+        SELECT
+        Egy legördülő listát definiál.
+        Hozzá kapcsolódó attribútumok:
+        selected: alapértelmezetten az első elemet jeleníti meg a listában, vagy azt amelyik optionba beírjuk
+        disabled: kikapcsolja ezt az optiont
+        size: látható értékek számát megadhatjuk
+        multiple: több értéket is kiválaszthatunk
+        
+        TEXTAREA
+        Többsoros beviteli mezőt (szövegblokkot) definiál
+
+        FIELDSET és LEGEND elemek
+        Űrlapon belüli csoportosítás
+
+        DATALIST
+        Egy előre definiált opciók listáját adja meg egy input elemhez.
+        A felhasználók az adatok bevitele közben egy legördülő listát látnak az előre definiált beállításokkal.
+        Az input listjének a datalist id-ra kell hivatkoznia.
+
+        OUTPUT
+        Egy számítás eredményét jelöli, pl egy script által végrehajtott számításét.
+       
+
+
+        <hr>
+        HTML Input Types:
+
+        Beviteli korlátozások:
+
+        Attribútum        Leírás
+        checked           Megadja, hogy egy beviteli mező előre ki legyen jelölve az oldal betöltésekor (csak type="checkbox" vagy type="radio" esetén).
+        disabled          Megadja, hogy a beviteli mező le legyen tiltva.
+        max               Megadja a beviteli mező maximális értékét.
+        maxlength         Megadja a beviteli mezőbe írható legnagyobb karakterszámot.
+        min               Megadja a beviteli mező minimális értékét.
+        pattern           Megad egy reguláris kifejezést, amihez a beviteli értéket ellenőrzi.
+        readonly          Megadja, hogy a beviteli mező csak olvasható (nem módosítható).
+        required          Megadja, hogy a beviteli mező kitöltése kötelező.
+        size              Megadja a beviteli mező szélességét (karakterekben mérve).
+        step              Megadja a beviteli mező érvényes lépésközeit (pl. 5 → 0, 5, 10, 15…).
+        value             Megadja a beviteli mező alapértelmezett értékét.
+        placeholder       Egy rövid tippet ad meg, amely leírja a bemeneti mező várható értékét.
+        autofocus         Azt határozza meg, hogy a beviteli mező automatikusan fókuszba kerüljön az oldal betöltésekor.
+        liste             egy olyan elemre utal, amely előre definiált beállításokat tartalmaz
+        autocomplete      Meghatározza, hogy egy űrlapon vagy beviteli mezőn be vagy ki legyen-e kapcsolva az automatikus kitöltés.        
+        
+
+        
+        <hr>
+        HTML Form Attributes:
+
+        form              Ez határozza meg, hogy az input elem melyik űrlaphoz tartozik.
+                          form action="/action_page.php" id="form1"
+                          input type="text" form="form1"
+
+        Attribútum        Leírás        
+        action            formra: Megadja, hova küldje az űrlap adatait beküldés után (pl. egy szerver URL-je).
+        formaction        inputra: input formaction annak a fájlnak az URL címét adja meg, amely feldolgozza a bemenetet az űrlap elküldésekor, az lehet más mint a formon belüli action.
+
+        accept-charset	  Meghatározza, hogy a űrlap beküldésekor milyen karakterkódolást használjon (pl. UTF-8).
+        autocomplete      Meghatározza, hogy az automatikus kitöltés (korábban megadott adatok felajánlása) be legyen-e kapcsolva vagy sem.
+
+        enctype           formra: Megadja, hogyan legyenek kódolva az adatok, amikor a böngésző elküldi őket a szervernek (csak POST módszernél használható).
+        formenctype       inputra: Ez határozza meg, hogyan kell kódolni az űrlapadatokat beküldéskor (csak method="post") típusú űrlapoknál.
+                          Következő típusoknál működik: submit, image, szóval beküldés gombra rakni.
+
+        method            formra: Meghatározza, milyen HTTP metódussal (pl. GET vagy POST) küldje el az adatokat.
+        formmethod        inputra: ugyan az a lényeg mint methodnál
+
+        name              Az űrlap neve, ami azonosításra szolgálhat JavaScript-ben vagy szerveroldalon.
+
+        novalidate        formra: Azt jelenti, hogy az űrlap nem lesz ellenőrizve (validálva) beküldéskor.
+        formnovalidate    inputra: ua.
+
+        rel               Megadja az űrlap és egy kapcsolódó erőforrás (pl. dokumentum) közötti kapcsolat típusát.
+
+        target            formra: Meghatározza, hol jelenjen meg a válasz az űrlap beküldése után (pl. új ablakban, új fülön, iframe-ben).
+        formtarget        inputra: ua.
+
+
+
+        The Action Attribute
+        Az action határozza meg a végrehajtandó műveletet az űrlap elküldésekor.
+        Az űrlap adatait általában a szerveren található fájlba kerülnek, amikor a felhasználó a küldés gombra kattint.
+        <b>form action="/action_page.php"</b>       
+        Ha az action attribútumot elhagyjuk, a művelet az aktuális oldalra lesz beállítva.
+
+
+
+        The Target Attribute
+        A target attribútum határozza meg, hogy hol jelenjen meg az űrlap elküldése után kapott válasz.
+        A target attribútum a következő értékek egyikét veheti fel:
+        _blank          A válasz új ablakban vagy új böngészőfülön jelenik meg.
+        _self           A válasz ugyanabban az ablakban/fülön jelenik meg, ahol az űrlapot elküldted (ez az alapértelmezett).
+        _parent         A válasz a szülő frame-ben (keretben) jelenik meg, ha az oldal frame-ben van betöltve.
+        _top            A válasz az egész böngészőablak teljes területén jelenik meg, kilépve minden frame-ből.
+        framename       A válasz egy megnevezett iframe-ben jelenik meg (pl. &lt;iframe name="myFrame"&gt;).
+        Az alapértelmezett érték a _self
+
+
+
+        The Method attribute
+        A method attribútum meghatározza az űrlapadatok elküldésekor használandó HTTP-metódust.
+        Az űrlapadatok URL változóként (method="get") vagy HTTP post tranzakcióként (method="post") küldhetők el.
+        Az űrlapadatok beküldésekor az alapértelmezett HTTP-metódus a GET.
+        <b>&lt;form action="/action_page.php method="get"&gt;</b>
+        <b>&lt;form action="/action_page.php method="post"&gt;</b>
+
+        Megjegyzések a GET-ről:
+        - Hozzáfűzi az űrlap adatait az URL-hez név/érték párokban.
+        - SOHA ne használj GET metódust érzékeny adatok küldésére! (A beküldött űrlapadatok láthatók az URL-ben!)
+        - Az URL hossza korlátozott (2048 karakter)
+        - Hasznos űrlapbeküldésekhez, ahol a felhasználó könyvjelzővel szeretné ellátni az eredményt.
+        - A GET módszer jó nem biztonságos adatokhoz, például a Google-ban található lekérdezési karakterláncokhoz.
+
+        Megjegyzések a POST-ról:
+        - Hozzáfűzi az űrlapadatokat a HTTP kérés törzséhez (a beküldött űrlapadatok nem jelennek meg az URL-ben)
+        - A POST-nak nincsenek méretkorlátai, és nagy mennyiségű adat küldésére használható.
+        - A POST-tal beküldött űrlapok nem könyvjelzőzhetők
+
+        TIPP: Mindig használj POST metódust, ha az űrlap adatai érzékeny vagy személyes információkat tartalmaznak!
+
+
+
+        The Autocomplete attribute
+        Az autocomplete attribútum határozza meg, hogy egy űrlapon be vagy ki legyenek kapcsolva az automatikusa kiegészítések.
+        Amikor az automatikus kiegészítés be van kapcsolva, a böngésző automatikusan kiegészíti az értékeket a felhasználó által korábban megadott értékek alapján.
+        <b>&lt;form action="/action_page.php autocomplete="on"&gt;</b>
+
+
+
+        The Novalidate attribute
+        A novalidate attrib]tum egz logikai attrib]tum.
+        Amikor jelen van az határozza meg, hogy az űrlapadatokat (bemeneti adatokat) nem kell validálni beküldéskor.
+        <b>&lt;form action="/action_page.php novalidate&gt;</b>      
+      </pre>
+  </body>
+</html>

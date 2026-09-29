@@ -20,6 +20,7 @@ import Vitest from "../pages/JavaScriptPage/Vitest";
 import WebfejlesztesPage from "../pages/WebfejlesztesPage/WebfejlesztesPage";
 import HasznosLinkek from "../pages/WebfejlesztesPage/HasznosLinkek";
 import Design from "../pages/WebfejlesztesPage/Design";
+import Forms from "../pages/WebfejlesztesPage/Forms";
 import InteraktivSzamlalo from "../pages/WebfejlesztesPage/InteraktivSzamlalo";
 import DarkMode from "../pages/WebfejlesztesPage/DarkMode";
 import NevjegyGenerator from "../pages/WebfejlesztesPage/NevjegyGenerator";
@@ -134,6 +135,7 @@ const jsLinks = [
 const webLinks = [
   { name: "Hasznos linkek", path: "hasznoslinkek", component: HasznosLinkek },
   { name: "Design", path: "design", component: Design },
+  { name: "Forms", path: "forms", component: Forms },
   {
     name: "Interaktív Számláló",
     path: "interaktivszamlalo",
