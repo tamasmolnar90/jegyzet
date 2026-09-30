@@ -5,6 +5,13 @@ CREATE DATABASE db_name
 
 Postgres alapból kezeli az ékezetes karaktereket UTF8-ban.
 
+ __________________________________________________
+| Bővítmény hozzáadása (ű ---> u)                  |
+| CREATE EXTENSION IF NOT EXISTS unaccent;         |
+| Lekérdezésnél:                                   |
+| WHERE unaccent(title) ILIKE unaccent('%valami%') |
+| WHERE unaccent(title) ILIKE unaccent($1)         |
+|__________________________________________________|
 
 
 ////////// ADATBÁZIS HASZNÁLATA //////////
