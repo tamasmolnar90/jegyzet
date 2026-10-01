@@ -103,7 +103,7 @@ app.use(express.json());
 
 app.get("/api/v1/ai-model", async (_req, res) => {
   try {
-    const [rows] = await pool.execute(
+    const [rows] = await pool.query(
       `
         SELECT
           ai_modellek.modell_id,
@@ -199,14 +199,15 @@ app.post("/api/v1/ai-model", async (req, res) => {
         gyarto_id,
       ],
     );
-
-    // adatok felvételénél 201 a helyes, de a feladat 200-at kért
-    res.status(200).json({
+    
+    res.status(201).json({
       üzenet: "Sikeres adatfelvétel!",
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json("Sikertelen adatfelvétel!");
+    res.status(500).json({
+      üzenet: "Sikertelen adatfelvétel!",
+    });
   }
 });
 
