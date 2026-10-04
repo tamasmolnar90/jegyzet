@@ -12,6 +12,13 @@ CREATE TABLE table_name (
 
 
 
+////////// OSZLOP ÁTNEVEZÉSE //////////
+
+ALTER TABLE table_name
+RENAME COLUMN password TO password_hash;
+
+
+
 ////////// CONSTRAINTS //////////
 
 NOT NULL – Biztosítja, hogy egy oszlop ne lehessen NULL értékű.
