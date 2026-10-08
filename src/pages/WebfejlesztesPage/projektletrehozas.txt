@@ -80,3 +80,24 @@ npm start
 ########################
 npx create-expo-app@latest ./
 npm start
+
+
+
+##################
+##### NestJs #####
+##################
+
+npm install -g @nestjs/cli
+nest --version
+
+nest new project-name
+
+? Which package manager would you ❤️ to use?
+> npm
+
+? Would you like to set up @nestjs/observe (distributed tracing, auto-correlated logs, metrics and alarms - free for 300k events/month, https://observe.n
+estjs.com)?
+> Yes/no
+
+? Which module system would you like to use?
+> ESM (ES Modules) [with vitest]
